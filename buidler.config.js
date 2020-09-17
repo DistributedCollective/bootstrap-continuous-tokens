@@ -1,5 +1,6 @@
 usePlugin("@nomiclabs/buidler-waffle");
 usePlugin("@nomiclabs/buidler-solhint");
+usePlugin("solidity-coverage");
 
 // This is a sample Buidler task. To learn how to create your own go to
 // https://buidler.dev/guides/create-task.html
@@ -19,5 +20,11 @@ module.exports = {
   // This is a sample solc configuration that specifies which version of solc to use
   solc: {
     version: "0.6.8",
+  },
+  networks: {
+    coverage: {
+      // coverage plugin spins up a ganache instance
+      url: "http://localhost:8555",
+    },
   },
 };
