@@ -1,0 +1,20 @@
+{
+  "name": "atix-solidity-template",
+  "version": "0.0.1",
+  "description": "Atix Solidity project template",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@nomiclabs/buidler": "1.4.7",
+    "@nomiclabs/buidler-ethers": "2.0.0",
+    "@nomiclabs/buidler-waffle": "2.1.0",
+    "chai": "4.2.0",
+    "ethereum-waffle": "3.1.0",
+    "ethers": "5.0.14"
+  },
+  "scripts": {
+    "test": "buidler test"
+  },
+  "author": "",
+  "license": "ISC"
+}
