@@ -1,0 +1,52 @@
+variables:
+  # Common variables to be able to build and push docker images
+  # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-disabled
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - sanity-checks
+  - test
+
+.install-deps: &install-deps
+  - apk add build-base git python
+  - npm install
+
+lint:
+  image: node:12.18.1-alpine
+  stage: sanity-checks
+  script:
+    - *install-deps
+    - npm run lint
+
+test:
+  image: node:12.18.1-alpine
+  stage: test
+  script:
+    - *install-deps
+    - npm run test
+  except:
+    refs:
+      # Quick checks on regular branches
+      - master
+      - develop
+      - /^release.*$/
+      - /^hotfix.*$/
+
+coverage:
+  image: node:12.18.1-alpine
+  stage: test
+  script:
+    - *install-deps
+    - npm run coverage
+  only:
+    refs:
+      # Only run on master, develop, release/x.y.x and hotfix/xxxx
+      - master
+      - develop
+      - /^release.*$/
+      - /^hotfix.*$/
