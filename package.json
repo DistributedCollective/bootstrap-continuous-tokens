@@ -20,7 +20,7 @@
   },
   "scripts": {
     "test": "buidler test",
-    "lint": "buidler check",
+    "lint": "solhint contracts/**/*.sol",
     "coverage": "buidler coverage --network coverage",
     "local-node": "buidler node",
     "gas-usage": "export REPORT_GAS=true &&  concurrently --kill-others --success \"first\" \"npm:local-node\" \"buidler test --network localhost\""
