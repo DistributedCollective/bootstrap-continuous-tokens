@@ -20,14 +20,14 @@
   },
   "scripts": {
     "test": "buidler test",
-    "lint": "solhint contracts/**/*.sol",
+    "solidity-lint": "solhint contracts/**/*.sol",
     "coverage": "buidler coverage --network coverage",
     "local-node": "buidler node",
     "gas-usage": "export REPORT_GAS=true &&  concurrently --kill-others --success \"first\" \"npm:local-node\" \"buidler test --network localhost\""
   },
   "lint-staged": {
-    "src/**/*.{js,ts}": [
-      "npm run lint"
+    "contacts/**/*.sol": [
+      "npm run solidity-lint"
     ]
   },
   "husky": {

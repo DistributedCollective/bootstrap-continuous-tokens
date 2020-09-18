@@ -21,7 +21,7 @@ lint:
   stage: sanity-checks
   script:
     - *install-deps
-    - npm run lint
+    - npm run solidity-lint
 
 test:
   image: node:12.18.1-alpine
@@ -43,6 +43,9 @@ coverage:
   script:
     - *install-deps
     - npm run coverage
+  artifacts:
+    reports:
+      cobertura: coverage/cobertura-coverage.xml
   only:
     refs:
       # Only run on master, develop, release/x.y.x and hotfix/xxxx
