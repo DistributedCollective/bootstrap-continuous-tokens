@@ -4,7 +4,7 @@ pragma solidity 0.6.8;
 import "@nomiclabs/buidler/console.sol";
 
 contract Greeter {
-    string greeting;
+    string private greeting;
 
     constructor(string memory _greeting) public {
         console.log("Deploying a Greeter with greeting:", _greeting);
