@@ -20,7 +20,7 @@ task("accounts", "Prints the list of accounts", async () => {
 module.exports = {
   // This is a sample solc configuration that specifies which version of solc to use
   solc: {
-    version: "0.7.0",
+    version: "0.6.8",
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS ? true : false,
