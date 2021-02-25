@@ -17,6 +17,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 nvm use
 ```
 
+Create `.env` file (you can base on [`.env.example`](./.env.example))
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
@@ -28,35 +29,52 @@ Say what the step will be
 npm install
 ```
 
+### Generate Types
+
+In order to get contract types you can generate those typings when compiling
+
+```bash
+npm run compile
+```
+
 ## Running the tests
 
 ```bash
 npm run test
 ```
 
-### Break down into end to end tests
+### Testing with Waffle
 
-Explain what these tests test and why
+Tests using Waffle are written with Mocha alongside with Chai. 
 
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
+Is recommended to use Gherkin as a language to describe the test cases
 
 ```
-Give an example
+describe("Feature: Greeter", () => {
+  describe("Scenario: Should return the new greeting once it's changed", () => {
+    let greeter: Greeter;
+    it("GIVEN a deployed Greeter contract", async () => {
+      const factory = await ethers.getContractFactory("Greeter");
+      greeter = <Greeter>await factory.deploy("Hello, world!");
+      expect(await greeter.greet()).to.equal("Hello, world!");
+    });
+    it("WHEN greeting message changed", async () => {
+      await greeter.setGreeting("Hola, mundo!");
+    });
+    it("THEN greet returns new greeting message", async () => {
+      expect(await greeter.greet()).to.equal("Hola, mundo!");
+    });
+  });
+});
 ```
 
-## Deployment
+We are requiring Chai which is an assertions library. These asserting functions are called "matchers", and the ones we're using here actually come from Waffle.
 
-Add additional notes about how to deploy this on a live system
+For more information we suggest reading waffle testing documentation [here](https://hardhat.org/guides/waffle-testing.html#testing).
 
 ## Built With
 
-* [Buidler](https://buidler.dev) - Task runner
+* [Hardhat](https://hardhat.org/) - Task runner
 
 ## Contributing
 

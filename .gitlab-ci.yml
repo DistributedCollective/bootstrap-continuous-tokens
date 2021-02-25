@@ -3,6 +3,9 @@ variables:
   # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-disabled
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
+  # Hardhat variables
+  INFURA_API_KEY: "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+  MNEMONIC: "here is where your twelve words mnemonic should be put my friend"
 
 cache:
   paths:
@@ -21,7 +24,7 @@ lint:
   stage: sanity-checks
   script:
     - *install-deps
-    - npm run solidity-lint
+    - npm run lint
 
 test:
   stage: test
