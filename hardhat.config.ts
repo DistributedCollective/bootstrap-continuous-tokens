@@ -96,12 +96,12 @@ const config: HardhatUserConfig = {
     gasPrice: 21,
   },
   preprocess: {
-    eachLine: removeConsoleLog(hre => ["hardhat", "localhost"].includes(hre.network.name)),
+    eachLine: removeConsoleLog(hre => !["hardhat", "localhost"].includes(hre.network.name)),
   },
   docgen: {
     path: "./docs",
     clear: true,
-    runOnCompile: true,
+    runOnCompile: false,
   },
   contractSizer: {
     alphaSort: true,
