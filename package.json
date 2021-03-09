@@ -67,6 +67,7 @@
     "solidity"
   ],
   "scripts": {
+    "prepare": "husky install",
     "postinstall": "npm run compile",
     "clean": "hardhat clean",
     "compile": "hardhat compile",
