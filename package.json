@@ -68,7 +68,7 @@
   ],
   "scripts": {
     "prepare": "husky install",
-    "postinstall": "npm run compile",
+    "postinstall": "cp -n .env.example .env && npm run compile",
     "clean": "hardhat clean",
     "compile": "hardhat compile",
     "coverage": "hardhat coverage --solcoverjs ./.solcover.js --temp artifacts --testfiles \"./test/**/*.ts\"",
