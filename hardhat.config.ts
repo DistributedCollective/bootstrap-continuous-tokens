@@ -7,6 +7,8 @@ import "hardhat-contract-sizer";
 import "hardhat-docgen";
 import "hardhat-gas-reporter";
 import "hardhat-preprocessor";
+import "hardhat-deploy";
+import "hardhat-deploy-ethers";
 import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
 import "hardhat-typechain";
@@ -14,6 +16,13 @@ import { HardhatUserConfig } from "hardhat/config";
 import { NetworkUserConfig } from "hardhat/types";
 import { resolve } from "path";
 import "solidity-coverage";
+
+// This is done to have the new matchers from waffle,
+// because despite the note in https://hardhat.org/guides/waffle-testing.html?#adapting-the-tests
+// the changeEtherBalance is not added because its a newer version
+import chai from "chai";
+import { solidity } from "ethereum-waffle";
+chai.use(solidity);
 
 dotenvConfig({ path: resolve(__dirname, "./.env") });
 
@@ -58,6 +67,10 @@ const createTestnetConfig = (network: keyof typeof chainIds): NetworkUserConfig 
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
+  namedAccounts: {
+    deployer: 0,
+    otherUser: 1,
+  },
   networks: {
     hardhat: {
       accounts: {
