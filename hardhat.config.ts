@@ -8,7 +8,6 @@ import "hardhat-docgen";
 import "hardhat-gas-reporter";
 import "hardhat-preprocessor";
 import "hardhat-deploy";
-import "hardhat-deploy-ethers";
 import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
 import "hardhat-typechain";
