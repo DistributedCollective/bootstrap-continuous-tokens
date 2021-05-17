@@ -78,4 +78,17 @@ describe("Feature: Greeter", () => {
       });
     });
   });
+  describe("GIVEN a blockchain is running", () => {
+    const greeting = "Hola mundo!";
+    describe(`WHEN a signers tries to deploy a Greeter contract with ${greeting}`, () => {
+      let greeter: Greeter;
+      before(async () => {
+        const factory = await ethers.getContractFactory("Greeter");
+        greeter = (await factory.deploy(greeting)) as Greeter;
+      });
+      it("THEN the Greeter has that greet right away", async () => {
+        return expect(await greeter.greeting()).to.equal(greeting);
+      });
+    });
+  });
 });
