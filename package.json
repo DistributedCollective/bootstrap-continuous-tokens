@@ -7,7 +7,7 @@
   "dependencies": {
     "hardhat": "2.0.6",
     "hardhat-deploy": "0.7.5",
-    "solc": "0.7.4"
+    "solc": "0.7.6"
   },
   "devDependencies": {
     "@commitlint/cli": "9.1.2",
@@ -78,6 +78,8 @@
     "lint:ts": "eslint --config ./.eslintrc.yaml --ignore-path ./.eslintignore --ext .js,.ts .",
     "prettier": "prettier --config .prettierrc --write \"**/*.{js,json,md,sol,ts}\"",
     "prettier:list-different": "prettier --config .prettierrc --list-different \"**/*.{js,json,md,sol,ts}\"",
+    "security": "docker run -it -v $(pwd):/home/ethsec/project trailofbits/eth-security-toolbox",
+    "security-default": "echo \"solc-select 0.7.6 && cd project && slither --exclude-dependencies --exclude pragma .\" | docker run -i -v $(pwd):/home/ethsec/project trailofbits/eth-security-toolbox",
     "size-contracts": "hardhat size-contracts",
     "docgen": "hardhat docgen",
     "test": "hardhat test"
