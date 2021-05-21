@@ -1,4 +1,6 @@
-pragma solidity ^0.7.4;
+// SPDX-License-Identifier: MIT
+// TODO change license
+pragma solidity ^0.7.6;
 
 import "hardhat/console.sol";
 
@@ -30,24 +32,29 @@ contract Greeter {
 
     /// @notice Returns a greeting message
     /// @return greeting message
-    function greet() public view returns (string memory) {
+    function greet() external view returns (string memory) {
         return greeting;
     }
 
     /// @notice Sets the greeting message
-    function setGreeting(string memory _greeting) public onlyCreator {
-        console.log("Changing greeting from '%s' to '%s'", greeting, _greeting);
+    function setGreeting(string memory greeting_) external onlyCreator {
+        console.log("Changing greeting from '%s' to '%s'", greeting, greeting_);
         string memory oldGreeting = greeting;
-        greeting = _greeting;
+        greeting = greeting_;
         emit GreetingChanged(oldGreeting, greeting);
     }
 
-    function getAmount() public returns (uint256) {
+    function getAmount() external view returns (uint256) {
         return amount;
     }
 
-    function payToContract() public payable {
+    function payToContract() external payable {
         require(msg.value >= 1 ether, "Cannot send less than 1 ether");
         amount = msg.value;
+    }
+
+    function withdraw() external {
+        require(contractOwner == msg.sender, "Sender not owner");
+        msg.sender.transfer(address(this).balance);
     }
 }

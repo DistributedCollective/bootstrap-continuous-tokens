@@ -12,6 +12,7 @@ cache:
     - node_modules/
 
 stages:
+  - static-analysis
   - sanity-checks
   - test
 
@@ -39,6 +40,23 @@ test:
       - develop
       - /^release.*$/
       - /^hotfix.*$/
+
+slither:
+  stage: static-analysis
+  script:
+      - *install-deps
+      - apk update
+      - apk add git musl-dev python3-dev openssh
+      - pip3 install slither-analyzer
+      - slither --exclude-dependencies --exclude pragma .
+  except:
+    refs:
+      # Quick checks on regular branches
+      - master
+      - develop
+      - /^release.*$/
+      - /^hotfix.*$/
+
 
 coverage:
   stage: test

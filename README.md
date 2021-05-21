@@ -72,6 +72,31 @@ We are requiring Chai which is an assertions library. These asserting functions 
 
 For more information we suggest reading waffle testing documentation [here](https://hardhat.org/guides/waffle-testing.html#testing).
 
+### Ethereum Security Toolbox
+
+To check the code statically you can use the Ethereum Security Toolbox made by Trail of Bits.
+
+##### Default option
+
+You could just run the default checking executing
+
+`npm run security-default`
+
+##### Flexibile option
+
+Or if you want more flexibility, first execute the command 
+
+`npm run security`
+
+and once inside the docker container run 
+
+```
+solc-select 0.7.6
+cd project
+```
+
+so that you can use the tools there installed.
+
 ## Built With
 
 * [Hardhat](https://hardhat.org/) - Task runner
