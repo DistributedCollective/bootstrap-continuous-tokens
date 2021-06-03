@@ -2,25 +2,25 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
 import "@nomiclabs/hardhat-waffle";
 import "@openzeppelin/hardhat-upgrades";
+import "@typechain/hardhat";
+// This is done to have the new matchers from waffle,
+// because despite the note in https://hardhat.org/guides/waffle-testing.html?#adapting-the-tests
+// the changeEtherBalance is not added because its a newer version
+import chai from "chai";
 import { config as dotenvConfig } from "dotenv";
+import { solidity } from "ethereum-waffle";
 import "hardhat-contract-sizer";
+import "hardhat-deploy";
 import "hardhat-docgen";
 import "hardhat-gas-reporter";
 import "hardhat-preprocessor";
-import "hardhat-deploy";
 import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
-import "hardhat-typechain";
 import { HardhatUserConfig } from "hardhat/config";
 import { NetworkUserConfig } from "hardhat/types";
 import { resolve } from "path";
 import "solidity-coverage";
 
-// This is done to have the new matchers from waffle,
-// because despite the note in https://hardhat.org/guides/waffle-testing.html?#adapting-the-tests
-// the changeEtherBalance is not added because its a newer version
-import chai from "chai";
-import { solidity } from "ethereum-waffle";
 chai.use(solidity);
 
 dotenvConfig({ path: resolve(__dirname, "./.env") });
@@ -101,6 +101,7 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "typechain",
     target: "ethers-v5",
+    alwaysGenerateOverloads: false,
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS ? true : false,
