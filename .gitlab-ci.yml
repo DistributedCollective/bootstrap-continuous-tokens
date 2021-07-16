@@ -17,6 +17,8 @@ stages:
   - test
 
 .install-deps: &install-deps
+  - apk update
+  - apk add git musl-dev python3-dev openssh
   - apk add --upgrade coreutils
   - npm ci
 
@@ -45,10 +47,8 @@ slither:
   stage: static-analysis
   script:
       - *install-deps
-      - apk update
-      - apk add git musl-dev python3-dev openssh
       - pip3 install slither-analyzer
-      - slither --exclude-dependencies --exclude pragma .
+      - slither --exclude-dependencies --exclude pragma,low-level-calls .
   except:
     refs:
       # Quick checks on regular branches
