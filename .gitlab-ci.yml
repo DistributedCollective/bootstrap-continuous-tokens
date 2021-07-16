@@ -12,9 +12,7 @@ cache:
     - node_modules/
 
 stages:
-  - static-analysis
-  - sanity-checks
-  - test
+  - check
 
 .install-deps: &install-deps
   - apk update
@@ -25,13 +23,13 @@ stages:
 image: atixlabs/node:12.18.1-alpine-build
 
 lint:
-  stage: sanity-checks
+  stage: check
   script:
     - *install-deps
     - npm run lint
 
 test:
-  stage: test
+  stage: check
   script:
     - *install-deps
     - npm run test
@@ -44,7 +42,7 @@ test:
       - /^hotfix.*$/
 
 slither:
-  stage: static-analysis
+  stage: check
   script:
       - *install-deps
       - pip3 install slither-analyzer
@@ -59,7 +57,7 @@ slither:
 
 
 coverage:
-  stage: test
+  stage: check
   script:
     - *install-deps
     - npm run coverage
