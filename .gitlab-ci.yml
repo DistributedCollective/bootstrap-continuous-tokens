@@ -16,8 +16,9 @@ stages:
 
 .install-deps: &install-deps
   - apk update
-  - apk add git musl-dev python3-dev openssh
+  - apk add git musl-dev python3-dev
   - apk add --upgrade coreutils
+  - git config --global url."https://github.com/".insteadOf ssh://git@github.com/
   - npm ci
 
 image: atixlabs/node:12.18.1-alpine-build
