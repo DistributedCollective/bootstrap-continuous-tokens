@@ -79,6 +79,7 @@
     "security-default": "echo \"solc-select 0.7.6 && cd project && slither --exclude-dependencies --exclude pragma,low-level-calls .\" | docker run -i -v $(pwd):/home/ethsec/project trailofbits/eth-security-toolbox",
     "size-contracts": "hardhat size-contracts",
     "docgen": "hardhat docgen",
-    "test": "hardhat test"
+    "test": "hardhat test",
+    "report:gas": "REPORT_GAS=true hardhat test"
   }
 }
