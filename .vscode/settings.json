@@ -2,5 +2,7 @@
     "mocha.requires": [
         "ts-node/register/files"
     ],
-    "mocha.files.glob": "test/**/*.ts"
+    "mocha.files.glob": "test/**/*.ts",
+    "solidity.defaultCompiler": "remote",
+    "solidity.compileUsingRemoteVersion": "v0.4.24+commit.e67f0147"
 }

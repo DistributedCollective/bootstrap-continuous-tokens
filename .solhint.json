@@ -3,11 +3,11 @@
   "plugins": ["prettier"],
   "rules": {
     "code-complexity": ["error", 7],
-    "compiler-version": ["error", "0.7.6"],
+    "compiler-version": ["error", "0.4.24"],
     "const-name-snakecase": "off",
     "constructor-syntax": "error",
     "func-visibility": ["error", { "ignoreConstructors": true }],
-    "max-line-length": ["error", 120],
+    "max-line-length": ["error", 200],
     "not-rely-on-time": "off",
     "prettier/prettier": [
       "error",
