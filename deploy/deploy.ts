@@ -2,13 +2,15 @@ import { ethers } from "hardhat";
 import { DeployFunction, DeployOptions, DeployResult } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
+  ACL__factory,
   BalanceRedirectPresale__factory,
   Controller__factory,
-  Kernel__factory,
   MarketMaker__factory,
   MiniMeToken__factory,
   TokenManager__factory,
+  Kernel__factory,
 } from "../typechain";
+import { DAOFactory__factory } from "../typechain/factories/DAOFactory__factory";
 
 const PPM = 1e6;
 const PCT_BASE = 1e18;
@@ -54,10 +56,31 @@ const deployDAO = async (deploy: Deploy, deployer: string) => {
     args: [false],
   });
   const aclDeployment = await deployContract(deploy, deployer, "ACL");
+  const evmScriptRegistryFactoryDeployment = await deployContract(deploy, deployer, "EVMScriptRegistryFactory");
 
   const kernel = Kernel__factory.connect(kernelDeployment.address, ethers.provider.getSigner());
   await kernel.initialize(aclDeployment.address, deployer);
-  return kernel;
+
+  //const ACL = ACL__factory.connect(aclDeployment.address, ethers.provider.getSigner());
+  //ACL.initialize(deployer);
+  const daoFactoryDeployment = await deploy("DAOFactory", {
+    from: deployer,
+    args: [kernelDeployment.address, aclDeployment.address, evmScriptRegistryFactoryDeployment.address],
+  });
+  console.log(`DAO Factory deployed at ${daoFactoryDeployment.address}`);
+
+  const daoFactory = DAOFactory__factory.connect(daoFactoryDeployment.address, ethers.provider.getSigner());
+  const newDaoTx = await (await daoFactory.newDAO(deployer)).wait();
+
+  const daoAddress = newDaoTx.logs
+    .map(log => {
+      if (log.address === daoFactoryDeployment.address) {
+        const parsed = daoFactory.interface.parseLog(log);
+        return parsed.args.dao;
+      }
+    })
+    .find(dao => dao !== undefined);
+  return daoAddress;
 };
 
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
@@ -65,7 +88,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployer } = await getNamedAccounts();
   const { deploy } = deployments;
 
-  const DAO = await deployDAO(deploy, deployer);
+  const daoAddress = await deployDAO(deploy, deployer);
 
   const bancorFormulaDeployment = await deployContract(deploy, deployer, "BancorFormula");
   const presaleDeployment = await deployContract(deploy, deployer, "BalanceRedirectPresale");
@@ -73,7 +96,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const reserveDeployment = await deployContract(deploy, deployer, "Reserve");
   const tapDisabledDeployment = await deployContract(deploy, deployer, "TapDisabled");
   const controllerDeployment = await deployContract(deploy, deployer, "Controller");
-  const tokenManagerDeployment = await deployContract(deploy, deployer, "ZeroTokenManager");
+  const tokenManagerDeployment = await deployContract(deploy, deployer, "TokenManager");
 
   const tokenFactory = await deployContract(deploy, deployer, "MiniMeTokenFactory");
   const collateralToken = await deployERC20Token(deploy, deployer, {
@@ -124,7 +147,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const marketMaker = MarketMaker__factory.connect(marketMakerDeployment.address, await ethers.getSigner(deployer));
   await marketMaker.initialize(
-    DAO.address,
+    daoAddress,
     controllerDeployment.address,
     tokenManagerDeployment.address,
     bancorFormulaDeployment.address,
@@ -139,7 +162,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const controller = Controller__factory.connect(controllerDeployment.address, await ethers.getSigner(deployer));
   await controller.initialize(
-    DAO.address,
+    daoAddress,
     presaleDeployment.address,
     marketMakerDeployment.address,
     reserveDeployment.address,
@@ -150,6 +173,18 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log(`Controller initialized`);
 
   // TODO: Permissions
+
+  const dao = Kernel__factory.connect(daoAddress, await ethers.getSigner(deployer));
+  const ACL = ACL__factory.connect(await dao.acl(), await ethers.getSigner(deployer));
+  ACL.getPermissionManager(marketMakerDeployment, tokenManager.MINT_ROLE())
+  await ACL.grantPermission(
+    marketMakerDeployment.address,
+    bondedTokenDeployment.address,
+    await tokenManager.MINT_ROLE(),
+  );
+
+  // ACL.revokePermission(address(this), _app, _permission);
+  // ACL.setPermissionManager(_manager, _app, _permission);
 
   return hre.network.live; // prevents re execution on live networks
 };
