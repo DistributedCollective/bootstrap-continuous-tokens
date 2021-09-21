@@ -16,6 +16,7 @@ contract OLDACL is IACL, TimeHelpers, UnsafeAragonApp, ACLHelpers {
     bytes32 public constant CREATE_PERMISSIONS_ROLE =
         0x0b719b33c83b8e5d300c521cb8b54ae9bd933996a14bef8c2f4e0285d2d2400a;
 
+    /* solhint-disable*/
     enum Op {
         NONE,
         EQ,
@@ -31,6 +32,7 @@ contract OLDACL is IACL, TimeHelpers, UnsafeAragonApp, ACLHelpers {
         XOR,
         IF_ELSE
     } // op types
+    /* solhint-enable */
 
     struct Param {
         uint8 id;
@@ -361,18 +363,21 @@ contract OLDACL is IACL, TimeHelpers, UnsafeAragonApp, ACLHelpers {
             // params not saved before
             for (uint256 i = 0; i < _encodedParams.length; i++) {
                 uint256 encodedParam = _encodedParams[i];
+                /*solhint-disable*/
                 Param memory param = Param(
                     decodeParamId(encodedParam),
                     decodeParamOp(encodedParam),
                     uint240(encodedParam)
                 );
                 params.push(param);
+                /*solhint-enable*/
             }
         }
 
         return paramHash;
     }
 
+    /*solhint-disable*/
     function _evalParam(
         bytes32 _paramsHash,
         uint32 _paramId,
@@ -417,6 +422,7 @@ contract OLDACL is IACL, TimeHelpers, UnsafeAragonApp, ACLHelpers {
 
         return compare(value, Op(param.op), comparedTo);
     }
+    /*solhint-enable*/
 
     function _evalLogic(
         Param _param,
