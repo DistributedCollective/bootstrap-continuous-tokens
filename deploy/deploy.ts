@@ -43,7 +43,7 @@ type TokenConfig = {
   symbol: string;
 };
 
-type FundrasingApps = {
+export type FundrasingApps = {
   reserve: Reserve;
   reserveAddress: Address;
   presale: BalanceRedirectPresale;
@@ -58,7 +58,7 @@ type FundrasingApps = {
   bondedTokenManagerAddress: Address;
 };
 
-const deployContract = async (deploy: Deploy, deployer: string, artifactName: string) => {
+export const deployContract = async (deploy: Deploy, deployer: string, artifactName: string) => {
   const deployed = await deploy(artifactName, {
     from: deployer,
   });
@@ -66,7 +66,7 @@ const deployContract = async (deploy: Deploy, deployer: string, artifactName: st
   return deployed;
 };
 
-const deployERC20Token = async (deploy: Deploy, deployer: string, config: TokenConfig) => {
+export const deployERC20Token = async (deploy: Deploy, deployer: string, config: TokenConfig) => {
   const token = await deploy("MiniMeToken", {
     from: deployer,
     args: [config.factoryAddress, ethers.constants.AddressZero, 0, config.name, 18, config.symbol, true],
@@ -76,7 +76,7 @@ const deployERC20Token = async (deploy: Deploy, deployer: string, config: TokenC
 };
 
 // Taken from https://github.com/aragon/aragonOS/blob/master/scripts/deploy-daofactory.js
-const createDAO = async (deploy: Deploy, deployer: string): Promise<[string, string]> => {
+export const createDAO = async (deploy: Deploy, deployer: string): Promise<[string, string]> => {
   const kernelDeployment = await deploy("Kernel", {
     from: deployer,
     args: [false],
@@ -114,7 +114,11 @@ const createDAO = async (deploy: Deploy, deployer: string): Promise<[string, str
   return [daoAddress, aclAddress];
 };
 
-const deployContracts = async (deploy: Deploy, deployer: string, zeroAddress: Address): Promise<FundrasingApps> => {
+export const deployContracts = async (
+  deploy: Deploy,
+  deployer: string,
+  zeroAddress: Address,
+): Promise<FundrasingApps> => {
   const presaleDeployment = await deployContract(deploy, deployer, "BalanceRedirectPresale");
   const marketMakerDeployment = await deployContract(deploy, deployer, "MarketMaker");
   const reserveDeployment = await deployContract(deploy, deployer, "Reserve");
@@ -151,7 +155,7 @@ const deployContracts = async (deploy: Deploy, deployer: string, zeroAddress: Ad
   };
 };
 
-const getSOVAddress = async (deploy: Deploy, deployer: string, tokenFactoryAddress: Address) => {
+export const getSOVAddress = async (deploy: Deploy, deployer: string, tokenFactoryAddress: Address) => {
   // FIXME: This shouldn't require a deployment
   const collateralToken = await deployERC20Token(deploy, deployer, {
     factoryAddress: tokenFactoryAddress,
@@ -162,7 +166,7 @@ const getSOVAddress = async (deploy: Deploy, deployer: string, tokenFactoryAddre
   return collateralToken.address;
 };
 
-const getZeroAddress = async (deploy: Deploy, deployer: string, tokenFactoryAddress: Address) => {
+export const getZeroAddress = async (deploy: Deploy, deployer: string, tokenFactoryAddress: Address) => {
   // FIXME: This shouldn't require a deployment
   const bondedTokenDeployment = await deployERC20Token(deploy, deployer, {
     factoryAddress: tokenFactoryAddress,
@@ -191,7 +195,11 @@ const createPermissions = async (
 const createPermission = async (acl: ACL, entity: string, app: string, role: string, manager: string): Promise<void> =>
   createPermissions(acl, [entity], app, role, manager);
 
-const setupFundraisingPermission = async (deployer: string, fundraisingApps: FundrasingApps, daoAddress: Address) => {
+export const setupFundraisingPermission = async (
+  deployer: string,
+  fundraisingApps: FundrasingApps,
+  daoAddress: Address,
+) => {
   const { marketMakerAddress, presaleAddress } = fundraisingApps;
   const dao = Kernel__factory.connect(daoAddress, await ethers.getSigner(deployer));
   const acl = ACL__factory.connect(await dao.acl(), await ethers.getSigner(deployer));
@@ -383,7 +391,7 @@ const setupFundraisingPermission = async (deployer: string, fundraisingApps: Fun
   );
 };
 
-const setupCollateral = async (
+export const setupCollateral = async (
   deployer: string,
   fundraisingApps: FundrasingApps,
   daoAddress: Address,
@@ -497,5 +505,20 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   return hre.network.live; // prevents re execution on live networks
 };
 export default deployFunc;
+deployFunc.tags = [
+  "MiniMeTokenFactory",
+  "MiniMeToken",
+  "ACL",
+  "EVMScriptRegistryFactory",
+  "DAOFactory",
+  "BancorFormula",
+  "BalanceRedirectPresale",
+  "MarketMaker",
+  "Reserve",
+  "TapDisabled",
+  "Controller",
+  "TokenManager",
+  "BondedToken",
+];
 
 deployFunc.id = "deployed_system"; // id required to prevent reexecution
