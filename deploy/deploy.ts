@@ -393,14 +393,14 @@ const setupCollateral = async (
 ): Promise<void> => {
   const dao = Kernel__factory.connect(daoAddress, await ethers.getSigner(deployer));
   const acl = ACL__factory.connect(await dao.acl(), await ethers.getSigner(deployer));
-
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
     deployer,
+    fundraisingApps.controllerAddress,
     await fundraisingApps.controller.ADD_COLLATERAL_TOKEN_ROLE(),
     deployer,
   );
+
   await fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0);
 };
 
@@ -481,6 +481,10 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   );
 
   console.log(`Controller initialized`);
+
+  await fundraisingApps.reserve.initialize(daoAddress);
+
+  console.log(`Reserve initialized`);
 
   await setupFundraisingPermission(deployer, fundraisingApps, daoAddress);
 

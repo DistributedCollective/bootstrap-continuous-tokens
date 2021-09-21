@@ -17,21 +17,7 @@ contract OLDACL is IACL, TimeHelpers, UnsafeAragonApp, ACLHelpers {
         0x0b719b33c83b8e5d300c521cb8b54ae9bd933996a14bef8c2f4e0285d2d2400a;
 
     /* solhint-disable*/
-    enum Op {
-        NONE,
-        EQ,
-        NEQ,
-        GT,
-        LT,
-        GTE,
-        LTE,
-        RET,
-        NOT,
-        AND,
-        OR,
-        XOR,
-        IF_ELSE
-    } // op types
+    enum Op { NONE, EQ, NEQ, GT, LT, GTE, LTE, RET, NOT, AND, OR, XOR, IF_ELSE } // op types
     /* solhint-enable */
 
     struct Param {
@@ -364,11 +350,8 @@ contract OLDACL is IACL, TimeHelpers, UnsafeAragonApp, ACLHelpers {
             for (uint256 i = 0; i < _encodedParams.length; i++) {
                 uint256 encodedParam = _encodedParams[i];
                 /*solhint-disable*/
-                Param memory param = Param(
-                    decodeParamId(encodedParam),
-                    decodeParamOp(encodedParam),
-                    uint240(encodedParam)
-                );
+                Param memory param =
+                    Param(decodeParamId(encodedParam), decodeParamOp(encodedParam), uint240(encodedParam));
                 params.push(param);
                 /*solhint-enable*/
             }
@@ -422,6 +405,7 @@ contract OLDACL is IACL, TimeHelpers, UnsafeAragonApp, ACLHelpers {
 
         return compare(value, Op(param.op), comparedTo);
     }
+
     /*solhint-enable*/
 
     function _evalLogic(
