@@ -67,8 +67,9 @@ export const deployContract = async (deploy: Deploy, deployer: string, artifactN
 };
 
 export const deployERC20Token = async (deploy: Deploy, deployer: string, config: TokenConfig) => {
-  const token = await deploy("MiniMeToken", {
+  const token = await deploy(config.name, {
     from: deployer,
+    contract: "MiniMeToken",
     args: [config.factoryAddress, ethers.constants.AddressZero, 0, config.name, 18, config.symbol, true],
   });
   console.log(`MiniMetoken ${config.name} deployed at ${token.address}`);

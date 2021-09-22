@@ -9,7 +9,7 @@ import "@aragon/apps-agent/contracts/standards/IERC165.sol";
 import "@aragon/apps-agent/contracts/standards/ERC1271.sol";
 import "@aragon/apps-agent/contracts/standards/IERC721Receiver.sol";
 
-import "@aragon/apps-vault/contracts/Vault.sol";
+import "./Vault.sol";
 
 import "@aragon/os/contracts/common/IForwarder.sol";
 
