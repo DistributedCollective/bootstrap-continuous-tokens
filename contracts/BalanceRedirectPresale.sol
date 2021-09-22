@@ -6,7 +6,7 @@ import "@aragon/os/contracts/common/SafeERC20.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "@aragon/os/contracts/lib/math/SafeMath64.sol";
 import "@aragon/os/contracts/lib/token/ERC20.sol";
-import "@aragon/apps-token-manager/contracts/TokenManager.sol";
+import "./TokenManager.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/IAragonFundraisingController.sol";
 
 import "@ablack/fundraising-shared-interfaces/contracts/IPresale.sol";
@@ -89,6 +89,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
      * @param _openDate                 The date upon which that presale is to be open [ignored if 0]
      */
     function initialize(
+        IKernel _kernel,
         IAragonFundraisingController _controller,
         IMarketMaker _marketMaker,
         TokenManager _tokenManager,
@@ -119,6 +120,8 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
         erc20ContribToken = _erc20ContribToken;
         exchangeRate = _exchangeRate;
         mintingForBeneficiaryPct = _mintingForBeneficiaryPct;
+
+        setKernel(_kernel);
 
         _setPeriod(_period);
 

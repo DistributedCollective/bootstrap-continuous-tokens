@@ -1,4 +1,4 @@
-import {deployments, getNamedAccounts } from "hardhat";
+import { deployments, getNamedAccounts } from "hardhat";
 
 import { expect } from "chai";
 

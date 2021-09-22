@@ -119,6 +119,7 @@ export const deployContracts = async (
   deploy: Deploy,
   deployer: string,
   zeroAddress: Address,
+  daoAddress: Address,
 ): Promise<FundrasingApps> => {
   const presaleDeployment = await deployContract(deploy, deployer, "BalanceRedirectPresale");
   const marketMakerDeployment = await deployContract(deploy, deployer, "MarketMaker");
@@ -133,7 +134,7 @@ export const deployContracts = async (
   console.log(`BondedToken at ${bondedToken.address} controller changed to ${tokenManagerDeployment.address}`);
 
   const tokenManager = await TokenManager__factory.connect(tokenManagerDeployment.address, ethers.provider.getSigner());
-  await tokenManager.initialize(zeroAddress, true, 0);
+  await tokenManager.initialize(daoAddress, zeroAddress, true, 0);
 
   console.log(`TokenManager at ${tokenManager.address} initialized`);
 
@@ -418,16 +419,17 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployer } = await getNamedAccounts();
   const { deploy } = deployments;
 
+  // Setup DAO and ACL
+  const [daoAddress] = await createDAO(deploy, deployer);
+
   // Setup helpers
   const tokenFactory = await deployContract(deploy, deployer, "MiniMeTokenFactory");
   const sovAddress = await getSOVAddress(deploy, deployer, tokenFactory.address);
   const zeroAddress = await getZeroAddress(deploy, deployer, tokenFactory.address);
 
-  // Setup DAO and ACL
-  const [daoAddress] = await createDAO(deploy, deployer);
   // Setup fundraisingApps
   const { address: bancorFormulaAddress } = await deployContract(deploy, deployer, "BancorFormula");
-  const fundraisingApps = await deployContracts(deploy, deployer, zeroAddress);
+  const fundraisingApps = await deployContracts(deploy, deployer, zeroAddress, daoAddress);
 
   const {
     presaleAddress,
@@ -452,6 +454,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   };
 
   await fundraisingApps.presale.initialize(
+    daoAddress,
     controllerAddress,
     marketMakerAddress,
     bondedTokenManagerAddress,

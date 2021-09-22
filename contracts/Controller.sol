@@ -6,8 +6,8 @@ import "@aragon/os/contracts/common/IsContract.sol";
 import "@aragon/os/contracts/common/SafeERC20.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "@aragon/os/contracts/lib/token/ERC20.sol";
-import "@aragon/apps-agent/contracts/Agent.sol";
-import "@ablack/fundraising-batched-bancor-market-maker/contracts/BatchedBancorMarketMaker.sol";
+import "./Agent.sol";
+import "./MarketMaker.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/IPresale.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/ITap.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/IAragonFundraisingController.sol";
@@ -62,7 +62,7 @@ contract Controller is EtherTokenConstant, IsContract, IAragonFundraisingControl
     string private constant ERROR_INVALID_TOKENS = "FUNDRAISING_INVALID_TOKENS";
 
     IPresale public presale;
-    BatchedBancorMarketMaker public marketMaker;
+    MarketMaker public marketMaker;
     Agent public reserve;
     ITap public tap;
     address[] public toReset;
@@ -80,7 +80,7 @@ contract Controller is EtherTokenConstant, IsContract, IAragonFundraisingControl
     function initialize(
         IKernel _kernel,
         IPresale _presale,
-        BatchedBancorMarketMaker _marketMaker,
+        MarketMaker _marketMaker,
         Agent _reserve,
         ITap _tap,
         address[] _toReset
