@@ -1,7 +1,9 @@
 import { deployments, ethers, getNamedAccounts } from "hardhat";
+import hre from "hardhat";
 import { expect } from "chai";
 import { BigNumber } from "@ethersproject/bignumber";
 import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory } from "../typechain";
+
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
   await deployments.fixture(); // ensure you start from a fresh deployments
@@ -16,9 +18,10 @@ const State = {
 
 describe("Presale Interaction", () => {
   let Presale: any, Controller: any, ZEROToken: any, SOVToken: any;
-  let tokens = BigNumber.from(10000);
-  let contributionAmount = BigNumber.from(10);
+  const tokens = BigNumber.from(10000);
+  const contributionAmount = BigNumber.from(100);
   let deployer: string;
+  let zeroBalanceBeforeClosing:BigNumber;
   before(async () => {
     await setupTest();
 
@@ -86,10 +89,50 @@ describe("Presale Interaction", () => {
     expect(raised).to.eq(contributionAmount);
   });
 
-  /*it("Should close presale", async () => {
-    expect(await Presale.state()).to.eq(State.Funding);
+  it("Should revert trying to close presale", async () => {
+    await expect(Controller.closePresale()).to.be.revertedWith("PRESALE_INVALID_STATE");
+  });
+
+  it("Should finish presale", async () => {
+    const DAYS = 24 * 3600;
+    const MONTHS = 30 * DAYS;
+    const FINISH_DATE = new Date().getTime() + MONTHS + MONTHS;
+
+    await hre.network.provider.request({
+      method: "evm_mine",
+      params: [FINISH_DATE],
+    });
+    expect(await Presale.state()).to.eq(State.Finished);
+    await expect(Presale.contribute(deployer, contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
+  });
+
+  it ("Should close presale", async() => {
+    zeroBalanceBeforeClosing = await ZEROToken.balanceOf(deployer);
     await Controller.closePresale();
-    expect(await Presale.state()).to.eq(State.Close);
-    await Presale.contribute(deployer, contributionAmount);
-  });*/
+    expect(await Presale.state()).to.eq(State.Closed);
+    await expect(Presale.contribute(deployer, contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
+  });
+
+  it('Raised funds are transferred to the fundraising reserve and the beneficiary address', async () => {
+    expect((await SOVToken.balanceOf(Presale.address)).toNumber()).to.eq(0);
+
+    const totalSold = await Presale.totalRaised();
+    const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
+    const PPM = await Presale.PPM();
+    const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary)); 
+    expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary));
+    
+    
+    const RESERVE_RATIO = PPM.mul(10).div(100)
+    const totalRaised = await Presale.totalRaised();
+
+    const aux = totalRaised.mul(PPM).div(PPM.sub(mintingForBeneficiary));
+    const sovTokensForReserve = aux.mul(RESERVE_RATIO).div(PPM);
+    const sovTokensForBeneficiary = totalRaised.sub(sovTokensForReserve);
+    const reserve = await Presale.reserve()
+
+    
+    expect(await SOVToken.balanceOf(deployer)).to.eq(tokens.sub(contributionAmount).add(sovTokensForBeneficiary));
+    expect(await SOVToken.balanceOf(reserve)).to.eq(sovTokensForReserve);
+  })
 });
