@@ -2,8 +2,7 @@ import { deployments, ethers, getNamedAccounts } from "hardhat";
 import hre from "hardhat";
 import { expect } from "chai";
 import { BigNumber } from "@ethersproject/bignumber";
-import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory } from "../typechain";
-
+import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory, MarketMaker__factory } from "../typechain";
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
   await deployments.fixture(); // ensure you start from a fresh deployments
@@ -17,15 +16,22 @@ const State = {
 };
 
 describe("Presale Interaction", () => {
-  let Presale: any, Controller: any, ZEROToken: any, SOVToken: any;
+  let Presale: any, Controller: any, MarketMaker:any, ZEROToken: any, SOVToken: any;
   const tokens = BigNumber.from(10000);
   const contributionAmount = BigNumber.from(100);
+  const amount = BigNumber.from(100);
   let deployer: string;
-  let zeroBalanceBeforeClosing:BigNumber;
+  let zeroBalanceBeforeClosing: BigNumber;
   before(async () => {
     await setupTest();
 
     ({ deployer } = await getNamedAccounts());
+
+    const controller = await deployments.get("Controller");
+    Controller = await Controller__factory.connect(controller.address, ethers.provider.getSigner());
+
+    const marketMaker = await deployments.get("MarketMaker");
+    MarketMaker = await MarketMaker__factory.connect(marketMaker.address, ethers.provider.getSigner());
 
     const zeroToken = await deployments.get("Bonded Token");
     ZEROToken = MiniMeToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
@@ -39,20 +45,19 @@ describe("Presale Interaction", () => {
     const presale = await deployments.get("BalanceRedirectPresale");
     Presale = await BalanceRedirectPresale__factory.connect(presale.address, ethers.provider.getSigner());
     await SOVToken.approve(Presale.address, tokens);
+    await SOVToken.approve(MarketMaker.address, tokens);
 
-    const controller = await deployments.get("Controller");
-    Controller = await Controller__factory.connect(controller.address, ethers.provider.getSigner());
   });
 
   it("Should revert if presale is not open", async () => {
-  await expect(Presale.contribute(deployer, contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
+    await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
   });
 
   it("Should open presale and allow to contribute", async () => {
     expect(await Presale.state()).to.eq(State.Pending);
     await Controller.openPresale();
     expect(await Presale.state()).to.eq(State.Funding);
-    await Presale.contribute(deployer, contributionAmount);
+    await Controller.contribute(contributionAmount);
   });
 
   it("A user can query how many project tokens would be obtained for a given amount of contribution tokens", async () => {
@@ -103,36 +108,59 @@ describe("Presale Interaction", () => {
       params: [FINISH_DATE],
     });
     expect(await Presale.state()).to.eq(State.Finished);
-    await expect(Presale.contribute(deployer, contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
+    await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
   });
 
-  it ("Should close presale", async() => {
+  it("market maker should not be open", async () => {
+    expect(!(await MarketMaker.isOpen()));
+  });
+
+  it("Should close presale", async () => {
     zeroBalanceBeforeClosing = await ZEROToken.balanceOf(deployer);
     await Controller.closePresale();
     expect(await Presale.state()).to.eq(State.Closed);
-    await expect(Presale.contribute(deployer, contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
+    await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
   });
 
-  it('Raised funds are transferred to the fundraising reserve and the beneficiary address', async () => {
+  it("Raised funds are transferred to the fundraising reserve and the beneficiary address", async () => {
     expect((await SOVToken.balanceOf(Presale.address)).toNumber()).to.eq(0);
 
     const totalSold = await Presale.totalRaised();
     const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
     const PPM = await Presale.PPM();
-    const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary)); 
+    const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary));
     expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary));
-    
-    
-    const RESERVE_RATIO = PPM.mul(10).div(100)
+
+    const RESERVE_RATIO = PPM.mul(10).div(100);
     const totalRaised = await Presale.totalRaised();
 
     const aux = totalRaised.mul(PPM).div(PPM.sub(mintingForBeneficiary));
     const sovTokensForReserve = aux.mul(RESERVE_RATIO).div(PPM);
     const sovTokensForBeneficiary = totalRaised.sub(sovTokensForReserve);
-    const reserve = await Presale.reserve()
+    const reserve = await Presale.reserve();
 
-    
     expect(await SOVToken.balanceOf(deployer)).to.eq(tokens.sub(contributionAmount).add(sovTokensForBeneficiary));
     expect(await SOVToken.balanceOf(reserve)).to.eq(sovTokensForReserve);
-  })
+  });
+
+  it("Market maker should be open", async () => {
+    expect(await MarketMaker.isOpen());
+  });
+
+  it("Should open a buy order", async () => {
+    const tx = await (await Controller.openBuyOrder(SOVToken.address,amount)).wait();
+    const batchId = tx.logs.map((log: any) => {
+      if (log.address === MarketMaker.address) {
+        const parsed = MarketMaker.interface.parseLog(log);
+        return parsed.args.batchId;
+      }
+    }).find((batchId: any) => batchId !== undefined);
+    
+    await hre.network.provider.request({
+      method: "evm_mine",
+    });  
+
+    await Controller.claimBuyOrder(deployer,batchId,SOVToken.address);
+  });
+
 });
