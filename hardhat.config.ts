@@ -14,6 +14,7 @@ import "hardhat-deploy";
 import "hardhat-docgen";
 import "hardhat-gas-reporter";
 import "hardhat-preprocessor";
+import "@atixlabs/hardhat-time-n-mine";
 import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
 import { HardhatUserConfig } from "hardhat/config";

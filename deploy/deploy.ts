@@ -506,6 +506,16 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   console.log("Setup collateral done");
 
+  const guiConfig = {
+    BANCOR_FORMULA: bancorFormulaAddress,
+    BONDING_CURVE_TREASURY: reserveAddress,
+    FUNDRAISING: presaleAddress,
+    MARKET_MAKER: marketMakerAddress,
+    TOKEN_ANT: sovAddress,
+    TOKEN_ANJ: zeroAddress,
+  };
+  console.log(JSON.stringify(guiConfig, null, 2));
+
   return hre.network.live; // prevents re execution on live networks
 };
 export default deployFunc;
