@@ -2,7 +2,7 @@ import { deployments, ethers, getNamedAccounts } from "hardhat";
 import hre from "hardhat";
 import { expect } from "chai";
 import { BigNumber } from "@ethersproject/bignumber";
-import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory, MarketMaker__factory } from "../typechain";
+import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory, MarketMaker__factory, BancorFormula__factory, ZeroMocked } from "../typechain";
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
   await deployments.fixture(); // ensure you start from a fresh deployments
@@ -15,8 +15,12 @@ const State = {
   Closed: 3, // presale has been closed and trading has been open
 };
 
+const PPM = BigNumber.from(1e6);
+const RESERVE_RATIO = PPM.mul(10).div(100);
+const PCT_BASE = BigNumber.from("1000000000000000000");
+
 describe("Presale Interaction", () => {
-  let Presale: any, Controller: any, MarketMaker:any, ZEROToken: any, SOVToken: any;
+  let Presale: any, Controller: any, MarketMaker:any, ZEROToken: any, SOVToken: any, BancorFormula: any;
   const tokens = BigNumber.from(10000);
   const contributionAmount = BigNumber.from(100);
   const amount = BigNumber.from(100);
@@ -32,6 +36,9 @@ describe("Presale Interaction", () => {
 
     const marketMaker = await deployments.get("MarketMaker");
     MarketMaker = await MarketMaker__factory.connect(marketMaker.address, ethers.provider.getSigner());
+
+    const bancorFormula = await MarketMaker.formula();
+    BancorFormula = await BancorFormula__factory.connect(bancorFormula, ethers.provider.getSigner());
 
     const zeroToken = await deployments.get("Bonded Token");
     ZEROToken = MiniMeToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
@@ -127,11 +134,9 @@ describe("Presale Interaction", () => {
 
     const totalSold = await Presale.totalRaised();
     const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
-    const PPM = await Presale.PPM();
     const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary));
     expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary));
 
-    const RESERVE_RATIO = PPM.mul(10).div(100);
     const totalRaised = await Presale.totalRaised();
 
     const aux = totalRaised.mul(PPM).div(PPM.sub(mintingForBeneficiary));
@@ -148,19 +153,78 @@ describe("Presale Interaction", () => {
   });
 
   it("Should open a buy order", async () => {
-    const tx = await (await Controller.openBuyOrder(SOVToken.address,amount)).wait();
-    const batchId = tx.logs.map((log: any) => {
+    const zeroSupplyBefore = await ZEROToken.totalSupply();
+    const reserve = await Controller.reserve();
+    const sovReserveBalanceBefore = await SOVToken.balanceOf(reserve);
+    const tx1 = await (await Controller.openBuyOrder(SOVToken.address,amount)).wait();
+    const newBatch1 = tx1.logs.map((log: any) => {
       if (log.address === MarketMaker.address) {
         const parsed = MarketMaker.interface.parseLog(log);
-        return parsed.args.batchId;
+        return parsed;
       }
-    }).find((batchId: any) => batchId !== undefined);
+    }).find((event: any) => event.name === "NewBatch");
     
-    await hre.network.provider.request({
-      method: "evm_mine",
-    });  
+    const tokensTobeMinted = await MarketMaker.tokensToBeMinted();
+    const purchaseReturn = await BancorFormula.calculatePurchaseReturn(newBatch1.args.supply,newBatch1.args.balance,newBatch1.args.reserveRatio,amount)
 
-    await Controller.claimBuyOrder(deployer,batchId,SOVToken.address);
+    expect(tokensTobeMinted).to.eq(purchaseReturn);
+    expect(await SOVToken.balanceOf(reserve)).to.eq(sovReserveBalanceBefore.add(amount));
+    
+    const tx2 = await (await Controller.openBuyOrder(SOVToken.address,amount)).wait();
+    const newBatch2 = tx2.logs.map((log: any) => {
+      if (log.address === MarketMaker.address) {
+        const parsed = MarketMaker.interface.parseLog(log);
+        return parsed;
+      }
+    }).find((event: any) => event.name === "NewBatch");
+
+
+
+    expect(newBatch2.args.supply).to.eq(tokensTobeMinted.add(await ZEROToken.totalSupply()));
+    expect(newBatch2.args.supply).to.eq(tokensTobeMinted.add(newBatch1.args.supply));
+    expect(newBatch2.args.balance).to.eq(newBatch1.args.balance.add(amount));
+
+
+    const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
+    await Controller.claimBuyOrder(deployer,newBatch1.args.id,SOVToken.address);
+    expect(await ZEROToken.totalSupply()).to.eq(zeroSupplyBefore.add(tokensTobeMinted));
+    expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBefore.add(purchaseReturn));
+ 
   });
+
+  it("Should open a sell order", async() => {
+    await mineBlocks(10);
+ 
+    const zeroSupplyBefore = await ZEROToken.totalSupply();
+    const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
+    const sovBalanceBefore = await SOVToken.balanceOf(deployer);
+
+    const tx1 = await (await Controller.openSellOrder(SOVToken.address,amount)).wait();
+    const newBatch1 = tx1.logs.map((log: any) => {
+      if (log.address === MarketMaker.address) {
+        const parsed = MarketMaker.interface.parseLog(log);
+        return parsed;
+      }
+    }).find((event: any) => event.name === "NewBatch");
+
+    expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount))
+    expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount))
+ 
+    await mineBlocks(10);
+    
+    const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
+
+    await Controller.claimSellOrder(deployer,newBatch1.args.id,SOVToken.address);
+
+    expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed));
+  });
+
+  async function mineBlocks(x:number) {
+    for (let i = 0; i < x; i++ ){
+      await hre.network.provider.request({
+        method: "evm_mine",
+      });
+    }
+  }
 
 });
