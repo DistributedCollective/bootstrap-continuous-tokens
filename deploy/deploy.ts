@@ -43,7 +43,7 @@ type TokenConfig = {
   symbol: string;
 };
 
-export type FundrasingApps = {
+type FundrasingApps = {
   reserve: Reserve;
   reserveAddress: Address;
   presale: BalanceRedirectPresale;
@@ -58,7 +58,7 @@ export type FundrasingApps = {
   bondedTokenManagerAddress: Address;
 };
 
-export const deployContract = async (deploy: Deploy, deployer: string, artifactName: string) => {
+const deployContract = async (deploy: Deploy, deployer: string, artifactName: string) => {
   const deployed = await deploy(artifactName, {
     from: deployer,
   });
@@ -66,18 +66,9 @@ export const deployContract = async (deploy: Deploy, deployer: string, artifactN
   return deployed;
 };
 
-export const deployERC20Token = async (deploy: Deploy, deployer: string, config: TokenConfig) => {
-  const token = await deploy(config.name, {
-    from: deployer,
-    contract: "MiniMeToken",
-    args: [config.factoryAddress, ethers.constants.AddressZero, 0, config.name, 18, config.symbol, true],
-  });
-  console.log(`MiniMetoken ${config.name} deployed at ${token.address}`);
-  return token;
-};
 
 // Taken from https://github.com/aragon/aragonOS/blob/master/scripts/deploy-daofactory.js
-export const createDAO = async (deploy: Deploy, deployer: string): Promise<[string, string]> => {
+const createDAO = async (deploy: Deploy, deployer: string): Promise<[string, string]> => {
   const kernelDeployment = await deploy("Kernel", {
     from: deployer,
     args: [false],
@@ -115,7 +106,7 @@ export const createDAO = async (deploy: Deploy, deployer: string): Promise<[stri
   return [daoAddress, aclAddress];
 };
 
-export const deployContracts = async (
+const deployContracts = async (
   deploy: Deploy,
   deployer: string,
   zeroAddress: Address,
@@ -157,28 +148,6 @@ export const deployContracts = async (
   };
 };
 
-export const getSOVAddress = async (deploy: Deploy, deployer: string, tokenFactoryAddress: Address) => {
-  // FIXME: This shouldn't require a deployment
-  const collateralToken = await deployERC20Token(deploy, deployer, {
-    factoryAddress: tokenFactoryAddress,
-    name: "Collateral Token",
-    symbol: "COLL",
-  });
-
-  return collateralToken.address;
-};
-
-export const getZeroAddress = async (deploy: Deploy, deployer: string, tokenFactoryAddress: Address) => {
-  // FIXME: This shouldn't require a deployment
-  const bondedTokenDeployment = await deployERC20Token(deploy, deployer, {
-    factoryAddress: tokenFactoryAddress,
-    name: "Bonded Token",
-    symbol: "BOND",
-  });
-
-  return bondedTokenDeployment.address;
-};
-
 const createPermissions = async (
   acl: ACL,
   entities: string[],
@@ -197,7 +166,7 @@ const createPermissions = async (
 const createPermission = async (acl: ACL, entity: string, app: string, role: string, manager: string): Promise<void> =>
   createPermissions(acl, [entity], app, role, manager);
 
-export const setupFundraisingPermission = async (
+const setupFundraisingPermission = async (
   deployer: string,
   fundraisingApps: FundrasingApps,
   daoAddress: Address,
@@ -417,15 +386,30 @@ export const setupCollateral = async (
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
-  const { deploy } = deployments;
+  const { deploy} = deployments;
+  const thisNetwork = hre.network.name;
+  console.log(`deployer address: ${deployer}`);
+  console.log(`deploying at network: ${thisNetwork}`);
+
+  let sovAddress;
+  let zeroAddress;
+
+  if (thisNetwork == "hardhat" || thisNetwork == "localhost"){
+    // Setup helpers
+    await deployments.run(["CollateralToken", "BondedToken"]);
+    sovAddress =  (await deployments.get('CollateralToken')).address;
+    zeroAddress = (await deployments.get('BondedToken')).address;
+   }
+  else {
+    const contracts = require(`../scripts/contractInteractions/${thisNetwork}_contracts.json`)
+    sovAddress = contracts.SOV;
+    zeroAddress = contracts.ZERO;
+    console.log(`reusing collateral token at address ${sovAddress}`);
+    console.log(`reusing bondend token at address ${zeroAddress}`);
+  }
 
   // Setup DAO and ACL
   const [daoAddress] = await createDAO(deploy, deployer);
-
-  // Setup helpers
-  const tokenFactory = await deployContract(deploy, deployer, "MiniMeTokenFactory");
-  const sovAddress = await getSOVAddress(deploy, deployer, tokenFactory.address);
-  const zeroAddress = await getZeroAddress(deploy, deployer, tokenFactory.address);
 
   // Setup fundraisingApps
   const { address: bancorFormulaAddress } = await deployContract(deploy, deployer, "BancorFormula");
@@ -519,20 +503,9 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   return hre.network.live; // prevents re execution on live networks
 };
 export default deployFunc;
-deployFunc.tags = [
-  "MiniMeTokenFactory",
-  "MiniMeToken",
-  "ACL",
-  "EVMScriptRegistryFactory",
-  "DAOFactory",
-  "BancorFormula",
-  "BalanceRedirectPresale",
-  "MarketMaker",
-  "Reserve",
-  "TapDisabled",
-  "Controller",
-  "TokenManager",
-  "BondedToken",
-];
-
+deployFunc.tags = ['everything'];
 deployFunc.id = "deployed_system"; // id required to prevent reexecution
+/*deployFunc.dependencies = [
+  'CollateralToken',
+  'BondedToken'
+];*/

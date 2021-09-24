@@ -5,7 +5,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory, MarketMaker__factory, BancorFormula__factory, ZeroMocked } from "../typechain";
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
-  await deployments.fixture(); // ensure you start from a fresh deployments
+  await deployments.fixture('everything'); // ensure you start from a fresh deployments
 });
 
 const State = {
