@@ -479,7 +479,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const guiConfig = {
     BANCOR_FORMULA: bancorFormulaDeployment.address,
     BONDING_CURVE_TREASURY: fundraisingApps.reserve.address,
-    FUNDRAISING: fundraisingApps.presale.address,
+    FUNDRAISING: fundraisingApps.controller.address,
     MARKET_MAKER: fundraisingApps.marketMaker.address,
     TOKEN_ANT: sovAddress,
     TOKEN_ANJ: zeroAddress,

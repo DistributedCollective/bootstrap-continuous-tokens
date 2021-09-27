@@ -12,9 +12,9 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   // Hardcoded recipient to do some transfers
   const recipient = "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B";
 
-  const collateralToken = await deployments.get("Collateral Token");
+  const collateralToken = await deployments.get("CollateralToken");
   const CollateralToken = MiniMeToken__factory.connect(collateralToken.address, txSender);
-  const bondedToken = await deployments.get("Bonded Token");
+  const bondedToken = await deployments.get("BondedToken");
   const BondedToken = MiniMeToken__factory.connect(bondedToken.address, txSender);
 
   // Load the user with RBTC so he can pay for transactions
@@ -56,5 +56,6 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 };
 
 export default deployFunc;
-deployFunc.id = "setup"; // id required to prevent reexecution
+deployFunc.tags = ['fixture'];
+deployFunc.id = "fixture_Tokens"; // id required to prevent reexecution
 deployFunc.runAtTheEnd = true;

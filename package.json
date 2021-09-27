@@ -88,6 +88,8 @@
     "size-contracts": "hardhat size-contracts",
     "docgen": "hardhat docgen",
     "test": "hardhat test",
-    "report:gas": "REPORT_GAS=true hardhat test"
+    "report:gas": "REPORT_GAS=true hardhat test",
+    "deploy:dev": "hardhat --network hardhat node --tags everything",
+    "deploy:dev:fixture": "hardhat deploy --network localhost --tags fixture"
   }
 }

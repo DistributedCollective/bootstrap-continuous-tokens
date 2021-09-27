@@ -19,3 +19,5 @@ docs/
 *.tsbuildinfo
 coverage.json
 npm-debug.log*
+deployments/localhost 
+deployments/hardhat
