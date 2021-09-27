@@ -2,7 +2,7 @@ import { deployments, ethers, getNamedAccounts } from "hardhat";
 import hre from "hardhat";
 import { expect } from "chai";
 import { BigNumber } from "@ethersproject/bignumber";
-import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory, MarketMaker__factory, BancorFormula__factory, ZeroMocked } from "../typechain";
+import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory, MarketMaker__factory, BancorFormula__factory } from "../typechain";
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
   await deployments.fixture('everything'); // ensure you start from a fresh deployments
@@ -40,10 +40,10 @@ describe("Presale Interaction", () => {
     const bancorFormula = await MarketMaker.formula();
     BancorFormula = await BancorFormula__factory.connect(bancorFormula, ethers.provider.getSigner());
 
-    const zeroToken = await deployments.get("Bonded Token");
+    const zeroToken = await deployments.get("BondedToken");
     ZEROToken = MiniMeToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
 
-    const sovToken = await deployments.get("Collateral Token");
+    const sovToken = await deployments.get("CollateralToken");
     SOVToken = MiniMeToken__factory.connect(sovToken.address, ethers.provider.getSigner());
     await SOVToken.generateTokens(deployer, tokens);
 

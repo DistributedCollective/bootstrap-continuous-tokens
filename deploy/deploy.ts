@@ -1,6 +1,8 @@
+import * as fs from 'fs';
+import path from 'path';
 import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
-import { DeployFunction, DeployOptions, DeployResult } from "hardhat-deploy/types";
+import { DeployFunction, DeploymentsExtension, DeployOptions, DeployResult } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
   ACL__factory,
@@ -37,55 +39,26 @@ const SLIPPAGE = PCT_BASE.mul(10);
 type Address = string;
 type Deploy = (name: string, options: DeployOptions) => Promise<DeployResult>;
 
-type TokenConfig = {
-  factoryAddress: Address;
-  name: string;
-  symbol: string;
-};
-
 type FundrasingApps = {
   reserve: Reserve;
-  reserveAddress: Address;
   presale: BalanceRedirectPresale;
-  presaleAddress: Address;
   marketMaker: MarketMaker;
-  marketMakerAddress: Address;
   tap: TapDisabled;
-  tapAddress: Address;
   controller: Controller;
-  controllerAddress: Address;
   bondedTokenManager: TokenManager;
-  bondedTokenManagerAddress: Address;
-};
-
-const deployContract = async (deploy: Deploy, deployer: string, artifactName: string) => {
-  const deployed = await deploy(artifactName, {
-    from: deployer,
-  });
-  console.log(`${artifactName} deployed at ${deployed.address}`);
-  return deployed;
 };
 
 
 // Taken from https://github.com/aragon/aragonOS/blob/master/scripts/deploy-daofactory.js
-const createDAO = async (deploy: Deploy, deployer: string): Promise<[string, string]> => {
-  const kernelDeployment = await deploy("Kernel", {
-    from: deployer,
-    args: [false],
-  });
-  const aclDeployment = await deployContract(deploy, deployer, "ACL");
-  const evmScriptRegistryFactoryDeployment = await deployContract(deploy, deployer, "EVMScriptRegistryFactory");
+const createDAO = async (deployments:DeploymentsExtension, deployer:string): Promise<string> => {
+  const kernelDeployment = await deployments.get('Kernel');
+  const aclDeployment = await deployments.get('ACL');
+  const daoFactoryDeployment = await deployments.get('DAOFactory');
+
 
   const kernel = Kernel__factory.connect(kernelDeployment.address, ethers.provider.getSigner());
   await kernel.initialize(aclDeployment.address, deployer);
 
-  //const ACL = ACL__factory.connect(aclDeployment.address, ethers.provider.getSigner());
-  //ACL.initialize(deployer);
-  const daoFactoryDeployment = await deploy("DAOFactory", {
-    from: deployer,
-    args: [kernelDeployment.address, aclDeployment.address, evmScriptRegistryFactoryDeployment.address],
-  });
-  console.log(`DAO Factory deployed at ${daoFactoryDeployment.address}`);
 
   const daoFactory = DAOFactory__factory.connect(daoFactoryDeployment.address, ethers.provider.getSigner());
   const newDaoTx = await (await daoFactory.newDAO(deployer)).wait();
@@ -103,50 +76,9 @@ const createDAO = async (deploy: Deploy, deployer: string): Promise<[string, str
 
   const dao = ACL__factory.connect(aclAddress, ethers.provider.getSigner());
   await dao.createPermission(deployer, kernel.address, await kernel.APP_MANAGER_ROLE(), deployer);
-  return [daoAddress, aclAddress];
+  return daoAddress;
 };
 
-const deployContracts = async (
-  deploy: Deploy,
-  deployer: string,
-  zeroAddress: Address,
-  daoAddress: Address,
-): Promise<FundrasingApps> => {
-  const presaleDeployment = await deployContract(deploy, deployer, "BalanceRedirectPresale");
-  const marketMakerDeployment = await deployContract(deploy, deployer, "MarketMaker");
-  const reserveDeployment = await deployContract(deploy, deployer, "Reserve");
-  const tapDisabledDeployment = await deployContract(deploy, deployer, "TapDisabled");
-  const controllerDeployment = await deployContract(deploy, deployer, "Controller");
-  const tokenManagerDeployment = await deployContract(deploy, deployer, "TokenManager");
-
-  const bondedToken = await MiniMeToken__factory.connect(zeroAddress, ethers.provider.getSigner());
-  await bondedToken.changeController(tokenManagerDeployment.address);
-
-  console.log(`BondedToken at ${bondedToken.address} controller changed to ${tokenManagerDeployment.address}`);
-
-  const tokenManager = await TokenManager__factory.connect(tokenManagerDeployment.address, ethers.provider.getSigner());
-  await tokenManager.initialize(daoAddress, zeroAddress, true, 0);
-
-  console.log(`TokenManager at ${tokenManager.address} initialized`);
-
-  return {
-    reserve: await Reserve__factory.connect(reserveDeployment.address, ethers.provider.getSigner()),
-    reserveAddress: reserveDeployment.address,
-    presale: await BalanceRedirectPresale__factory.connect(presaleDeployment.address, ethers.provider.getSigner()),
-    presaleAddress: presaleDeployment.address,
-    marketMaker: await MarketMaker__factory.connect(marketMakerDeployment.address, ethers.provider.getSigner()),
-    marketMakerAddress: marketMakerDeployment.address,
-    tap: await TapDisabled__factory.connect(tapDisabledDeployment.address, ethers.provider.getSigner()),
-    tapAddress: tapDisabledDeployment.address,
-    controller: await Controller__factory.connect(controllerDeployment.address, ethers.provider.getSigner()),
-    controllerAddress: controllerDeployment.address,
-    bondedTokenManager: await TokenManager__factory.connect(
-      tokenManagerDeployment.address,
-      ethers.provider.getSigner(),
-    ),
-    bondedTokenManagerAddress: tokenManagerDeployment.address,
-  };
-};
 
 const createPermissions = async (
   acl: ACL,
@@ -171,7 +103,7 @@ const setupFundraisingPermission = async (
   fundraisingApps: FundrasingApps,
   daoAddress: Address,
 ) => {
-  const { marketMakerAddress, presaleAddress } = fundraisingApps;
+  const { marketMaker, presale } = fundraisingApps;
   const dao = Kernel__factory.connect(daoAddress, await ethers.getSigner(deployer));
   const acl = ACL__factory.connect(await dao.acl(), await ethers.getSigner(deployer));
 
@@ -181,15 +113,15 @@ const setupFundraisingPermission = async (
 
   await createPermissions(
     acl,
-    [marketMakerAddress, presaleAddress],
+    [marketMaker.address, presale.address],
     fundraisingApps.bondedTokenManager.address,
     await fundraisingApps.bondedTokenManager.MINT_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.marketMakerAddress,
-    fundraisingApps.bondedTokenManagerAddress,
+    fundraisingApps.marketMaker.address,
+    fundraisingApps.bondedTokenManager.address,
     await fundraisingApps.bondedTokenManager.BURN_ROLE(),
     owner,
   );
@@ -197,100 +129,100 @@ const setupFundraisingPermission = async (
   await createPermission(
     acl,
     owner,
-    fundraisingApps.reserveAddress,
+    fundraisingApps.reserve.address,
     await fundraisingApps.reserve.SAFE_EXECUTE_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.reserveAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.reserve.address,
     await fundraisingApps.reserve.ADD_PROTECTED_TOKEN_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.marketMakerAddress,
-    fundraisingApps.reserveAddress,
+    fundraisingApps.marketMaker.address,
+    fundraisingApps.reserve.address,
     await fundraisingApps.reserve.TRANSFER_ROLE(),
     owner,
   );
   // presale
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.presaleAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.presale.address,
     await fundraisingApps.presale.OPEN_ROLE(),
     owner,
   );
   await createPermission(
     acl,
     owner,
-    fundraisingApps.presaleAddress,
+    fundraisingApps.presale.address,
     await fundraisingApps.presale.REDUCE_BENEFICIARY_PCT_ROLE(),
     owner,
   );
   await createPermission(
     acl,
     ANY_ENTITY,
-    fundraisingApps.presaleAddress,
+    fundraisingApps.presale.address,
     await fundraisingApps.presale.CONTRIBUTE_ROLE(),
     owner,
   );
   // market maker
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.marketMakerAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
     await fundraisingApps.marketMaker.OPEN_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.marketMakerAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
     await fundraisingApps.marketMaker.UPDATE_BENEFICIARY_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.marketMakerAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
     await fundraisingApps.marketMaker.UPDATE_FEES_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.marketMakerAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
     await fundraisingApps.marketMaker.ADD_COLLATERAL_TOKEN_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.marketMakerAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
     await fundraisingApps.marketMaker.REMOVE_COLLATERAL_TOKEN_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.marketMakerAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
     await fundraisingApps.marketMaker.UPDATE_COLLATERAL_TOKEN_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.marketMakerAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
     await fundraisingApps.marketMaker.OPEN_BUY_ORDER_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.controllerAddress,
-    fundraisingApps.marketMakerAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
     await fundraisingApps.marketMaker.OPEN_SELL_ORDER_ROLE(),
     owner,
   );
@@ -298,65 +230,64 @@ const setupFundraisingPermission = async (
   await createPermission(
     acl,
     owner,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.UPDATE_BENEFICIARY_ROLE(),
     owner,
   );
   await createPermission(
     acl,
     owner,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.UPDATE_FEES_ROLE(),
     owner,
   );
   // ADD_COLLATERAL_TOKEN_ROLE is handled later [after collaterals have been added]
-  // createPermission(acl, _owner, _fundraisingApps.controllerAddress, _fundraisingApps.controller.ADD_COLLATERAL_TOKEN_ROLE(), _owner);
   await createPermission(
     acl,
     owner,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.REMOVE_COLLATERAL_TOKEN_ROLE(),
     owner,
   );
   await createPermission(
     acl,
     owner,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.UPDATE_COLLATERAL_TOKEN_ROLE(),
     owner,
   );
   await createPermission(
     acl,
     owner,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.OPEN_PRESALE_ROLE(),
     owner,
   );
   await createPermission(
     acl,
-    fundraisingApps.presaleAddress,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.presale.address,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.OPEN_TRADING_ROLE(),
     owner,
   );
   await createPermission(
     acl,
     ANY_ENTITY,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.CONTRIBUTE_ROLE(),
     owner,
   );
   await createPermission(
     acl,
     ANY_ENTITY,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.OPEN_BUY_ORDER_ROLE(),
     owner,
   );
   await createPermission(
     acl,
     ANY_ENTITY,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.OPEN_SELL_ORDER_ROLE(),
     owner,
   );
@@ -375,7 +306,7 @@ export const setupCollateral = async (
   await createPermission(
     acl,
     deployer,
-    fundraisingApps.controllerAddress,
+    fundraisingApps.controller.address,
     await fundraisingApps.controller.ADD_COLLATERAL_TOKEN_ROLE(),
     deployer,
   );
@@ -395,34 +326,89 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   let zeroAddress;
 
   if (thisNetwork == "hardhat" || thisNetwork == "localhost"){
-    // Setup helpers
-    await deployments.run(["CollateralToken", "BondedToken"]);
+    
+    await deployments.run([
+      "CollateralToken",
+      "BondedToken",
+      "BancorFormula", 
+      "BalanceRedirectPresale",
+      "MarketMaker",
+      "Reserve",
+      "TapDisabled",
+      "Controller",
+      "TokenManager",
+      "Kernel",
+      "ACL",
+      "EVMScriptRegistryFactory",
+      "DAOFactory"
+    ],
+    {writeDeploymentsToFiles: true},
+    );
+  
+
     sovAddress =  (await deployments.get('CollateralToken')).address;
     zeroAddress = (await deployments.get('BondedToken')).address;
+
    }
   else {
-    const contracts = require(`../scripts/contractInteractions/${thisNetwork}_contracts.json`)
+    const contractsFile = fs.readFileSync(path.resolve(__dirname,`../scripts/contractInteractions/${thisNetwork}_contracts.json`))
+    const contracts = JSON.parse(contractsFile.toString());
     sovAddress = contracts.SOV;
     zeroAddress = contracts.ZERO;
     console.log(`reusing collateral token at address ${sovAddress}`);
     console.log(`reusing bondend token at address ${zeroAddress}`);
+
+    await deployments.run(
+      [
+      "BancorFormula", 
+      "BalanceRedirectPresale",
+      "MarketMaker",
+      "Reserve",
+      "TapDisabled",
+      "Controller",
+      "TokenManager",
+      "Kernel",
+      "ACL",
+      "EVMScriptRegistryFactory",
+      "DAOFactory"
+    ], 
+    {writeDeploymentsToFiles: true},
+    );
   }
 
   // Setup DAO and ACL
-  const [daoAddress] = await createDAO(deploy, deployer);
+  const daoAddress = await createDAO(deployments,deployer);
 
   // Setup fundraisingApps
-  const { address: bancorFormulaAddress } = await deployContract(deploy, deployer, "BancorFormula");
-  const fundraisingApps = await deployContracts(deploy, deployer, zeroAddress, daoAddress);
+  
+  const bancorFormulaDeployment = await deployments.get('BancorFormula')
+  const reserveDeployment = await deployments.get('Reserve');
+  const presaleDeployment = await deployments.get('BalanceRedirectPresale');
+  const marketMakerDeployment = await deployments.get('MarketMaker');
+  const tapDisabledDeployment = await deployments.get('TapDisabled');
+  const controllerDeployment = await deployments.get('Controller');
+  const tokenManagerDeployment = await deployments.get('TokenManager');
+  const fundraisingApps:FundrasingApps = {
+    reserve: await Reserve__factory.connect(reserveDeployment.address, ethers.provider.getSigner()),
+    presale: await BalanceRedirectPresale__factory.connect(presaleDeployment.address, ethers.provider.getSigner()),
+    marketMaker: await MarketMaker__factory.connect(marketMakerDeployment.address, ethers.provider.getSigner()),
+    tap: await TapDisabled__factory.connect(tapDisabledDeployment.address, ethers.provider.getSigner()),
+    controller: await Controller__factory.connect(controllerDeployment.address, ethers.provider.getSigner()),
+    bondedTokenManager: await TokenManager__factory.connect(
+        tokenManagerDeployment.address,
+        ethers.provider.getSigner()),
+  }
 
-  const {
-    presaleAddress,
-    controllerAddress,
-    marketMakerAddress,
-    bondedTokenManagerAddress,
-    reserveAddress,
-    tapAddress,
-  } = fundraisingApps;
+  const bondedToken = await MiniMeToken__factory.connect(zeroAddress, ethers.provider.getSigner());
+  await bondedToken.changeController(tokenManagerDeployment.address);
+
+  console.log(`BondedToken at ${bondedToken.address} controller changed to ${tokenManagerDeployment.address}`);
+
+  const tokenManager = await TokenManager__factory.connect(tokenManagerDeployment.address, ethers.provider.getSigner());
+  await tokenManager.initialize(daoAddress, zeroAddress, true, 0);
+
+  console.log(`TokenManager at ${tokenManager.address} initialized`);
+
 
   const params = {
     owner: deployer,
@@ -439,10 +425,10 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   await fundraisingApps.presale.initialize(
     daoAddress,
-    controllerAddress,
-    marketMakerAddress,
-    bondedTokenManagerAddress,
-    reserveAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    fundraisingApps.bondedTokenManager.address,
+    fundraisingApps.reserve.address,
     params.owner,
     params.collateralToken,
     params.period,
@@ -455,10 +441,10 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   await fundraisingApps.marketMaker.initialize(
     daoAddress,
-    controllerAddress,
-    bondedTokenManagerAddress,
-    bancorFormulaAddress,
-    reserveAddress,
+    fundraisingApps.controller.address,
+    fundraisingApps.bondedTokenManager.address,
+    bancorFormulaDeployment.address,
+    fundraisingApps.reserve.address,
     params.owner,
     params.batchBlocks,
     0,
@@ -469,10 +455,10 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   await fundraisingApps.controller.initialize(
     daoAddress,
-    presaleAddress,
-    marketMakerAddress,
-    reserveAddress,
-    tapAddress,
+    fundraisingApps.presale.address,
+    fundraisingApps.marketMaker.address,
+    fundraisingApps.reserve.address,
+    fundraisingApps.tap.address,
     [],
   );
 
@@ -491,10 +477,10 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log("Setup collateral done");
 
   const guiConfig = {
-    BANCOR_FORMULA: bancorFormulaAddress,
-    BONDING_CURVE_TREASURY: reserveAddress,
-    FUNDRAISING: presaleAddress,
-    MARKET_MAKER: marketMakerAddress,
+    BANCOR_FORMULA: bancorFormulaDeployment.address,
+    BONDING_CURVE_TREASURY: fundraisingApps.reserve.address,
+    FUNDRAISING: fundraisingApps.presale.address,
+    MARKET_MAKER: fundraisingApps.marketMaker.address,
     TOKEN_ANT: sovAddress,
     TOKEN_ANJ: zeroAddress,
   };
@@ -505,6 +491,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 export default deployFunc;
 deployFunc.tags = ['everything'];
 deployFunc.id = "deployed_system"; // id required to prevent reexecution
+
 /*deployFunc.dependencies = [
   'CollateralToken',
   'BondedToken'
