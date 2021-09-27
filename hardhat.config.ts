@@ -78,6 +78,12 @@ const config: HardhatUserConfig = {
       },
       chainId: chainIds.hardhat,
     },
+    rskdev: {
+      url: "http://localhost:4444",
+      // regtest default prefunded account
+      from: "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826",
+      // gasMultiplier: 1.25,
+    },
     goerli: createTestnetConfig("goerli"),
     kovan: createTestnetConfig("kovan"),
     rinkeby: createTestnetConfig("rinkeby"),

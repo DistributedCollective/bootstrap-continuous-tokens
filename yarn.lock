@@ -119,7 +119,7 @@
   resolved "https://registry.yarnpkg.com/@aragon/test-helpers/-/test-helpers-2.1.0.tgz#5383d69a94b387c2c369f2496f290dd104fc2a4d"
   integrity sha512-lL0seKOPBr0BDt5EiXQhevdXCtkJbv/ZFoJFLWmhlcdd8TKsWffj+c/hzYXP9l9OjCqPbO61JsDBPS0ZDF7ERA==
 
-"@atixlabs/hardhat-time-n-mine@0.0.5":
+"@atixlabs/hardhat-time-n-mine@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@atixlabs/hardhat-time-n-mine/-/hardhat-time-n-mine-0.0.5.tgz#a7956f6f81ae431472d3763303b9cfc7b3040a97"
   integrity sha512-XmxKi/dUodbD0zXW7nTzwOyCtaYAh3UE/fkz+Q5zigoACTkSwRIwqmApeCO9Vy+/g/urtqVGA2Mgt4FNnAOXxw==

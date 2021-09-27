@@ -3,24 +3,12 @@ import { ethers } from "hardhat";
 import { DeployFunction, DeployOptions, DeployResult } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
-  ACL__factory,
-  BalanceRedirectPresale__factory,
-  Controller__factory,
-  MarketMaker__factory,
-  MiniMeToken__factory,
-  TokenManager__factory,
-  Kernel__factory,
-  Reserve,
-  BalanceRedirectPresale,
-  MarketMaker,
-  TapDisabled,
-  Controller,
-  TokenManager,
-  Reserve__factory,
-  TapDisabled__factory,
-  ACL,
+  ACL, ACL__factory, BalanceRedirectPresale, BalanceRedirectPresale__factory, Controller, Controller__factory, Kernel__factory, MarketMaker, MarketMaker__factory,
+  MiniMeToken__factory, Reserve, Reserve__factory, TapDisabled, TapDisabled__factory, TokenManager, TokenManager__factory
 } from "../typechain";
 import { DAOFactory__factory } from "../typechain/factories/DAOFactory__factory";
+import { GAS_LIMIT_PATCH, waitForTxConfirmation } from "./utils/utils";
+
 
 const PPM = BigNumber.from(1e6);
 const PCT_BASE = BigNumber.from("1000000000000000000");
@@ -97,7 +85,12 @@ export const createDAO = async (deploy: Deploy, deployer: string): Promise<[stri
   console.log(`DAO Factory deployed at ${daoFactoryDeployment.address}`);
 
   const daoFactory = DAOFactory__factory.connect(daoFactoryDeployment.address, ethers.provider.getSigner());
-  const newDaoTx = await (await daoFactory.newDAO(deployer)).wait();
+  const newDaoTx = await waitForTxConfirmation(
+    daoFactory.newDAO(deployer, {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
+  );
+  console.log(`New DAO deployed`);
 
   const daoAddress = newDaoTx.logs
     .map(log => {
@@ -111,7 +104,12 @@ export const createDAO = async (deploy: Deploy, deployer: string): Promise<[stri
   const aclAddress = await kernel.acl();
 
   const dao = ACL__factory.connect(aclAddress, ethers.provider.getSigner());
-  await dao.createPermission(deployer, kernel.address, await kernel.APP_MANAGER_ROLE(), deployer);
+  await waitForTxConfirmation(
+    dao.createPermission(deployer, kernel.address, await kernel.APP_MANAGER_ROLE(), deployer, {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
+  );
+  console.log(`Create DAO finished`);
   return [daoAddress, aclAddress];
 };
 
@@ -129,12 +127,12 @@ export const deployContracts = async (
   const tokenManagerDeployment = await deployContract(deploy, deployer, "TokenManager");
 
   const bondedToken = await MiniMeToken__factory.connect(zeroAddress, ethers.provider.getSigner());
-  await bondedToken.changeController(tokenManagerDeployment.address);
+  await waitForTxConfirmation(bondedToken.changeController(tokenManagerDeployment.address));
 
   console.log(`BondedToken at ${bondedToken.address} controller changed to ${tokenManagerDeployment.address}`);
 
   const tokenManager = await TokenManager__factory.connect(tokenManagerDeployment.address, ethers.provider.getSigner());
-  await tokenManager.initialize(daoAddress, zeroAddress, true, 0);
+  await waitForTxConfirmation(tokenManager.initialize(daoAddress, zeroAddress, true, 0));
 
   console.log(`TokenManager at ${tokenManager.address} initialized`);
 
@@ -186,10 +184,14 @@ const createPermissions = async (
   role: string,
   manager: string,
 ): Promise<void> => {
-  await acl.createPermission(entities[0], app, role, manager);
+  await waitForTxConfirmation(
+    acl.createPermission(entities[0], app, role, manager, {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
+  );
   console.log(`Permission created: entity ${entities[0]} | app ${app} | role ${role} | mananager ${manager}`);
   for (let i = 1; i < entities.length; i++) {
-    await acl.grantPermission(entities[i], app, role);
+    await waitForTxConfirmation(acl.grantPermission(entities[i], app, role, { gasLimit: GAS_LIMIT_PATCH }));
     console.log(`Permission granted: entity ${entities[i]} | app ${app} | role ${role} | mananager ${manager}`);
   }
 };
@@ -201,7 +203,7 @@ export const setupFundraisingPermission = async (
   deployer: string,
   fundraisingApps: FundrasingApps,
   daoAddress: Address,
-) => {
+): Promise<void> => {
   const { marketMakerAddress, presaleAddress } = fundraisingApps;
   const dao = Kernel__factory.connect(daoAddress, await ethers.getSigner(deployer));
   const acl = ACL__factory.connect(await dao.acl(), await ethers.getSigner(deployer));
@@ -411,7 +413,9 @@ export const setupCollateral = async (
     deployer,
   );
 
-  await fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0);
+  await waitForTxConfirmation(
+    fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0),
+  );
 };
 
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
@@ -453,48 +457,54 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     slippage: SLIPPAGE,
   };
 
-  await fundraisingApps.presale.initialize(
-    daoAddress,
-    controllerAddress,
-    marketMakerAddress,
-    bondedTokenManagerAddress,
-    reserveAddress,
-    params.owner,
-    params.collateralToken,
-    params.period,
-    params.exchangeRate,
-    params.mintingForBeneficiaryPct,
-    params.openDate,
+  await waitForTxConfirmation(
+    fundraisingApps.presale.initialize(
+      daoAddress,
+      controllerAddress,
+      marketMakerAddress,
+      bondedTokenManagerAddress,
+      reserveAddress,
+      params.owner,
+      params.collateralToken,
+      params.period,
+      params.exchangeRate,
+      params.mintingForBeneficiaryPct,
+      params.openDate,
+    ),
   );
 
   console.log(`Presale initialized`);
 
-  await fundraisingApps.marketMaker.initialize(
-    daoAddress,
-    controllerAddress,
-    bondedTokenManagerAddress,
-    bancorFormulaAddress,
-    reserveAddress,
-    params.owner,
-    params.batchBlocks,
-    0,
-    0,
+  await waitForTxConfirmation(
+    fundraisingApps.marketMaker.initialize(
+      daoAddress,
+      controllerAddress,
+      bondedTokenManagerAddress,
+      bancorFormulaAddress,
+      reserveAddress,
+      params.owner,
+      params.batchBlocks,
+      0,
+      0,
+    ),
   );
 
   console.log(`MarketMaker initialized`);
 
-  await fundraisingApps.controller.initialize(
-    daoAddress,
-    presaleAddress,
-    marketMakerAddress,
-    reserveAddress,
-    tapAddress,
-    [],
+  await waitForTxConfirmation(
+    fundraisingApps.controller.initialize(
+      daoAddress,
+      presaleAddress,
+      marketMakerAddress,
+      reserveAddress,
+      tapAddress,
+      [],
+    ),
   );
 
   console.log(`Controller initialized`);
 
-  await fundraisingApps.reserve.initialize(daoAddress);
+  await waitForTxConfirmation(fundraisingApps.reserve.initialize(daoAddress));
 
   console.log(`Reserve initialized`);
 
@@ -509,7 +519,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const guiConfig = {
     BANCOR_FORMULA: bancorFormulaAddress,
     BONDING_CURVE_TREASURY: reserveAddress,
-    FUNDRAISING: presaleAddress,
+    FUNDRAISING: controllerAddress,
     MARKET_MAKER: marketMakerAddress,
     TOKEN_ANT: sovAddress,
     TOKEN_ANJ: zeroAddress,
