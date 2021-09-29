@@ -18,10 +18,12 @@ import "hardhat-gas-reporter";
 import "hardhat-preprocessor";
 import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
-import { HardhatUserConfig } from "hardhat/config";
+import { HardhatUserConfig} from "hardhat/config";
 import { resolve } from "path";
 import "solidity-coverage";
 import "./scripts/custom-tasks";
+import "./scripts/deploy-tasks";
+
 
 chai.use(solidity);
 
@@ -39,6 +41,13 @@ if (!process.env.MNEMONIC) {
   throw new Error("Please set your MNEMONIC in a .env file");
 } else {
   mnemonic = process.env.MNEMONIC;
+}
+
+declare module "hardhat/types/runtime" {
+  export interface HardhatRuntimeEnvironment {
+    deployTokens: boolean;
+    mockPresale: boolean;
+  }
 }
 
 const config: HardhatUserConfig = {

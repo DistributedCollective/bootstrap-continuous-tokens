@@ -325,12 +325,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   let sovAddress;
   let zeroAddress;
 
-  console.log(deployer);
-
-  // FIXME: This need to be solved at hardhat level
-  const shouldDeployTokens = ["hardhat", "localhost", "rskdev", "rskTestnetMocked"].includes(thisNetwork);
-
-  if (shouldDeployTokens) {
+  if (hre.deployTokens) {
     await deployments.run(["CollateralToken", "BondedToken"], { writeDeploymentsToFiles: true });
 
     sovAddress = (await deployments.get("CollateralToken")).address;
@@ -346,9 +341,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     console.log(`reusing bondend token at address ${zeroAddress}`);
   }
 
-  // FIXME: This need to be solved at hardhat level
-  const shouldDeployMockedPresale = true;
-  const presaleToDeploy = shouldDeployMockedPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
+  const presaleToDeploy = hre.mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
 
   await deployments.run(
     [
@@ -489,7 +482,4 @@ export default deployFunc;
 deployFunc.tags = ["everything"];
 deployFunc.id = "deployed_system"; // id required to prevent reexecution
 
-/*deployFunc.dependencies = [
-  'CollateralToken',
-  'BondedToken'
-];*/
+
