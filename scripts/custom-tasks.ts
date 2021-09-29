@@ -44,7 +44,6 @@ task(
     const delta = ms(taskArgs.span as string);
     const newDate = addMilliseconds(new Date(), delta);
     console.log(`Setting date to ${newDate}`);
-    await updatePresaleDate(hre, newDate);
 
     const presaleDeployment = await deployments.get("MockedBalancedRedirectPresale");
     const presale = await MockedBalancedRedirectPresale__factory.connect(
@@ -52,7 +51,7 @@ task(
       ethers.provider.getSigner(),
     );
 
-    const newTimestampInSeconds = ethers.BigNumber.from(date.getTime()).div(1000);
+    const newTimestampInSeconds = ethers.BigNumber.from(newDate.getTime()).div(1000);
     await waitForTxConfirmation(presale.setTimestamp(newTimestampInSeconds));
     console.log("Timestamp", await presale.timestamp());
     console.log("Open date", await presale.openDate());
