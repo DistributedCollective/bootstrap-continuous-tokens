@@ -1,4 +1,4 @@
-# Project Title
+# Zero Continuos Token deployment repository
 
 This project contains the boilerplate that must be used when dealing with Solidity based Smart Contracts developmen projects.
 
@@ -26,7 +26,7 @@ Say what the step will be
 
 ```bash
 # Install the dependencies
-npm install
+yarn
 ```
 
 ### Generate Types
@@ -34,13 +34,13 @@ npm install
 In order to get contract types you can generate those typings when compiling
 
 ```bash
-npm run compile
+yarn compile
 ```
 
 ## Running the tests
 
 ```bash
-npm run test
+yarn test
 ```
 
 ### Testing with Waffle
@@ -80,22 +80,63 @@ To check the code statically you can use the Ethereum Security Toolbox made by T
 
 You could just run the default checking executing
 
-`npm run security-default`
+`yarn security-default`
 
 ##### Flexibile option
 
 Or if you want more flexibility, first execute the command 
 
-`npm run security`
+`yarn security`
 
 and once inside the docker container run 
 
 ```
-solc-select 0.7.6
+solc-select 0.4.24
 cd project
 ```
 
 so that you can use the tools there installed.
+
+## Tasks & Deployment
+
+### Custom tasks
+
+There were added some custom `hardhat` tasks to help with the token manipulation and deployment mostly for testing purposes.
+
+```bash
+npx hardhat help
+
+close-presale                                	closes the presale and let's people to start trading
+contribute                                   	buys (during the presale period) some bonded tokens and sends them to the recipient
+get-state                                    	returns presale current state
+mint-collateral                              	mints some collateral tokens (SOV) and sends them to the recipient address
+open-presale                                 	starts the presale
+update-presale-date                          	Testing command that updates the mocked presale date to a specific value so state can be changed
+```
+
+For example, if the `MockedBalanceRedirect` presale was deployed, the following commands can be executed in order to open, contribute and then close it:
+
+```bash
+# Move forward in time to make the sale open
+npx hardhat update-presale-date --span "2 days" --network rskTestnetMocked
+# Mint some SOV (collateral)
+npx hardhat mint-collateral --network rskTestnetMocked --recipient "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B" --amount "10000000000000000000000"
+# Buy some Zero (bonded)
+npx hardhat contribute --network rskTestnetMocked --recipient "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B" --amount "10000000000000000000000"
+# Close the presale
+npx hardhat update-presale-date --span "6 weeks" --network rskTestnetMocked
+npx hardhat close-presale --network rskTestnetMocked
+```
+
+### Deployment
+
+```bash
+yarn deploy:dev         # launches a `buidlervm` instance and deploys the contracts    
+deploy:dev:fixture      # generates some tokens and assigns them to some hardcoded accounts for testing purposes
+yarn deploy:rskdev      # deploys the contracts to a local RSK node
+yarn devchain:start     # launches an RSK regtest node. Requires Docker to be installed.
+deploy:rskTestnetMocked # deploys to RSK tesnet with mocked Presale Contract so the state can be tweaked
+```
 
 ## Built With
 

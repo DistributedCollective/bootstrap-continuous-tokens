@@ -1,8 +1,9 @@
-import * as fs from 'fs';
-import path from 'path';
+import * as fs from "fs";
+import path from "path";
 import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
-import { DeployFunction, DeploymentsExtension, DeployOptions, DeployResult } from "hardhat-deploy/types";
+import { DeployFunction, DeploymentsExtension } from "hardhat-deploy/types";
+import { GAS_LIMIT_PATCH, waitForTxConfirmation } from "./utils";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
   ACL__factory,
@@ -25,19 +26,20 @@ import {
 import { DAOFactory__factory } from "../typechain/factories/DAOFactory__factory";
 
 const PPM = BigNumber.from(1e6);
-const PCT_BASE = BigNumber.from("1000000000000000000");
+const PCT_BASE = BigNumber.from((1e18).toString());
 const DAYS = 24 * 3600;
-const MONTHS = 30 * DAYS;
-const START_DATE = new Date().getTime() + MONTHS;
+// const MONTHS = 0 * DAYS;
+const START_DATE = BigNumber.from(new Date().getTime()).div(1000).add(DAYS);
 const BENEFICIARY_PCT = 200000;
 const PRESALE_PERIOD = 14 * DAYS;
-const PRESALE_EXCHANGE_RATE = PPM;
-const RESERVE_RATIO = PPM.mul(10).div(100);
-const BATCH_BLOCKS = 10;
-const SLIPPAGE = PCT_BASE.mul(10);
+const PRESALE_EXCHANGE_RATE = PPM.mul(10000).div(100);
+const RESERVE_RATIO = PPM.mul(40).div(100);
+const BATCH_BLOCKS = 1; // 10;
+const SLIPPAGE = PCT_BASE.mul(3).div(100);
+const BUY_FEE = 0;
+const SELL_FEE = PCT_BASE.mul(3).div(1000);
 
 type Address = string;
-type Deploy = (name: string, options: DeployOptions) => Promise<DeployResult>;
 
 type FundrasingApps = {
   reserve: Reserve;
@@ -48,20 +50,17 @@ type FundrasingApps = {
   bondedTokenManager: TokenManager;
 };
 
-
 // Taken from https://github.com/aragon/aragonOS/blob/master/scripts/deploy-daofactory.js
-const createDAO = async (deployments:DeploymentsExtension, deployer:string): Promise<string> => {
-  const kernelDeployment = await deployments.get('Kernel');
-  const aclDeployment = await deployments.get('ACL');
-  const daoFactoryDeployment = await deployments.get('DAOFactory');
-
+const createDAO = async (deployments: DeploymentsExtension, deployer: string): Promise<string> => {
+  const kernelDeployment = await deployments.get("Kernel");
+  const aclDeployment = await deployments.get("ACL");
+  const daoFactoryDeployment = await deployments.get("DAOFactory");
 
   const kernel = Kernel__factory.connect(kernelDeployment.address, ethers.provider.getSigner());
-  await kernel.initialize(aclDeployment.address, deployer);
-
+  await waitForTxConfirmation(kernel.initialize(aclDeployment.address, deployer));
 
   const daoFactory = DAOFactory__factory.connect(daoFactoryDeployment.address, ethers.provider.getSigner());
-  const newDaoTx = await (await daoFactory.newDAO(deployer)).wait();
+  const newDaoTx = await waitForTxConfirmation(daoFactory.newDAO(deployer, { gasLimit: GAS_LIMIT_PATCH }));
 
   const daoAddress = newDaoTx.logs
     .map(log => {
@@ -75,10 +74,13 @@ const createDAO = async (deployments:DeploymentsExtension, deployer:string): Pro
   const aclAddress = await kernel.acl();
 
   const dao = ACL__factory.connect(aclAddress, ethers.provider.getSigner());
-  await dao.createPermission(deployer, kernel.address, await kernel.APP_MANAGER_ROLE(), deployer);
+  await waitForTxConfirmation(
+    dao.createPermission(deployer, kernel.address, await kernel.APP_MANAGER_ROLE(), deployer, {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
+  );
   return daoAddress;
 };
-
 
 const createPermissions = async (
   acl: ACL,
@@ -87,10 +89,10 @@ const createPermissions = async (
   role: string,
   manager: string,
 ): Promise<void> => {
-  await acl.createPermission(entities[0], app, role, manager);
+  await waitForTxConfirmation(acl.createPermission(entities[0], app, role, manager, { gasLimit: GAS_LIMIT_PATCH }));
   console.log(`Permission created: entity ${entities[0]} | app ${app} | role ${role} | mananager ${manager}`);
   for (let i = 1; i < entities.length; i++) {
-    await acl.grantPermission(entities[i], app, role);
+    await waitForTxConfirmation(acl.grantPermission(entities[i], app, role, { gasLimit: GAS_LIMIT_PATCH }));
     console.log(`Permission granted: entity ${entities[i]} | app ${app} | role ${role} | mananager ${manager}`);
   }
 };
@@ -98,11 +100,7 @@ const createPermissions = async (
 const createPermission = async (acl: ACL, entity: string, app: string, role: string, manager: string): Promise<void> =>
   createPermissions(acl, [entity], app, role, manager);
 
-const setupFundraisingPermission = async (
-  deployer: string,
-  fundraisingApps: FundrasingApps,
-  daoAddress: Address,
-) => {
+const setupFundraisingPermission = async (deployer: string, fundraisingApps: FundrasingApps, daoAddress: Address) => {
   const { marketMaker, presale } = fundraisingApps;
   const dao = Kernel__factory.connect(daoAddress, await ethers.getSigner(deployer));
   const acl = ACL__factory.connect(await dao.acl(), await ethers.getSigner(deployer));
@@ -311,13 +309,15 @@ export const setupCollateral = async (
     deployer,
   );
 
-  await fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0);
+  // FIXME: add fees
+  await waitForTxConfirmation(
+    fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0),
+  );
 };
 
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
-  const { deploy} = deployments;
   const thisNetwork = hre.network.name;
   console.log(`deployer address: ${deployer}`);
   console.log(`deploying at network: ${thisNetwork}`);
@@ -325,43 +325,35 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   let sovAddress;
   let zeroAddress;
 
-  if (thisNetwork == "hardhat" || thisNetwork == "localhost"){
-    
-    await deployments.run([
-      "CollateralToken",
-      "BondedToken",
-      "BancorFormula", 
-      "BalanceRedirectPresale",
-      "MarketMaker",
-      "Reserve",
-      "TapDisabled",
-      "Controller",
-      "TokenManager",
-      "Kernel",
-      "ACL",
-      "EVMScriptRegistryFactory",
-      "DAOFactory"
-    ],
-    {writeDeploymentsToFiles: true},
+  console.log(deployer);
+
+  // FIXME: This need to be solved at hardhat level
+  const shouldDeployTokens = ["hardhat", "localhost", "rskdev", "rskTestnetMocked"].includes(thisNetwork);
+
+  if (shouldDeployTokens) {
+    await deployments.run(["CollateralToken", "BondedToken"], { writeDeploymentsToFiles: true });
+
+    sovAddress = (await deployments.get("CollateralToken")).address;
+    zeroAddress = (await deployments.get("BondedToken")).address;
+  } else {
+    const contractsFile = fs.readFileSync(
+      path.resolve(__dirname, `../scripts/contractInteractions/${thisNetwork}_contracts.json`),
     );
-  
-
-    sovAddress =  (await deployments.get('CollateralToken')).address;
-    zeroAddress = (await deployments.get('BondedToken')).address;
-
-   }
-  else {
-    const contractsFile = fs.readFileSync(path.resolve(__dirname,`../scripts/contractInteractions/${thisNetwork}_contracts.json`))
     const contracts = JSON.parse(contractsFile.toString());
     sovAddress = contracts.SOV;
     zeroAddress = contracts.ZERO;
     console.log(`reusing collateral token at address ${sovAddress}`);
     console.log(`reusing bondend token at address ${zeroAddress}`);
+  }
 
-    await deployments.run(
-      [
-      "BancorFormula", 
-      "BalanceRedirectPresale",
+  // FIXME: This need to be solved at hardhat level
+  const shouldDeployMockedPresale = true;
+  const presaleToDeploy = shouldDeployMockedPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
+
+  await deployments.run(
+    [
+      "BancorFormula",
+      presaleToDeploy,
       "MarketMaker",
       "Reserve",
       "TapDisabled",
@@ -370,45 +362,44 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       "Kernel",
       "ACL",
       "EVMScriptRegistryFactory",
-      "DAOFactory"
-    ], 
-    {writeDeploymentsToFiles: true},
-    );
-  }
+      "DAOFactory",
+    ],
+    { writeDeploymentsToFiles: true },
+  );
 
   // Setup DAO and ACL
-  const daoAddress = await createDAO(deployments,deployer);
+  const daoAddress = await createDAO(deployments, deployer);
 
   // Setup fundraisingApps
-  
-  const bancorFormulaDeployment = await deployments.get('BancorFormula')
-  const reserveDeployment = await deployments.get('Reserve');
-  const presaleDeployment = await deployments.get('BalanceRedirectPresale');
-  const marketMakerDeployment = await deployments.get('MarketMaker');
-  const tapDisabledDeployment = await deployments.get('TapDisabled');
-  const controllerDeployment = await deployments.get('Controller');
-  const tokenManagerDeployment = await deployments.get('TokenManager');
-  const fundraisingApps:FundrasingApps = {
+
+  const bancorFormulaDeployment = await deployments.get("BancorFormula");
+  const reserveDeployment = await deployments.get("Reserve");
+  const presaleDeployment = await deployments.get(presaleToDeploy);
+  const marketMakerDeployment = await deployments.get("MarketMaker");
+  const tapDisabledDeployment = await deployments.get("TapDisabled");
+  const controllerDeployment = await deployments.get("Controller");
+  const tokenManagerDeployment = await deployments.get("TokenManager");
+  const fundraisingApps: FundrasingApps = {
     reserve: await Reserve__factory.connect(reserveDeployment.address, ethers.provider.getSigner()),
     presale: await BalanceRedirectPresale__factory.connect(presaleDeployment.address, ethers.provider.getSigner()),
     marketMaker: await MarketMaker__factory.connect(marketMakerDeployment.address, ethers.provider.getSigner()),
     tap: await TapDisabled__factory.connect(tapDisabledDeployment.address, ethers.provider.getSigner()),
     controller: await Controller__factory.connect(controllerDeployment.address, ethers.provider.getSigner()),
     bondedTokenManager: await TokenManager__factory.connect(
-        tokenManagerDeployment.address,
-        ethers.provider.getSigner()),
-  }
+      tokenManagerDeployment.address,
+      ethers.provider.getSigner(),
+    ),
+  };
 
   const bondedToken = await MiniMeToken__factory.connect(zeroAddress, ethers.provider.getSigner());
-  await bondedToken.changeController(tokenManagerDeployment.address);
+  await waitForTxConfirmation(bondedToken.changeController(tokenManagerDeployment.address));
 
   console.log(`BondedToken at ${bondedToken.address} controller changed to ${tokenManagerDeployment.address}`);
 
   const tokenManager = await TokenManager__factory.connect(tokenManagerDeployment.address, ethers.provider.getSigner());
-  await tokenManager.initialize(daoAddress, zeroAddress, true, 0);
+  await waitForTxConfirmation(tokenManager.initialize(daoAddress, zeroAddress, true, 0));
 
   console.log(`TokenManager at ${tokenManager.address} initialized`);
-
 
   const params = {
     owner: deployer,
@@ -423,48 +414,54 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     slippage: SLIPPAGE,
   };
 
-  await fundraisingApps.presale.initialize(
-    daoAddress,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    fundraisingApps.bondedTokenManager.address,
-    fundraisingApps.reserve.address,
-    params.owner,
-    params.collateralToken,
-    params.period,
-    params.exchangeRate,
-    params.mintingForBeneficiaryPct,
-    params.openDate,
+  await waitForTxConfirmation(
+    fundraisingApps.presale.initialize(
+      daoAddress,
+      fundraisingApps.controller.address,
+      fundraisingApps.marketMaker.address,
+      fundraisingApps.bondedTokenManager.address,
+      fundraisingApps.reserve.address,
+      params.owner,
+      params.collateralToken,
+      params.period,
+      params.exchangeRate,
+      params.mintingForBeneficiaryPct,
+      params.openDate,
+    ),
   );
 
   console.log(`Presale initialized`);
 
-  await fundraisingApps.marketMaker.initialize(
-    daoAddress,
-    fundraisingApps.controller.address,
-    fundraisingApps.bondedTokenManager.address,
-    bancorFormulaDeployment.address,
-    fundraisingApps.reserve.address,
-    params.owner,
-    params.batchBlocks,
-    0,
-    0,
+  await waitForTxConfirmation(
+    fundraisingApps.marketMaker.initialize(
+      daoAddress,
+      fundraisingApps.controller.address,
+      fundraisingApps.bondedTokenManager.address,
+      bancorFormulaDeployment.address,
+      fundraisingApps.reserve.address,
+      params.owner,
+      params.batchBlocks,
+      BUY_FEE,
+      SELL_FEE,
+    ),
   );
 
   console.log(`MarketMaker initialized`);
 
-  await fundraisingApps.controller.initialize(
-    daoAddress,
-    fundraisingApps.presale.address,
-    fundraisingApps.marketMaker.address,
-    fundraisingApps.reserve.address,
-    fundraisingApps.tap.address,
-    [],
+  await waitForTxConfirmation(
+    fundraisingApps.controller.initialize(
+      daoAddress,
+      fundraisingApps.presale.address,
+      fundraisingApps.marketMaker.address,
+      fundraisingApps.reserve.address,
+      fundraisingApps.tap.address,
+      [],
+    ),
   );
 
   console.log(`Controller initialized`);
 
-  await fundraisingApps.reserve.initialize(daoAddress);
+  await waitForTxConfirmation(fundraisingApps.reserve.initialize(daoAddress));
 
   console.log(`Reserve initialized`);
 
@@ -489,7 +486,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   return hre.network.live; // prevents re execution on live networks
 };
 export default deployFunc;
-deployFunc.tags = ['everything'];
+deployFunc.tags = ["everything"];
 deployFunc.id = "deployed_system"; // id required to prevent reexecution
 
 /*deployFunc.dependencies = [
