@@ -18,8 +18,9 @@ import "hardhat-gas-reporter";
 import "hardhat-preprocessor";
 import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
-import { HardhatUserConfig} from "hardhat/config";
+import { HardhatUserConfig, extendEnvironment } from "hardhat/config";
 import { resolve } from "path";
+import { BigNumber } from "ethers";
 import "solidity-coverage";
 import "./scripts/custom-tasks";
 import "./scripts/deploy-tasks";
@@ -35,6 +36,10 @@ const chainIds = {
   rskTestnetMocked: 31,
 };
 
+const PPM = BigNumber.from(1e6);
+const PCT_BASE = BigNumber.from((1e18).toString());
+const DAYS = 24 * 3600;
+
 // Ensure that we have all the environment variables we need.
 let mnemonic: string;
 if (!process.env.MNEMONIC) {
@@ -43,12 +48,44 @@ if (!process.env.MNEMONIC) {
   mnemonic = process.env.MNEMONIC;
 }
 
+type Parameters = {
+  startDate:BigNumber
+  beneficiaryPCT:number;  
+  presalePeriod:number;
+  presaleEchangeRate:BigNumber;
+  reserveRatio:BigNumber;
+  batchBlock:number;
+  slippage:BigNumber;
+  buyFee:BigNumber;
+  selFee:BigNumber
+
+
+}
 declare module "hardhat/types/runtime" {
   export interface HardhatRuntimeEnvironment {
     deployTokens: boolean;
     mockPresale: boolean;
+    parameters:Parameters;
   }
 }
+
+//Setup deployment parameters
+extendEnvironment((hre) => {
+  hre.deployTokens = true;
+  hre.mockPresale = true;
+  hre.parameters = {
+    startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
+    beneficiaryPCT:200000,
+    presalePeriod:14 * DAYS,
+    presaleEchangeRate : PPM.mul(10000).div(100),
+    reserveRatio: PPM.mul(40).div(100),
+    batchBlock: 1,
+    slippage: PCT_BASE.mul(3).div(100),
+    buyFee: BigNumber.from(0),
+    selFee: PCT_BASE.mul(3).div(1000)
+
+  }
+});
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",

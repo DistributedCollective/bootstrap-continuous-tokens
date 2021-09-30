@@ -16,8 +16,7 @@ const State = {
 };
 
 const PPM = BigNumber.from(1e6);
-const RESERVE_RATIO = PPM.mul(10).div(100);
-const PCT_BASE = BigNumber.from("1000000000000000000");
+const RESERVE_RATIO = hre.parameters.reserveRatio;
 
 describe("Presale Interaction", () => {
   let Presale: any, Controller: any, MarketMaker:any, ZEROToken: any, SOVToken: any, BancorFormula: any;

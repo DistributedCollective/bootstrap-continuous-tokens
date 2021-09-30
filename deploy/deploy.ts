@@ -25,20 +25,6 @@ import {
 } from "../typechain";
 import { DAOFactory__factory } from "../typechain/factories/DAOFactory__factory";
 
-const PPM = BigNumber.from(1e6);
-const PCT_BASE = BigNumber.from((1e18).toString());
-const DAYS = 24 * 3600;
-// const MONTHS = 0 * DAYS;
-const START_DATE = BigNumber.from(new Date().getTime()).div(1000).add(DAYS);
-const BENEFICIARY_PCT = 200000;
-const PRESALE_PERIOD = 14 * DAYS;
-const PRESALE_EXCHANGE_RATE = PPM.mul(10000).div(100);
-const RESERVE_RATIO = PPM.mul(40).div(100);
-const BATCH_BLOCKS = 1; // 10;
-const SLIPPAGE = PCT_BASE.mul(3).div(100);
-const BUY_FEE = 0;
-const SELL_FEE = PCT_BASE.mul(3).div(1000);
-
 type Address = string;
 
 type FundrasingApps = {
@@ -398,13 +384,15 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     owner: deployer,
     collateralToken: sovAddress,
     bondedToken: zeroAddress,
-    period: PRESALE_PERIOD,
-    openDate: START_DATE,
-    exchangeRate: PRESALE_EXCHANGE_RATE,
-    mintingForBeneficiaryPct: BENEFICIARY_PCT,
-    reserveRatio: RESERVE_RATIO,
-    batchBlocks: BATCH_BLOCKS,
-    slippage: SLIPPAGE,
+    period: hre.parameters.presalePeriod,
+    openDate: hre.parameters.startDate,
+    exchangeRate: hre.parameters.presaleEchangeRate,
+    mintingForBeneficiaryPct: hre.parameters.beneficiaryPCT,
+    reserveRatio: hre.parameters.reserveRatio,
+    batchBlocks: hre.parameters.batchBlock,
+    slippage: hre.parameters.slippage,
+    buyFee: hre.parameters.buyFee,
+    sellFee: hre.parameters.selFee
   };
 
   await waitForTxConfirmation(
@@ -434,8 +422,8 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       fundraisingApps.reserve.address,
       params.owner,
       params.batchBlocks,
-      BUY_FEE,
-      SELL_FEE,
+      params.buyFee,
+      params.sellFee,
     ),
   );
 
