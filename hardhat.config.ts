@@ -18,13 +18,11 @@ import "hardhat-gas-reporter";
 import "hardhat-preprocessor";
 import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
-import { HardhatUserConfig, extendEnvironment } from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/types";
 import { resolve } from "path";
 import { BigNumber } from "ethers";
 import "solidity-coverage";
 import "./scripts/custom-tasks";
-import "./scripts/deploy-tasks";
-
 
 chai.use(solidity);
 
@@ -58,34 +56,22 @@ type Parameters = {
   slippage:BigNumber;
   buyFee:BigNumber;
   selFee:BigNumber
-
-
 }
-declare module "hardhat/types/runtime" {
-  export interface HardhatRuntimeEnvironment {
-    deployTokens: boolean;
-    mockPresale: boolean;
-    parameters:Parameters;
-  }
+declare module "hardhat/types/config" {
+export interface HardhatNetworkUserConfig {
+  deployTokens: boolean,
+  mockPresale: boolean,
+  parameters: Parameters;
 }
 
-//Setup deployment parameters
-extendEnvironment((hre) => {
-  hre.deployTokens = true;
-  hre.mockPresale = true;
-  hre.parameters = {
-    startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
-    beneficiaryPCT:200000,
-    presalePeriod:14 * DAYS,
-    presaleEchangeRate : PPM.mul(10000).div(100),
-    reserveRatio: PPM.mul(40).div(100),
-    batchBlock: 1,
-    slippage: PCT_BASE.mul(3).div(100),
-    buyFee: BigNumber.from(0),
-    selFee: PCT_BASE.mul(3).div(1000)
+export interface HardhatNetworkConfig {
+  deployTokens: boolean,
+  mockPresale: boolean,
+  parameters: Parameters;
+}
 
-  }
-});
+}
+
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
@@ -95,18 +81,57 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
+      deployTokens: true,
+      mockPresale: true,
+      parameters: {
+        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
+        beneficiaryPCT:200000,
+        presalePeriod:14 * DAYS,
+        presaleEchangeRate : PPM.mul(10000).div(100),
+        reserveRatio: PPM.mul(40).div(100),
+        batchBlock: 1,
+        slippage: PCT_BASE.mul(3).div(100),
+        buyFee: BigNumber.from(0),
+        selFee: PCT_BASE.mul(3).div(1000)
+      },
       accounts: {
         mnemonic,
       },
       chainId: chainIds.hardhat,
     },
     rskdev: {
+      deployTokens: true,
+      mockPresale: true,
+      parameters: {
+        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
+        beneficiaryPCT:200000,
+        presalePeriod:14 * DAYS,
+        presaleEchangeRate : PPM.mul(10000).div(100),
+        reserveRatio: PPM.mul(40).div(100),
+        batchBlock: 1,
+        slippage: PCT_BASE.mul(3).div(100),
+        buyFee: BigNumber.from(0),
+        selFee: PCT_BASE.mul(3).div(1000)
+      },
       url: "http://localhost:4444",
       // regtest default prefunded account
       from: "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826",
       gasMultiplier: 1.25,
     },
     rskTestnetMocked: {
+      deployTokens: true,
+      mockPresale: true,
+      parameters: {
+        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
+        beneficiaryPCT:200000,
+        presalePeriod:14 * DAYS,
+        presaleEchangeRate : PPM.mul(10000).div(100),
+        reserveRatio: PPM.mul(40).div(100),
+        batchBlock: 1,
+        slippage: PCT_BASE.mul(3).div(100),
+        buyFee: BigNumber.from(0),
+        selFee: PCT_BASE.mul(3).div(1000)
+      },
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
       chainId: chainIds.rskTestnetMocked,
@@ -156,5 +181,5 @@ const config: HardhatUserConfig = {
   },
 };
 
-
+config.networks
 export default config;

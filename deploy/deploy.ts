@@ -305,13 +305,17 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
   const thisNetwork = hre.network.name;
+  const sConfig = JSON.stringify(hre.network.config);
+  const config = JSON.parse(sConfig);
+  const {parameters,deployTokens,mockPresale} = config
+
   console.log(`deployer address: ${deployer}`);
   console.log(`deploying at network: ${thisNetwork}`);
 
   let sovAddress;
   let zeroAddress;
 
-  if (hre.deployTokens) {
+  if (deployTokens) {
     await deployments.run(["CollateralToken", "BondedToken"], { writeDeploymentsToFiles: true });
 
     sovAddress = (await deployments.get("CollateralToken")).address;
@@ -327,7 +331,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     console.log(`reusing bondend token at address ${zeroAddress}`);
   }
 
-  const presaleToDeploy = hre.mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
+  const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
 
   await deployments.run(
     [
@@ -384,15 +388,15 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     owner: deployer,
     collateralToken: sovAddress,
     bondedToken: zeroAddress,
-    period: hre.parameters.presalePeriod,
-    openDate: hre.parameters.startDate,
-    exchangeRate: hre.parameters.presaleEchangeRate,
-    mintingForBeneficiaryPct: hre.parameters.beneficiaryPCT,
-    reserveRatio: hre.parameters.reserveRatio,
-    batchBlocks: hre.parameters.batchBlock,
-    slippage: hre.parameters.slippage,
-    buyFee: hre.parameters.buyFee,
-    sellFee: hre.parameters.selFee
+    period: parameters.presalePeriod,
+    openDate: parameters.startDate,
+    exchangeRate: parameters.presaleEchangeRate,
+    mintingForBeneficiaryPct: parameters.beneficiaryPCT,
+    reserveRatio: parameters.reserveRatio,
+    batchBlocks: parameters.batchBlock,
+    slippage: parameters.slippage,
+    buyFee: parameters.buyFee,
+    sellFee: parameters.selFee
   };
 
   await waitForTxConfirmation(
