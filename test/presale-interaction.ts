@@ -16,13 +16,13 @@ const State = {
 };
 
 const PPM = BigNumber.from(1e6);
-const RESERVE_RATIO = PPM.mul(10).div(100);
-const PCT_BASE = BigNumber.from("1000000000000000000");
+let reserveRatio:BigNumber;
+let presaleEchangeRate:BigNumber;
 
 describe("Presale Interaction", () => {
   let Presale: any, Controller: any, MarketMaker:any, ZEROToken: any, SOVToken: any, BancorFormula: any;
-  const tokens = BigNumber.from(10000);
-  const contributionAmount = BigNumber.from(100);
+  const tokens = BigNumber.from(1000000);
+  const contributionAmount = BigNumber.from(100000);
   const amount = BigNumber.from(100);
   let deployer: string;
   let zeroBalanceBeforeClosing: BigNumber;
@@ -30,6 +30,14 @@ describe("Presale Interaction", () => {
     await setupTest();
 
     ({ deployer } = await getNamedAccounts());
+
+    const sConfig = JSON.stringify(hre.network.config);
+    const config = JSON.parse(sConfig);
+    const {parameters,mockPresale} = config
+
+    reserveRatio = parameters.reserveRatio;
+    presaleEchangeRate = parameters.presaleEchangeRate;
+    const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
 
     const controller = await deployments.get("Controller");
     Controller = await Controller__factory.connect(controller.address, ethers.provider.getSigner());
@@ -49,7 +57,7 @@ describe("Presale Interaction", () => {
 
     expect(await SOVToken.balanceOf(deployer)).to.eq(tokens);
 
-    const presale = await deployments.get("BalanceRedirectPresale");
+    const presale = await deployments.get(presaleToDeploy);
     Presale = await BalanceRedirectPresale__factory.connect(presale.address, ethers.provider.getSigner());
     await SOVToken.approve(Presale.address, tokens);
     await SOVToken.approve(MarketMaker.address, tokens);
@@ -135,12 +143,12 @@ describe("Presale Interaction", () => {
     const totalSold = await Presale.totalRaised();
     const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
     const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary));
-    expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary));
+    expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary.mul(presaleEchangeRate).div(PPM)));
 
     const totalRaised = await Presale.totalRaised();
 
     const aux = totalRaised.mul(PPM).div(PPM.sub(mintingForBeneficiary));
-    const sovTokensForReserve = aux.mul(RESERVE_RATIO).div(PPM);
+    const sovTokensForReserve = aux.mul(reserveRatio).div(PPM);
     const sovTokensForBeneficiary = totalRaised.sub(sovTokensForReserve);
     const reserve = await Presale.reserve();
 

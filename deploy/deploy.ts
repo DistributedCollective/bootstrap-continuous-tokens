@@ -315,12 +315,32 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   let sovAddress;
   let zeroAddress;
 
-  if (deployTokens) {
-    await deployments.run(["CollateralToken", "BondedToken"], { writeDeploymentsToFiles: true });
+  const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
+  const contractsToDeploy = [
+    "BancorFormula",
+    presaleToDeploy,
+    "MarketMaker",
+    "Reserve",
+    "TapDisabled",
+    "Controller",
+    "TokenManager",
+    "Kernel",
+    "ACL",
+    "EVMScriptRegistryFactory",
+    "DAOFactory",
+  ]
 
+  if (deployTokens) {
+    contractsToDeploy.push("CollateralToken","BondedToken");
+  } 
+
+  //all contracts have to be deployed in a same deployments.run() because otherwise the tests don't work well and can't find deployments(hardhat-deploy issue)
+  await deployments.run(contractsToDeploy,{ writeDeploymentsToFiles: true },);
+
+  if (deployTokens) {
     sovAddress = (await deployments.get("CollateralToken")).address;
     zeroAddress = (await deployments.get("BondedToken")).address;
-  } else {
+  }else {
     const contractsFile = fs.readFileSync(
       path.resolve(__dirname, `../scripts/contractInteractions/${thisNetwork}_contracts.json`),
     );
@@ -330,25 +350,6 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     console.log(`reusing collateral token at address ${sovAddress}`);
     console.log(`reusing bondend token at address ${zeroAddress}`);
   }
-
-  const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
-
-  await deployments.run(
-    [
-      "BancorFormula",
-      presaleToDeploy,
-      "MarketMaker",
-      "Reserve",
-      "TapDisabled",
-      "Controller",
-      "TokenManager",
-      "Kernel",
-      "ACL",
-      "EVMScriptRegistryFactory",
-      "DAOFactory",
-    ],
-    { writeDeploymentsToFiles: true },
-  );
 
   // Setup DAO and ACL
   const daoAddress = await createDAO(deployments, deployer);
