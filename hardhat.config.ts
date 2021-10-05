@@ -127,7 +127,7 @@ const config: HardhatUserConfig = {
         presalePeriod:14 * DAYS,
         presaleEchangeRate : PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
-        batchBlock: 1,
+        batchBlock: 10,
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000)
