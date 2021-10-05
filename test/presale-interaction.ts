@@ -114,14 +114,14 @@ describe("Presale Interaction", () => {
   });
 
   it("Should finish presale", async () => {
-    const DAYS = 24 * 3600;
-    const MONTHS = 30 * DAYS;
-    const FINISH_DATE = new Date().getTime() + MONTHS + MONTHS;
 
-    await hre.network.provider.request({
-      method: "evm_mine",
-      params: [FINISH_DATE],
-    });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await hre.timeAndMine.increaseTime("10 weeks");
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await hre.timeAndMine.mine("1");
+    
     expect(await Presale.state()).to.eq(State.Finished);
     await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
   });
@@ -170,7 +170,7 @@ describe("Presale Interaction", () => {
         const parsed = MarketMaker.interface.parseLog(log);
         return parsed;
       }
-    }).find((event: any) => event.name === "NewBatch");
+    }).find((event: any) => event?.name === "NewBatch");
     
     const tokensTobeMinted = await MarketMaker.tokensToBeMinted();
     const purchaseReturn = await BancorFormula.calculatePurchaseReturn(newBatch1.args.supply,newBatch1.args.balance,newBatch1.args.reserveRatio,amount)
@@ -184,7 +184,7 @@ describe("Presale Interaction", () => {
         const parsed = MarketMaker.interface.parseLog(log);
         return parsed;
       }
-    }).find((event: any) => event.name === "NewBatch");
+    }).find((event: any) => event?.name === "NewBatch");
 
 
 
@@ -201,7 +201,9 @@ describe("Presale Interaction", () => {
   });
 
   it("Should open a sell order", async() => {
-    await mineBlocks(10);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await hre.timeAndMine.mine("10")
  
     const zeroSupplyBefore = await ZEROToken.totalSupply();
     const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
@@ -213,12 +215,14 @@ describe("Presale Interaction", () => {
         const parsed = MarketMaker.interface.parseLog(log);
         return parsed;
       }
-    }).find((event: any) => event.name === "NewBatch");
+    }).find((event: any) => event?.name === "NewBatch");
 
     expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount))
     expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount))
  
-    await mineBlocks(10);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await hre.timeAndMine.mine("10")
     
     const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
 
@@ -226,13 +230,5 @@ describe("Presale Interaction", () => {
 
     expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed));
   });
-
-  async function mineBlocks(x:number) {
-    for (let i = 0; i < x; i++ ){
-      await hre.network.provider.request({
-        method: "evm_mine",
-      });
-    }
-  }
 
 });
