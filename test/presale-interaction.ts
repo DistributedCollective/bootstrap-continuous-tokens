@@ -2,10 +2,17 @@ import { deployments, ethers, getNamedAccounts } from "hardhat";
 import hre from "hardhat";
 import { expect } from "chai";
 import { BigNumber } from "@ethersproject/bignumber";
-import { BalanceRedirectPresale__factory, MiniMeToken__factory, Controller__factory, MarketMaker__factory, BancorFormula__factory } from "../typechain";
+import {
+  BalanceRedirectPresale__factory,
+  MiniMeToken__factory,
+  Controller__factory,
+  MarketMaker__factory,
+  BancorFormula__factory,
+  ContinuousToken__factory,
+} from "../typechain";
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
-  await deployments.fixture('everything'); // ensure you start from a fresh deployments
+  await deployments.fixture("everything"); // ensure you start from a fresh deployments
 });
 
 const State = {
@@ -16,11 +23,11 @@ const State = {
 };
 
 const PPM = BigNumber.from(1e6);
-let reserveRatio:BigNumber;
-let presaleEchangeRate:BigNumber;
+let reserveRatio: BigNumber;
+let presaleEchangeRate: BigNumber;
 
 describe("Presale Interaction", () => {
-  let Presale: any, Controller: any, MarketMaker:any, ZEROToken: any, SOVToken: any, BancorFormula: any;
+  let Presale: any, Controller: any, MarketMaker: any, ZEROToken: any, SOVToken: any, BancorFormula: any;
   const tokens = BigNumber.from(1000000);
   const contributionAmount = BigNumber.from(100000);
   const amount = BigNumber.from(100);
@@ -33,7 +40,7 @@ describe("Presale Interaction", () => {
 
     const sConfig = JSON.stringify(hre.network.config);
     const config = JSON.parse(sConfig);
-    const {parameters,mockPresale} = config
+    const { parameters, mockPresale } = config;
 
     reserveRatio = parameters.reserveRatio;
     presaleEchangeRate = parameters.presaleEchangeRate;
@@ -49,7 +56,7 @@ describe("Presale Interaction", () => {
     BancorFormula = await BancorFormula__factory.connect(bancorFormula, ethers.provider.getSigner());
 
     const zeroToken = await deployments.get("BondedToken");
-    ZEROToken = MiniMeToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
+    ZEROToken = ContinuousToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
 
     const sovToken = await deployments.get("CollateralToken");
     SOVToken = MiniMeToken__factory.connect(sovToken.address, ethers.provider.getSigner());
@@ -61,7 +68,6 @@ describe("Presale Interaction", () => {
     Presale = await BalanceRedirectPresale__factory.connect(presale.address, ethers.provider.getSigner());
     await SOVToken.approve(Presale.address, tokens);
     await SOVToken.approve(MarketMaker.address, tokens);
-
   });
 
   it("Should revert if presale is not open", async () => {
@@ -114,14 +120,13 @@ describe("Presale Interaction", () => {
   });
 
   it("Should finish presale", async () => {
-
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     await hre.timeAndMine.increaseTime("10 weeks");
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     await hre.timeAndMine.mine("1");
-    
+
     expect(await Presale.state()).to.eq(State.Finished);
     await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
   });
@@ -143,7 +148,9 @@ describe("Presale Interaction", () => {
     const totalSold = await Presale.totalRaised();
     const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
     const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary));
-    expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary.mul(presaleEchangeRate).div(PPM)));
+    expect(await ZEROToken.balanceOf(deployer)).to.eq(
+      zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary.mul(presaleEchangeRate).div(PPM)),
+    );
 
     const totalRaised = await Presale.totalRaised();
 
@@ -164,71 +171,81 @@ describe("Presale Interaction", () => {
     const zeroSupplyBefore = await ZEROToken.totalSupply();
     const reserve = await Controller.reserve();
     const sovReserveBalanceBefore = await SOVToken.balanceOf(reserve);
-    const tx1 = await (await Controller.openBuyOrder(SOVToken.address,amount)).wait();
-    const newBatch1 = tx1.logs.map((log: any) => {
-      if (log.address === MarketMaker.address) {
-        const parsed = MarketMaker.interface.parseLog(log);
-        return parsed;
-      }
-    }).find((event: any) => event?.name === "NewBatch");
-    
+    const tx1 = await (await Controller.openBuyOrder(SOVToken.address, amount)).wait();
+    const newBatch1 = tx1.logs
+      .map((log: any) => {
+        if (log.address === MarketMaker.address) {
+          const parsed = MarketMaker.interface.parseLog(log);
+          return parsed;
+        }
+      })
+      .find((event: any) => event?.name === "NewBatch");
+
     const tokensTobeMinted = await MarketMaker.tokensToBeMinted();
-    const purchaseReturn = await BancorFormula.calculatePurchaseReturn(newBatch1.args.supply,newBatch1.args.balance,newBatch1.args.reserveRatio,amount)
+    const purchaseReturn = await BancorFormula.calculatePurchaseReturn(
+      newBatch1.args.supply,
+      newBatch1.args.balance,
+      newBatch1.args.reserveRatio,
+      amount,
+    );
 
     expect(tokensTobeMinted).to.eq(purchaseReturn);
     expect(await SOVToken.balanceOf(reserve)).to.eq(sovReserveBalanceBefore.add(amount));
-    
-    const tx2 = await (await Controller.openBuyOrder(SOVToken.address,amount)).wait();
-    const newBatch2 = tx2.logs.map((log: any) => {
-      if (log.address === MarketMaker.address) {
-        const parsed = MarketMaker.interface.parseLog(log);
-        return parsed;
-      }
-    }).find((event: any) => event?.name === "NewBatch");
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await hre.timeAndMine.mine("10");
 
+    const tx2 = await (await Controller.openBuyOrder(SOVToken.address, amount)).wait();
+    const newBatch2 = tx2.logs
+      .map((log: any) => {
+        if (log.address === MarketMaker.address) {
+          const parsed = MarketMaker.interface.parseLog(log);
+          return parsed;
+        }
+      })
+      .find((event: any) => event?.name === "NewBatch");
 
     expect(newBatch2.args.supply).to.eq(tokensTobeMinted.add(await ZEROToken.totalSupply()));
     expect(newBatch2.args.supply).to.eq(tokensTobeMinted.add(newBatch1.args.supply));
     expect(newBatch2.args.balance).to.eq(newBatch1.args.balance.add(amount));
 
-
     const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
-    await Controller.claimBuyOrder(deployer,newBatch1.args.id,SOVToken.address);
+    await Controller.claimBuyOrder(deployer, newBatch1.args.id, SOVToken.address);
     expect(await ZEROToken.totalSupply()).to.eq(zeroSupplyBefore.add(tokensTobeMinted));
     expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBefore.add(purchaseReturn));
- 
   });
 
-  it("Should open a sell order", async() => {
+  it("Should open a sell order", async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    await hre.timeAndMine.mine("10")
- 
+    await hre.timeAndMine.mine("10");
+
     const zeroSupplyBefore = await ZEROToken.totalSupply();
     const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
     const sovBalanceBefore = await SOVToken.balanceOf(deployer);
 
-    const tx1 = await (await Controller.openSellOrder(SOVToken.address,amount)).wait();
-    const newBatch1 = tx1.logs.map((log: any) => {
-      if (log.address === MarketMaker.address) {
-        const parsed = MarketMaker.interface.parseLog(log);
-        return parsed;
-      }
-    }).find((event: any) => event?.name === "NewBatch");
+    const tx1 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+    const newBatch1 = tx1.logs
+      .map((log: any) => {
+        if (log.address === MarketMaker.address) {
+          const parsed = MarketMaker.interface.parseLog(log);
+          return parsed;
+        }
+      })
+      .find((event: any) => event?.name === "NewBatch");
 
-    expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount))
-    expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount))
- 
+    expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount));
+    expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount));
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    await hre.timeAndMine.mine("10")
-    
+    await hre.timeAndMine.mine("10");
+
     const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
 
-    await Controller.claimSellOrder(deployer,newBatch1.args.id,SOVToken.address);
+    await Controller.claimSellOrder(deployer, newBatch1.args.id, SOVToken.address);
 
     expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed));
   });
-
 });

@@ -6,7 +6,7 @@ import "@aragon/os/contracts/common/IsContract.sol";
 import "@aragon/os/contracts/common/SafeERC20.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "@aragon/os/contracts/lib/token/ERC20.sol";
-import "./TokenManager.sol";
+import "./ContinuousToken.sol";
 import "./Vault.sol";
 import "@ablack/fundraising-bancor-formula/contracts/BancorFormula.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/IAragonFundraisingController.sol";
@@ -98,8 +98,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
     }
 
     IAragonFundraisingController public controller;
-    TokenManager public tokenManager;
-    ERC20 public token;
+    ContinuousToken public bondedToken;
     Vault public reserve;
     address public beneficiary;
     IBancorFormula public formula;
@@ -185,7 +184,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
     /**
      * @notice Initialize market maker
      * @param _controller   The address of the controller contract
-     * @param _tokenManager The address of the [bonded token] token manager contract
+     * @param _bondedToken The address of the bonded token
      * @param _reserve      The address of the reserve [pool] contract
      * @param _beneficiary  The address of the beneficiary [to whom fees are to be sent]
      * @param _formula      The address of the BancorFormula [computation] contract
@@ -196,7 +195,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
     function initialize(
         IKernel _kernel,
         IAragonFundraisingController _controller,
-        TokenManager _tokenManager,
+        ContinuousToken _bondedToken,
         IBancorFormula _formula,
         Vault _reserve,
         address _beneficiary,
@@ -208,17 +207,15 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
 
         require(isContract(_kernel), ERROR_CONTRACT_IS_EOA);
         require(isContract(_controller), ERROR_CONTRACT_IS_EOA);
-        require(isContract(_tokenManager), ERROR_CONTRACT_IS_EOA);
+        require(isContract(_bondedToken), ERROR_CONTRACT_IS_EOA);
         require(isContract(_formula), ERROR_CONTRACT_IS_EOA);
         require(isContract(_reserve), ERROR_CONTRACT_IS_EOA);
         require(_beneficiaryIsValid(_beneficiary), ERROR_INVALID_BENEFICIARY);
         require(_batchBlocks > 0, ERROR_INVALID_BATCH_BLOCKS);
         require(_feeIsValid(_buyFeePct) && _feeIsValid(_sellFeePct), ERROR_INVALID_PERCENTAGE);
-        require(_tokenManagerSettingIsValid(_tokenManager), ERROR_INVALID_TM_SETTING);
 
         controller = _controller;
-        tokenManager = _tokenManager;
-        token = ERC20(tokenManager.token());
+        bondedToken = _bondedToken;
         formula = _formula;
         reserve = _reserve;
         beneficiary = _beneficiary;
@@ -538,10 +535,6 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
         return _reserveRatio <= PPM;
     }
 
-    function _tokenManagerSettingIsValid(TokenManager _tokenManager) internal view returns (bool) {
-        return _tokenManager.maxAccountTokens() == uint256(-1);
-    }
-
     function _collateralValueIsValid(
         address _buyer,
         address _collateral,
@@ -562,7 +555,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
     }
 
     function _bondAmountIsValid(address _seller, uint256 _amount) internal view returns (bool) {
-        return _amount != 0 && tokenManager.spendableBalanceOf(_seller) >= _amount;
+        return _amount != 0 && bondedToken.balanceOf(_seller) >= _amount;
     }
 
     function _collateralIsWhitelisted(address _collateral) internal view returns (bool) {
@@ -705,7 +698,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
              * is for buy orders from previous meta-batches to be claimed [and tokens to be minted]:
              * as such totalSupply(metaBatch) + tokenToBeMinted(metaBatch) will always equal totalSupply(metaBatchInitialization) + tokenToBeMinted(metaBatchInitialization)
              */
-            metaBatch.realSupply = token.totalSupply().add(tokensToBeMinted);
+            metaBatch.realSupply = bondedToken.totalSupply().add(tokensToBeMinted);
             metaBatch.buyFeePct = buyFeePct;
             metaBatch.sellFeePct = sellFeePct;
             metaBatch.formula = formula;
@@ -890,7 +883,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
         (uint256 batchId, Batch storage batch) = _currentBatch(_collateral);
 
         // burn bonds
-        tokenManager.burn(_seller, _amount);
+        bondedToken.burn(_seller, _amount);
 
         // save batch
         uint256 deprecatedBuyReturn = batch.totalBuyReturn;
@@ -928,7 +921,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
 
         if (buyReturn > 0) {
             tokensToBeMinted = tokensToBeMinted.sub(buyReturn);
-            tokenManager.mint(_buyer, buyReturn);
+            bondedToken.mint(_buyer, buyReturn);
         }
 
         emit ClaimBuyOrder(_buyer, _batchId, _collateral, buyReturn);
@@ -987,7 +980,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
 
         if (amount > 0) {
             tokensToBeMinted = tokensToBeMinted.sub(amount);
-            tokenManager.mint(_seller, amount);
+            bondedToken.mint(_seller, amount);
         }
 
         emit ClaimCancelledSellOrder(_seller, _batchId, _collateral, amount);

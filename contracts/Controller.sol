@@ -368,7 +368,7 @@ contract Controller is EtherTokenConstant, IsContract, IAragonFundraisingControl
     /***** public view functions *****/
 
     function token() public view isInitialized returns (address) {
-        return marketMaker.token();
+        return marketMaker.bondedToken();
     }
 
     function contributionToken() public view isInitialized returns (address) {

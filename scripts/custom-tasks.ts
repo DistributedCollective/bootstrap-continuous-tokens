@@ -9,6 +9,7 @@ import {
   BalanceRedirectPresale__factory,
   Controller__factory,
   MiniMeToken__factory,
+  ContinuousToken__factory,
   MockedBalancedRedirectPresale__factory,
   MarketMaker__factory,
 } from "../typechain";
@@ -37,7 +38,7 @@ const getCollateralToken = async (deployments: DeploymentsExtension, signer: Sig
 
 const getBondedToken = async (deployments: DeploymentsExtension, signer: Signer) => {
   const bondedToken = await deployments.get("BondedToken");
-  return MiniMeToken__factory.connect(bondedToken.address, signer);
+  return ContinuousToken__factory.connect(bondedToken.address, signer);
 };
 
 task(
@@ -120,77 +121,80 @@ task("contribute", "buys (during the presale period) some bonded tokens and send
     }
   });
 
-  task("open-buy-order", "open a buy order of bonded tokens after presale period")
-    .addParam("amount","", "1", types.string)
-    .setAction(async (taskArgs, hre) => {
-      const { deployments, ethers } = hre;
-      const signer = getSigner(ethers);
+task("open-buy-order", "open a buy order of bonded tokens after presale period")
+  .addParam("amount", "", "1", types.string)
+  .setAction(async (taskArgs, hre) => {
+    const { deployments, ethers } = hre;
+    const signer = getSigner(ethers);
 
-      const CollateralToken = await getCollateralToken(deployments, signer);
-      const Controller = await getController(deployments, getSigner(ethers));
-      const MarketMaker = await getMarketMaker(deployments, getSigner(ethers));
+    const CollateralToken = await getCollateralToken(deployments, signer);
+    const Controller = await getController(deployments, getSigner(ethers));
+    const MarketMaker = await getMarketMaker(deployments, getSigner(ethers));
 
-      console.log("Opening a buy order");
-      await waitForTxConfirmation(CollateralToken.approve(MarketMaker.address, 0));
-      await waitForTxConfirmation(CollateralToken.approve(MarketMaker.address, taskArgs.amount));
-      const tx = await waitForTxConfirmation(Controller.openBuyOrder(CollateralToken.address, taskArgs.amount));
+    console.log("Opening a buy order");
+    await waitForTxConfirmation(CollateralToken.approve(MarketMaker.address, 0));
+    await waitForTxConfirmation(CollateralToken.approve(MarketMaker.address, taskArgs.amount));
+    const tx = await waitForTxConfirmation(Controller.openBuyOrder(CollateralToken.address, taskArgs.amount));
 
-      const buyOrder = tx.logs.map((log: any) => {
+    const buyOrder = tx.logs
+      .map((log: any) => {
         if (log.address === MarketMaker.address) {
           const parsed = MarketMaker.interface.parseLog(log);
           return parsed;
         }
-      }).find((event: any) => event?.name === "OpenBuyOrder");
-      console.log("BatchId : " , (buyOrder?.args.batchId).toString());
-    });
+      })
+      .find((event: any) => event?.name === "OpenBuyOrder");
+    console.log("BatchId : ", (buyOrder?.args.batchId).toString());
+  });
 
+task("claim-buy-order", "claim a buy order of bonded tokens")
+  .addParam("batch", "", "1", types.string)
+  .setAction(async (taskArgs, hre) => {
+    const { deployments, ethers } = hre;
+    const signer = getSigner(ethers);
+    const signerAddress = await signer.getAddress();
 
-    task("claim-buy-order", "claim a buy order of bonded tokens")
-    .addParam("batch","", "1", types.string)
-    .setAction(async (taskArgs, hre) => {
-      const { deployments, ethers } = hre;
-      const signer = getSigner(ethers);
-      const signerAddress = await signer.getAddress();
+    const CollateralToken = await getCollateralToken(deployments, signer);
+    const Controller = await getController(deployments, getSigner(ethers));
 
-      const CollateralToken = await getCollateralToken(deployments, signer);
-      const Controller = await getController(deployments, getSigner(ethers));
+    console.log("Claiming a buy order");
+    await waitForTxConfirmation(Controller.claimBuyOrder(signerAddress, taskArgs.batch, CollateralToken.address));
+  });
 
-      console.log("Claiming a buy order");
-      await waitForTxConfirmation(Controller.claimBuyOrder(signerAddress,taskArgs.batch,CollateralToken.address));
-    });
+task("open-sell-order", "open a sell order of bonded tokens after presale period")
+  .addParam("amount", "", "1", types.string)
+  .setAction(async (taskArgs, hre) => {
+    const { deployments, ethers } = hre;
+    const signer = getSigner(ethers);
 
-    task("open-sell-order", "open a sell order of bonded tokens after presale period")
-    .addParam("amount","", "1", types.string)
-    .setAction(async (taskArgs, hre) => {
-      const { deployments, ethers } = hre;
-      const signer = getSigner(ethers);
+    const CollateralToken = await getCollateralToken(deployments, signer);
+    const Controller = await getController(deployments, getSigner(ethers));
+    const MarketMaker = await getMarketMaker(deployments, getSigner(ethers));
 
-      const CollateralToken = await getCollateralToken(deployments, signer);
-      const Controller = await getController(deployments, getSigner(ethers));
-      const MarketMaker = await getMarketMaker(deployments, getSigner(ethers));
-  
-      console.log("Opening a sell order");
-      const tx = await waitForTxConfirmation(Controller.openSellOrder(CollateralToken.address, taskArgs.amount));
+    console.log("Opening a sell order");
+    const tx = await waitForTxConfirmation(Controller.openSellOrder(CollateralToken.address, taskArgs.amount));
 
-      const sellOrder = tx.logs.map((log: any) => {
+    const sellOrder = tx.logs
+      .map((log: any) => {
         if (log.address === MarketMaker.address) {
           const parsed = MarketMaker.interface.parseLog(log);
           return parsed;
         }
-      }).find((event: any) => event?.name === "OpenSellOrder");
-      console.log("BatchId : " , (sellOrder?.args.batchId).toString());
-    });
+      })
+      .find((event: any) => event?.name === "OpenSellOrder");
+    console.log("BatchId : ", (sellOrder?.args.batchId).toString());
+  });
 
-    task("claim-sell-order", "claim a sell order of bonded tokens")
-    .addParam("batch","", "1", types.string)
-    .setAction(async (taskArgs, hre) => {
-      const { deployments, ethers } = hre;
-      const signer = getSigner(ethers);
-      const signerAddress = await signer.getAddress();
+task("claim-sell-order", "claim a sell order of bonded tokens")
+  .addParam("batch", "", "1", types.string)
+  .setAction(async (taskArgs, hre) => {
+    const { deployments, ethers } = hre;
+    const signer = getSigner(ethers);
+    const signerAddress = await signer.getAddress();
 
-      const CollateralToken = await getCollateralToken(deployments, signer);
-      const Controller = await getController(deployments, getSigner(ethers));
+    const CollateralToken = await getCollateralToken(deployments, signer);
+    const Controller = await getController(deployments, getSigner(ethers));
 
-      console.log("Claiming a sell order");
-      await waitForTxConfirmation(Controller.claimSellOrder(signerAddress,taskArgs.batch,CollateralToken.address));
-    });
+    console.log("Claiming a sell order");
+    await waitForTxConfirmation(Controller.claimSellOrder(signerAddress, taskArgs.batch, CollateralToken.address));
+  });
