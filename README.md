@@ -126,16 +126,24 @@ npx hardhat contribute --network rskTestnetMocked --recipient "0x4D1A9fD1E1e67E8
 # Close the presale
 npx hardhat update-presale-date --span "6 weeks" --network rskTestnetMocked
 npx hardhat close-presale --network rskTestnetMocked
+# Open buy order (buy bonded tokens sending collateral tokens) 
+npx hardhat open-buy-order --network rskTestnetMocked --amount "1000"
+# Claim buy order (use buy order's batch id)
+npx hardhat claim-buy-order --network rskTestnetMocked --batch "229110"
+# Open sell order (buy collateral tokens sending bonded tokens) 
+npx hardhat open-sell-order --network rskTestnetMocked --amount "1000"
+# Claim sell order (use sell order's batch id)
+npx hardhat claim-sell-order --network rskTestnetMocked --batch "229120"
 ```
 
 ### Deployment
 
 ```bash
 yarn deploy:dev         # launches a `buidlervm` instance and deploys the contracts    
-deploy:dev:fixture      # generates some tokens and assigns them to some hardcoded accounts for testing purposes
+yarn deploy:dev:fixture      # generates some tokens and assigns them to some hardcoded accounts for testing purposes
 yarn deploy:rskdev      # deploys the contracts to a local RSK node
 yarn devchain:start     # launches an RSK regtest node. Requires Docker to be installed.
-deploy:rskTestnetMocked # deploys to RSK tesnet with mocked Presale Contract so the state can be tweaked
+yarn deploy:rskTestnetMocked # deploys to RSK tesnet with mocked Presale Contract so the state can be tweaked
 ```
 
 ## Built With

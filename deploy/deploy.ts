@@ -25,20 +25,6 @@ import {
 } from "../typechain";
 import { DAOFactory__factory } from "../typechain/factories/DAOFactory__factory";
 
-const PPM = BigNumber.from(1e6);
-const PCT_BASE = BigNumber.from((1e18).toString());
-const DAYS = 24 * 3600;
-// const MONTHS = 0 * DAYS;
-const START_DATE = BigNumber.from(new Date().getTime()).div(1000).add(DAYS);
-const BENEFICIARY_PCT = 200000;
-const PRESALE_PERIOD = 14 * DAYS;
-const PRESALE_EXCHANGE_RATE = PPM.mul(10000).div(100);
-const RESERVE_RATIO = PPM.mul(40).div(100);
-const BATCH_BLOCKS = 1; // 10;
-const SLIPPAGE = PCT_BASE.mul(3).div(100);
-const BUY_FEE = 0;
-const SELL_FEE = PCT_BASE.mul(3).div(1000);
-
 type Address = string;
 
 type FundrasingApps = {
@@ -319,23 +305,42 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
   const thisNetwork = hre.network.name;
+  const sConfig = JSON.stringify(hre.network.config);
+  const config = JSON.parse(sConfig);
+  const {parameters,deployTokens,mockPresale} = config
+
   console.log(`deployer address: ${deployer}`);
   console.log(`deploying at network: ${thisNetwork}`);
 
   let sovAddress;
   let zeroAddress;
 
-  console.log(deployer);
+  const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
+  const contractsToDeploy = [
+    "BancorFormula",
+    presaleToDeploy,
+    "MarketMaker",
+    "Reserve",
+    "TapDisabled",
+    "Controller",
+    "TokenManager",
+    "Kernel",
+    "ACL",
+    "EVMScriptRegistryFactory",
+    "DAOFactory",
+  ]
 
-  // FIXME: This need to be solved at hardhat level
-  const shouldDeployTokens = ["hardhat", "localhost", "rskdev", "rskTestnetMocked"].includes(thisNetwork);
+  if (deployTokens) {
+    contractsToDeploy.push("CollateralToken","BondedToken");
+  } 
 
-  if (shouldDeployTokens) {
-    await deployments.run(["CollateralToken", "BondedToken"], { writeDeploymentsToFiles: true });
+  //all contracts have to be deployed in a same deployments.run() because otherwise the tests don't work well and can't find deployments(hardhat-deploy issue)
+  await deployments.run(contractsToDeploy,{ writeDeploymentsToFiles: true },);
 
+  if (deployTokens) {
     sovAddress = (await deployments.get("CollateralToken")).address;
     zeroAddress = (await deployments.get("BondedToken")).address;
-  } else {
+  }else {
     const contractsFile = fs.readFileSync(
       path.resolve(__dirname, `../scripts/contractInteractions/${thisNetwork}_contracts.json`),
     );
@@ -345,27 +350,6 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     console.log(`reusing collateral token at address ${sovAddress}`);
     console.log(`reusing bondend token at address ${zeroAddress}`);
   }
-
-  // FIXME: This need to be solved at hardhat level
-  const shouldDeployMockedPresale = true;
-  const presaleToDeploy = shouldDeployMockedPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
-
-  await deployments.run(
-    [
-      "BancorFormula",
-      presaleToDeploy,
-      "MarketMaker",
-      "Reserve",
-      "TapDisabled",
-      "Controller",
-      "TokenManager",
-      "Kernel",
-      "ACL",
-      "EVMScriptRegistryFactory",
-      "DAOFactory",
-    ],
-    { writeDeploymentsToFiles: true },
-  );
 
   // Setup DAO and ACL
   const daoAddress = await createDAO(deployments, deployer);
@@ -405,13 +389,15 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     owner: deployer,
     collateralToken: sovAddress,
     bondedToken: zeroAddress,
-    period: PRESALE_PERIOD,
-    openDate: START_DATE,
-    exchangeRate: PRESALE_EXCHANGE_RATE,
-    mintingForBeneficiaryPct: BENEFICIARY_PCT,
-    reserveRatio: RESERVE_RATIO,
-    batchBlocks: BATCH_BLOCKS,
-    slippage: SLIPPAGE,
+    period: parameters.presalePeriod,
+    openDate: parameters.startDate,
+    exchangeRate: parameters.presaleEchangeRate,
+    mintingForBeneficiaryPct: parameters.beneficiaryPCT,
+    reserveRatio: parameters.reserveRatio,
+    batchBlocks: parameters.batchBlock,
+    slippage: parameters.slippage,
+    buyFee: parameters.buyFee,
+    sellFee: parameters.selFee
   };
 
   await waitForTxConfirmation(
@@ -441,8 +427,8 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       fundraisingApps.reserve.address,
       params.owner,
       params.batchBlocks,
-      BUY_FEE,
-      SELL_FEE,
+      params.buyFee,
+      params.sellFee,
     ),
   );
 
@@ -489,7 +475,4 @@ export default deployFunc;
 deployFunc.tags = ["everything"];
 deployFunc.id = "deployed_system"; // id required to prevent reexecution
 
-/*deployFunc.dependencies = [
-  'CollateralToken',
-  'BondedToken'
-];*/
+
