@@ -5,6 +5,7 @@ import { task, types } from "hardhat/config";
 import { HardhatEthersHelpers } from "hardhat/types";
 import ms from "ms";
 import { waitForTxConfirmation } from "../deploy/utils";
+import { initialize } from "../deploy/initialize";
 import {
   BalanceRedirectPresale__factory,
   Controller__factory,
@@ -40,6 +41,11 @@ const getBondedToken = async (deployments: DeploymentsExtension, signer: Signer)
   const bondedToken = await deployments.get("BondedToken");
   return ContinuousToken__factory.connect(bondedToken.address, signer);
 };
+
+task("initialize", "initialize bonding curve contracts and set permissions").setAction(async (_taskArgs, hre) => {
+  console.log("Initializing contracts");
+  await initialize(hre);
+});
 
 task(
   "update-presale-date",

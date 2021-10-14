@@ -106,17 +106,24 @@ There were added some custom `hardhat` tasks to help with the token manipulation
 ```bash
 npx hardhat help
 
+initialize                                    initialize bonding curve contracts and set permissions
 close-presale                                	closes the presale and let's people to start trading
 contribute                                   	buys (during the presale period) some bonded tokens and sends them to the recipient
 get-state                                    	returns presale current state
 mint-collateral                              	mints some collateral tokens (SOV) and sends them to the recipient address
 open-presale                                 	starts the presale
 update-presale-date                          	Testing command that updates the mocked presale date to a specific value so state can be changed
+open-buy-order                                open a buy order of bonded tokens after presale period
+claim-buy-order                               claim a buy order of bonded tokens
+open-sell-order                               open a sell order of bonded tokens after presale period
+claim-sell-order                              claim a sell order of bonded tokens
 ```
 
 For example, if the `MockedBalanceRedirect` presale was deployed, the following commands can be executed in order to open, contribute and then close it:
 
 ```bash
+# Initialize bonding curve contracts and set permissions
+npx hardhat initialize --network rskTestnetMocked
 # Move forward in time to make the sale open
 npx hardhat update-presale-date --span "2 days" --network rskTestnetMocked
 # Mint some SOV (collateral)
@@ -138,12 +145,34 @@ npx hardhat claim-sell-order --network rskTestnetMocked --batch "229120"
 
 ### Deployment
 
+Use hardhat.config to set deployment parameters for each network
+
+```bash
+deployTokens  #false: will not deploy collateral and bonded tokens, you must specify the addresses that you are going to use and run initialize task
+              #true: will deploy collateral and bonded tokens and initialize all contracts
+mockPresale   #false: will deploy presale contract 
+              #true: will deplot a mocked presale contract version that allow update date to close presale(for testing purposes)
+startDate #the date upon which that presale is to be open [ignored if 0]
+beneficiaryPCT #the percentage of the raised funds that will be sent to beneficiary address during presale period
+presalePeriod #the period within which to accept contribution for that presale
+presaleEchangeRate #the exchangeRate [= 1/price] at which [bonded] tokens are to be purchased for that presale [in PPM]
+reserveRatio  #the reserve ratio to be used for that collateral token [in PPM]
+batchBlock  #the number of blocks batches are to last
+slippage  #the price slippage below which each batch is to be kept for that collateral token [in PCT_BASE]
+buyFee  #the fee to be deducted from buy orders [in PCT_BASE]
+selFee  #the fee to be deducted from sell orders [in PCT_BASE]
+collateralTokenAddress  #the address of the collateral token, only necessary if deployTokens == false
+bondedTokenAddress  #the address of the bonded token, only necessary if deployTokens == false
+
+```
+
 ```bash
 yarn deploy:dev         # launches a `buidlervm` instance and deploys the contracts    
 yarn deploy:dev:fixture      # generates some tokens and assigns them to some hardcoded accounts for testing purposes
 yarn deploy:rskdev      # deploys the contracts to a local RSK node
 yarn devchain:start     # launches an RSK regtest node. Requires Docker to be installed.
 yarn deploy:rskTestnetMocked # deploys to RSK tesnet with mocked Presale Contract so the state can be tweaked
+yarn initialize:rskTestnetMocked  #initialize deployed contracts and set permissions
 ```
 
 ## Built With

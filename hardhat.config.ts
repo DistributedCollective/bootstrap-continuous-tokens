@@ -47,31 +47,31 @@ if (!process.env.MNEMONIC) {
 }
 
 type Parameters = {
-  startDate:BigNumber
-  beneficiaryPCT:number;  
-  presalePeriod:number;
-  presaleEchangeRate:BigNumber;
-  reserveRatio:BigNumber;
-  batchBlock:number;
-  slippage:BigNumber;
-  buyFee:BigNumber;
-  selFee:BigNumber
-}
+  startDate: BigNumber;
+  beneficiaryPCT: number;
+  presalePeriod: number;
+  presaleEchangeRate: BigNumber;
+  reserveRatio: BigNumber;
+  batchBlock: number;
+  slippage: BigNumber;
+  buyFee: BigNumber;
+  selFee: BigNumber;
+  collateralTokenAddress?: string;
+  bondedTokenAddress?: string;
+};
 declare module "hardhat/types/config" {
-export interface HardhatNetworkUserConfig {
-  deployTokens: boolean,
-  mockPresale: boolean,
-  parameters: Parameters;
-}
+  export interface HardhatNetworkUserConfig {
+    deployTokens: boolean;
+    mockPresale: boolean;
+    parameters: Parameters;
+  }
 
-export interface HardhatNetworkConfig {
-  deployTokens: boolean,
-  mockPresale: boolean,
-  parameters: Parameters;
+  export interface HardhatNetworkConfig {
+    deployTokens: boolean;
+    mockPresale: boolean;
+    parameters: Parameters;
+  }
 }
-
-}
-
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
@@ -84,15 +84,15 @@ const config: HardhatUserConfig = {
       deployTokens: true,
       mockPresale: true,
       parameters: {
-        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
-        beneficiaryPCT:200000,
-        presalePeriod:14 * DAYS,
-        presaleEchangeRate : PPM.mul(10000).div(100),
+        startDate: BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
+        beneficiaryPCT: 200000,
+        presalePeriod: 14 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
         batchBlock: 10,
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
-        selFee: PCT_BASE.mul(3).div(1000)
+        selFee: PCT_BASE.mul(3).div(1000),
       },
       accounts: {
         mnemonic,
@@ -103,15 +103,15 @@ const config: HardhatUserConfig = {
       deployTokens: true,
       mockPresale: true,
       parameters: {
-        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
-        beneficiaryPCT:200000,
-        presalePeriod:14 * DAYS,
-        presaleEchangeRate : PPM.mul(10000).div(100),
+        startDate: BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
+        beneficiaryPCT: 200000,
+        presalePeriod: 14 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
         batchBlock: 1,
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
-        selFee: PCT_BASE.mul(3).div(1000)
+        selFee: PCT_BASE.mul(3).div(1000),
       },
       url: "http://localhost:4444",
       // regtest default prefunded account
@@ -119,18 +119,20 @@ const config: HardhatUserConfig = {
       gasMultiplier: 1.25,
     },
     rskTestnetMocked: {
-      deployTokens: true,
+      deployTokens: false,
       mockPresale: true,
       parameters: {
-        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
-        beneficiaryPCT:200000,
-        presalePeriod:14 * DAYS,
-        presaleEchangeRate : PPM.mul(10000).div(100),
+        startDate: BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
+        beneficiaryPCT: 200000,
+        presalePeriod: 14 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
         batchBlock: 10,
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
-        selFee: PCT_BASE.mul(3).div(1000)
+        selFee: PCT_BASE.mul(3).div(1000),
+        collateralTokenAddress: "0x3AC4ab3193aF6C73BC8Bd570e7614B0aA2Dc657F",
+        bondedTokenAddress: "0x3b908A14f3cD90b0Ac5F98d17e272aCb0cAe1BBf",
       },
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
@@ -181,5 +183,5 @@ const config: HardhatUserConfig = {
   },
 };
 
-config.networks
+config.networks;
 export default config;
