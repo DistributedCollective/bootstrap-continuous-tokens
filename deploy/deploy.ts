@@ -11,14 +11,12 @@ import {
   Controller__factory,
   MarketMaker__factory,
   MiniMeToken__factory,
-  TokenManager__factory,
   Kernel__factory,
   Reserve,
   BalanceRedirectPresale,
   MarketMaker,
   TapDisabled,
   Controller,
-  TokenManager,
   Reserve__factory,
   TapDisabled__factory,
   ACL,
@@ -33,7 +31,6 @@ type FundrasingApps = {
   marketMaker: MarketMaker;
   tap: TapDisabled;
   controller: Controller;
-  bondedTokenManager: TokenManager;
 };
 
 // Taken from https://github.com/aragon/aragonOS/blob/master/scripts/deploy-daofactory.js
@@ -87,7 +84,6 @@ const createPermission = async (acl: ACL, entity: string, app: string, role: str
   createPermissions(acl, [entity], app, role, manager);
 
 const setupFundraisingPermission = async (deployer: string, fundraisingApps: FundrasingApps, daoAddress: Address) => {
-  const { marketMaker, presale } = fundraisingApps;
   const dao = Kernel__factory.connect(daoAddress, await ethers.getSigner(deployer));
   const acl = ACL__factory.connect(await dao.acl(), await ethers.getSigner(deployer));
 
@@ -95,20 +91,6 @@ const setupFundraisingPermission = async (deployer: string, fundraisingApps: Fun
 
   const owner = deployer;
 
-  await createPermissions(
-    acl,
-    [marketMaker.address, presale.address],
-    fundraisingApps.bondedTokenManager.address,
-    await fundraisingApps.bondedTokenManager.MINT_ROLE(),
-    owner,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.marketMaker.address,
-    fundraisingApps.bondedTokenManager.address,
-    await fundraisingApps.bondedTokenManager.BURN_ROLE(),
-    owner,
-  );
   // reserve
   await createPermission(
     acl,
@@ -307,7 +289,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const thisNetwork = hre.network.name;
   const sConfig = JSON.stringify(hre.network.config);
   const config = JSON.parse(sConfig);
-  const {parameters,deployTokens,mockPresale} = config
+  const { parameters, deployTokens, mockPresale } = config;
 
   console.log(`deployer address: ${deployer}`);
   console.log(`deploying at network: ${thisNetwork}`);
@@ -323,24 +305,23 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     "Reserve",
     "TapDisabled",
     "Controller",
-    "TokenManager",
     "Kernel",
     "ACL",
     "EVMScriptRegistryFactory",
     "DAOFactory",
-  ]
+  ];
 
   if (deployTokens) {
-    contractsToDeploy.push("CollateralToken","BondedToken");
-  } 
+    contractsToDeploy.push("CollateralToken", "BondedToken");
+  }
 
   //all contracts have to be deployed in a same deployments.run() because otherwise the tests don't work well and can't find deployments(hardhat-deploy issue)
-  await deployments.run(contractsToDeploy,{ writeDeploymentsToFiles: true },);
+  await deployments.run(contractsToDeploy, { writeDeploymentsToFiles: true });
 
   if (deployTokens) {
     sovAddress = (await deployments.get("CollateralToken")).address;
     zeroAddress = (await deployments.get("BondedToken")).address;
-  }else {
+  } else {
     const contractsFile = fs.readFileSync(
       path.resolve(__dirname, `../scripts/contractInteractions/${thisNetwork}_contracts.json`),
     );
@@ -362,28 +343,13 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const marketMakerDeployment = await deployments.get("MarketMaker");
   const tapDisabledDeployment = await deployments.get("TapDisabled");
   const controllerDeployment = await deployments.get("Controller");
-  const tokenManagerDeployment = await deployments.get("TokenManager");
   const fundraisingApps: FundrasingApps = {
     reserve: await Reserve__factory.connect(reserveDeployment.address, ethers.provider.getSigner()),
     presale: await BalanceRedirectPresale__factory.connect(presaleDeployment.address, ethers.provider.getSigner()),
     marketMaker: await MarketMaker__factory.connect(marketMakerDeployment.address, ethers.provider.getSigner()),
     tap: await TapDisabled__factory.connect(tapDisabledDeployment.address, ethers.provider.getSigner()),
     controller: await Controller__factory.connect(controllerDeployment.address, ethers.provider.getSigner()),
-    bondedTokenManager: await TokenManager__factory.connect(
-      tokenManagerDeployment.address,
-      ethers.provider.getSigner(),
-    ),
   };
-
-  const bondedToken = await MiniMeToken__factory.connect(zeroAddress, ethers.provider.getSigner());
-  await waitForTxConfirmation(bondedToken.changeController(tokenManagerDeployment.address));
-
-  console.log(`BondedToken at ${bondedToken.address} controller changed to ${tokenManagerDeployment.address}`);
-
-  const tokenManager = await TokenManager__factory.connect(tokenManagerDeployment.address, ethers.provider.getSigner());
-  await waitForTxConfirmation(tokenManager.initialize(daoAddress, zeroAddress, true, 0));
-
-  console.log(`TokenManager at ${tokenManager.address} initialized`);
 
   const params = {
     owner: deployer,
@@ -397,7 +363,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     batchBlocks: parameters.batchBlock,
     slippage: parameters.slippage,
     buyFee: parameters.buyFee,
-    sellFee: parameters.selFee
+    sellFee: parameters.selFee,
   };
 
   await waitForTxConfirmation(
@@ -405,7 +371,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       daoAddress,
       fundraisingApps.controller.address,
       fundraisingApps.marketMaker.address,
-      fundraisingApps.bondedTokenManager.address,
+      zeroAddress,
       fundraisingApps.reserve.address,
       params.owner,
       params.collateralToken,
@@ -422,7 +388,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     fundraisingApps.marketMaker.initialize(
       daoAddress,
       fundraisingApps.controller.address,
-      fundraisingApps.bondedTokenManager.address,
+      zeroAddress,
       bancorFormulaDeployment.address,
       fundraisingApps.reserve.address,
       params.owner,
@@ -474,5 +440,3 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 export default deployFunc;
 deployFunc.tags = ["everything"];
 deployFunc.id = "deployed_system"; // id required to prevent reexecution
-
-

@@ -6,7 +6,7 @@ import "@aragon/os/contracts/common/SafeERC20.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "@aragon/os/contracts/lib/math/SafeMath64.sol";
 import "@aragon/os/contracts/lib/token/ERC20.sol";
-import "./TokenManager.sol";
+import "./ContinuousToken.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/IAragonFundraisingController.sol";
 
 import "@ablack/fundraising-shared-interfaces/contracts/IPresale.sol";
@@ -55,7 +55,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
 
     IAragonFundraisingController public controller;
     IMarketMaker public marketMaker;
-    TokenManager public tokenManager;
+    ContinuousToken public bondedToken;
     address public reserve;
     address public beneficiary;
     ERC20 internal erc20ContribToken;
@@ -80,7 +80,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
      * @notice Initialize presale
      * @param _controller               The address of the controller contract
      * @param _marketMaker              The address of the market maker contract
-     * @param _tokenManager             The address of the [bonded] token manager contract
+     * @param _bondedToken              The address of the bonded token
      * @param _reserve                  The address of the reserve [pool] contract
      * @param _beneficiary              The address of the beneficiary [to whom a percentage of the raised funds is be to be sent]
      * @param _erc20ContribToken        The address of the token to be used to contribute
@@ -92,7 +92,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
         IKernel _kernel,
         IAragonFundraisingController _controller,
         IMarketMaker _marketMaker,
-        TokenManager _tokenManager,
+        ContinuousToken _bondedToken,
         address _reserve,
         address _beneficiary,
         ERC20 _erc20ContribToken,
@@ -103,7 +103,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
     ) external onlyInit {
         require(isContract(_controller), ERROR_CONTRACT_IS_EOA);
         require(isContract(_marketMaker), ERROR_CONTRACT_IS_EOA);
-        require(isContract(_tokenManager), ERROR_CONTRACT_IS_EOA);
+        require(isContract(_bondedToken), ERROR_CONTRACT_IS_EOA);
         require(isContract(_reserve), ERROR_CONTRACT_IS_EOA);
         require(_beneficiary != address(0), ERROR_INVALID_BENEFICIARY);
         require(isContract(_erc20ContribToken), ERROR_INVALID_CONTRIBUTE_TOKEN);
@@ -114,7 +114,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
 
         controller = _controller;
         marketMaker = _marketMaker;
-        tokenManager = _tokenManager;
+        bondedToken = _bondedToken;
         reserve = _reserve;
         beneficiary = _beneficiary;
         erc20ContribToken = _erc20ContribToken;
@@ -184,7 +184,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
         uint256 tokensToSell = contributionToTokens(_value);
         totalRaised = totalRaised.add(_value);
         totalSold = totalSold.add(tokensToSell);
-        tokenManager.mint(_contributor, tokensToSell);
+        bondedToken.mint(_contributor, tokensToSell);
 
         emit Contribute(_contributor, _value, tokensToSell);
     }
@@ -209,7 +209,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
         if (mintingForBeneficiaryPct > 0) {
             // No need for SafeMath, already checked mintingForBeneficiaryPct < PPM
             tokensToMint = totalSold.mul(mintingForBeneficiaryPct) / (PPM - mintingForBeneficiaryPct);
-            tokenManager.mint(beneficiary, tokensToMint);
+            bondedToken.mint(beneficiary, tokensToMint);
         }
 
         // (presale) ~~~> contribution tokens ~~~> (reserve)
