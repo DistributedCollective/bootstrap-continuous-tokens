@@ -1,11 +1,11 @@
+import { HardhatEthersHelpers } from "@nomiclabs/hardhat-ethers/types";
 import { addMilliseconds } from "date-fns";
 import { Signer } from "ethers";
 import { DeploymentsExtension } from "hardhat-deploy/dist/types";
 import { task, types } from "hardhat/config";
-import { HardhatEthersHelpers, HardhatRuntimeEnvironment } from "hardhat/types";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import ms from "ms";
 import { waitForTxConfirmation } from "../deploy/utils";
-import { initialize } from "../deploy/initialize";
 import {
   BalanceRedirectPresale__factory,
   Controller__factory,
@@ -14,6 +14,7 @@ import {
   MockedBalancedRedirectPresale__factory,
   MarketMaker__factory,
 } from "../typechain";
+import { initialize } from "../deploy/initialize";
 
 const getSigner = (ethers: typeof import("ethers/lib/ethers") & HardhatEthersHelpers) => ethers.provider.getSigner();
 

@@ -1,5 +1,4 @@
 import { DeployFunction } from "hardhat-deploy/types";
-import { initialize } from "../deploy/initialize";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
