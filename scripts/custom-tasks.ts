@@ -2,7 +2,7 @@ import { addMilliseconds } from "date-fns";
 import { Signer } from "ethers";
 import { DeploymentsExtension } from "hardhat-deploy/dist/types";
 import { task, types } from "hardhat/config";
-import { HardhatEthersHelpers } from "hardhat/types";
+import { HardhatEthersHelpers, HardhatRuntimeEnvironment } from "hardhat/types";
 import ms from "ms";
 import { waitForTxConfirmation } from "../deploy/utils";
 import { initialize } from "../deploy/initialize";
@@ -27,8 +27,14 @@ const getMarketMaker = async (deployments: DeploymentsExtension, signer: Signer)
   return MarketMaker__factory.connect(marketMaker.address, signer);
 };
 
-const getPresale = async (deployments: DeploymentsExtension, signer: Signer) => {
-  const presale = await deployments.get("MockedBalancedRedirectPresale");
+const getPresale = async (deployments: DeploymentsExtension, signer: Signer, hre: HardhatRuntimeEnvironment) => {
+  const sConfig = JSON.stringify(hre.network.config);
+  const config = JSON.parse(sConfig);
+  const { mockPresale } = config;
+
+  const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
+
+  const presale = await deployments.get(presaleToDeploy);
   return BalanceRedirectPresale__factory.connect(presale.address, signer);
 };
 
@@ -87,7 +93,7 @@ task("close-presale", "closes the presale and let's people to start trading").se
 
 task("get-state", "returns presale current state").setAction(async (_taskArgs, hre) => {
   const { deployments, ethers } = hre;
-  const Presale = await getPresale(deployments, getSigner(ethers));
+  const Presale = await getPresale(deployments, getSigner(ethers),hre);
   console.log(await Presale.state());
 });
 
@@ -110,7 +116,7 @@ task("contribute", "buys (during the presale period) some bonded tokens and send
 
     const CollateralToken = await getCollateralToken(deployments, signer);
     const BondedToken = await getBondedToken(deployments, signer);
-    const Presale = await getPresale(deployments, signer);
+    const Presale = await getPresale(deployments, signer,hre);
 
     console.log("Generating tokens");
     await waitForTxConfirmation(CollateralToken.generateTokens(signerAddress, taskArgs.amount));

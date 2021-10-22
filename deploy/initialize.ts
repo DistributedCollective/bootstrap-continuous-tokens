@@ -1,6 +1,6 @@
 import { GAS_LIMIT_PATCH, waitForTxConfirmation } from "./utils";
 import { BigNumber, Signer } from "ethers";
-import { DeployFunction, DeploymentsExtension } from "hardhat-deploy/types";
+import { DeploymentsExtension } from "hardhat-deploy/types";
 import { HardhatEthersHelpers } from "hardhat/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
@@ -294,19 +294,16 @@ export const initialize = async (hre:HardhatRuntimeEnvironment) => {
     const signer = getSigner(ethers);
 
     const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
-    let sovAddress;
-    let zeroAddress;
 
     parameters.collateralTokenAddress ??= (await deployments.get("CollateralToken")).address;
     parameters.bondedTokenAddress ??= (await deployments.get("BondedToken")).address;
-    sovAddress = parameters.collateralTokenAddress;
-    zeroAddress = parameters.bondedTokenAddress;
   
-    console.log(`Collateral token at address ${sovAddress}`);
-    console.log(`Bondend token at address ${zeroAddress}`);
+    console.log(`Collateral token at address ${parameters.collateralTokenAddress}`);
+    console.log(`Bondend token at address ${parameters.bondedTokenAddress}`);
     
+    console.log("Creating DAO")
     const daoAddress = await createDAO(deployments,deployer, signer);
-
+    console.log("DAO Created");
     const bancorFormulaDeployment = await deployments.get("BancorFormula");
     const reserveDeployment = await deployments.get("Reserve");
     const presaleDeployment = await deployments.get(presaleToDeploy);
@@ -324,8 +321,8 @@ export const initialize = async (hre:HardhatRuntimeEnvironment) => {
 
     const params = {
         owner: deployer,
-        collateralToken: sovAddress,
-        bondedToken: zeroAddress,
+        collateralToken: parameters.collateralTokenAddress,
+        bondedToken: parameters.bondedTokenAddress,
         period: parameters.presalePeriod,
         openDate: parameters.startDate,
         exchangeRate: parameters.presaleEchangeRate,
@@ -336,13 +333,13 @@ export const initialize = async (hre:HardhatRuntimeEnvironment) => {
         buyFee: parameters.buyFee,
         sellFee: parameters.selFee,
       };
-
+      
     await waitForTxConfirmation(
         fundraisingApps.presale.initialize(
           daoAddress,
           fundraisingApps.controller.address,
           fundraisingApps.marketMaker.address,
-          zeroAddress,
+          parameters.bondedTokenAddress,
           fundraisingApps.reserve.address,
           params.owner,
           params.collateralToken,
@@ -359,7 +356,7 @@ export const initialize = async (hre:HardhatRuntimeEnvironment) => {
         fundraisingApps.marketMaker.initialize(
           daoAddress,
           fundraisingApps.controller.address,
-          zeroAddress,
+          parameters.bondedTokenAddress,
           bancorFormulaDeployment.address,
           fundraisingApps.reserve.address,
           params.owner,
@@ -392,7 +389,7 @@ export const initialize = async (hre:HardhatRuntimeEnvironment) => {
     
     console.log("Setup fundraising permission done");
     
-    await setupCollateral(deployer, fundraisingApps, daoAddress, sovAddress, params.reserveRatio, params.slippage, signer);
+    await setupCollateral(deployer, fundraisingApps, daoAddress, parameters.collateralTokenAddress, params.reserveRatio, params.slippage, signer);
     
     console.log("Setup collateral done");
 }

@@ -10,9 +10,12 @@ import {
   BancorFormula__factory,
   ContinuousToken__factory,
 } from "../typechain";
+import { initialize } from "../deploy/initialize";
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
   await deployments.fixture("everything"); // ensure you start from a fresh deployments
+  //initialize contracts
+  await initialize(hre)
 });
 
 const State = {

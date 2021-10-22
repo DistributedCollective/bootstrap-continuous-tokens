@@ -34,10 +34,6 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   //all contracts have to be deployed in a same deployments.run() because otherwise the tests don't work well and can't find deployments(hardhat-deploy issue)
   await deployments.run(contractsToDeploy, { writeDeploymentsToFiles: true });
 
-  if (deployTokens) {
-    await initialize(hre);
-  }
-
   return hre.network.live; // prevents re execution on live networks
 };
 export default deployFunc;
