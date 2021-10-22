@@ -69,6 +69,11 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
     uint256 public totalRaised;
     uint256 public totalSold;
 
+    //total contributors
+    uint256 public contributorsCounter;
+    //total amount of tokens sent by each contributor
+    mapping(address => uint256) public contributors;
+
     event SetOpenDate(uint64 date);
     event ReduceBeneficiatyPct(uint256 pct);
     event Close();
@@ -185,6 +190,10 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
         totalRaised = totalRaised.add(_value);
         totalSold = totalSold.add(tokensToSell);
         bondedToken.mint(_contributor, tokensToSell);
+        if (contributors[_contributor] == 0) {
+            contributorsCounter = contributorsCounter.add(1);
+        }
+        contributors[_contributor] = contributors[_contributor].add(_value);
 
         emit Contribute(_contributor, _value, tokensToSell);
     }
