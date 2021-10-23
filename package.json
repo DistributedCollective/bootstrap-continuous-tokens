@@ -93,9 +93,11 @@
     "test": "hardhat test",
     "report:gas": "REPORT_GAS=true hardhat test",
     "deploy:dev": "hardhat --network hardhat node --tags everything",
+    "deploy:dev:initialize": "hardhat --network localhost initialize",
     "deploy:dev:fixture": "hardhat deploy --network localhost --tags fixture",
     "deploy:rskdev": "hardhat deploy --network rskdev --tags everything",
     "devchain:start": "ts-node ./scripts/start-dev-chain.ts",
-    "deploy:rskTestnetMocked": "hardhat deploy --network rskTestnetMocked --tags everything"
+    "deploy:rskTestnetMocked": "hardhat deploy --network rskTestnetMocked --tags everything",
+    "initialize:rskTestnetMocked": "hardhat initialize --network rskTestnetMocked"
   }
 }

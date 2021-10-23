@@ -47,31 +47,31 @@ if (!process.env.MNEMONIC) {
 }
 
 type Parameters = {
-  startDate:BigNumber
-  beneficiaryPCT:number;  
-  presalePeriod:number;
-  presaleEchangeRate:BigNumber;
-  reserveRatio:BigNumber;
-  batchBlock:number;
-  slippage:BigNumber;
-  buyFee:BigNumber;
-  selFee:BigNumber
-}
+  startDate: BigNumber;
+  beneficiaryPCT: number;
+  presalePeriod: number;
+  presaleEchangeRate: BigNumber;
+  reserveRatio: BigNumber;
+  batchBlock: number;
+  slippage: BigNumber;
+  buyFee: BigNumber;
+  selFee: BigNumber;
+  collateralTokenAddress?: string;
+  bondedTokenAddress?: string;
+};
 declare module "hardhat/types/config" {
-export interface HardhatNetworkUserConfig {
-  deployTokens: boolean,
-  mockPresale: boolean,
-  parameters: Parameters;
-}
+  export interface HardhatNetworkUserConfig {
+    deployTokens: boolean;
+    mockPresale: boolean;
+    parameters: Parameters;
+  }
 
-export interface HardhatNetworkConfig {
-  deployTokens: boolean,
-  mockPresale: boolean,
-  parameters: Parameters;
+  export interface HardhatNetworkConfig {
+    deployTokens: boolean;
+    mockPresale: boolean;
+    parameters: Parameters;
+  }
 }
-
-}
-
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
@@ -84,15 +84,15 @@ const config: HardhatUserConfig = {
       deployTokens: true,
       mockPresale: true,
       parameters: {
-        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
-        beneficiaryPCT:200000,
-        presalePeriod:14 * DAYS,
-        presaleEchangeRate : PPM.mul(10000).div(100),
+        startDate: BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
+        beneficiaryPCT: 200000,
+        presalePeriod: 14 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
         batchBlock: 10,
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
-        selFee: PCT_BASE.mul(3).div(1000)
+        selFee: PCT_BASE.mul(3).div(1000),
       },
       accounts: {
         mnemonic,
@@ -100,18 +100,20 @@ const config: HardhatUserConfig = {
       chainId: chainIds.hardhat,
     },
     rskdev: {
-      deployTokens: true,
-      mockPresale: true,
+      deployTokens: false,
+      mockPresale: false,
       parameters: {
-        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
-        beneficiaryPCT:200000,
-        presalePeriod:14 * DAYS,
-        presaleEchangeRate : PPM.mul(10000).div(100),
+        startDate:BigNumber.from(new Date().getTime()).div(1000).add(1000),
+        beneficiaryPCT: 200000,
+        presalePeriod: 14 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
-        batchBlock: 1,
+        batchBlock: 10,
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
-        selFee: PCT_BASE.mul(3).div(1000)
+        selFee: PCT_BASE.mul(3).div(1000),
+        collateralTokenAddress: "0x61E81fFa505d5A6F11f923C2DFe705E4Bc8B7d7B",
+        bondedTokenAddress: "0x49bD7a016c3D88fdcD42ba7201CCB671C816CaCe",
       },
       url: "http://localhost:4444",
       // regtest default prefunded account
@@ -119,18 +121,20 @@ const config: HardhatUserConfig = {
       gasMultiplier: 1.25,
     },
     rskTestnetMocked: {
-      deployTokens: true,
-      mockPresale: true,
+      deployTokens: false,
+      mockPresale: false,
       parameters: {
-        startDate:BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
-        beneficiaryPCT:200000,
-        presalePeriod:14 * DAYS,
-        presaleEchangeRate : PPM.mul(10000).div(100),
+        startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),
+        beneficiaryPCT: 200000,
+        presalePeriod: 2 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
         batchBlock: 10,
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
-        selFee: PCT_BASE.mul(3).div(1000)
+        selFee: PCT_BASE.mul(3).div(1000),
+        collateralTokenAddress: "0x6a9A07972D07e58F0daf5122d11E069288A375fb",
+        bondedTokenAddress: "0x65844bfb21FCFfa7eB5e0F1AD6f11467A523e270",
       },
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
@@ -181,5 +185,5 @@ const config: HardhatUserConfig = {
   },
 };
 
-config.networks
+config.networks;
 export default config;

@@ -3,15 +3,12 @@ import { addMilliseconds } from "date-fns";
 import { Signer } from "ethers";
 import { DeploymentsExtension } from "hardhat-deploy/dist/types";
 import { task, types } from "hardhat/config";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import ms from "ms";
+import { getProperConfig, initialize } from "../deploy/initialize";
 import { waitForTxConfirmation } from "../deploy/utils";
 import {
-  BalanceRedirectPresale__factory,
-  Controller__factory,
-  MiniMeToken__factory,
-  ContinuousToken__factory,
-  MockedBalancedRedirectPresale__factory,
-  MarketMaker__factory,
+  BalanceRedirectPresale__factory, ContinuousToken__factory, Controller__factory, MarketMaker__factory, MiniMeToken__factory, MockedBalancedRedirectPresale__factory
 } from "../typechain";
 
 const getSigner = (ethers: typeof import("ethers/lib/ethers") & HardhatEthersHelpers) => ethers.provider.getSigner();
@@ -26,8 +23,12 @@ const getMarketMaker = async (deployments: DeploymentsExtension, signer: Signer)
   return MarketMaker__factory.connect(marketMaker.address, signer);
 };
 
-const getPresale = async (deployments: DeploymentsExtension, signer: Signer) => {
-  const presale = await deployments.get("MockedBalancedRedirectPresale");
+const getPresale = async (deployments: DeploymentsExtension, signer: Signer, hre: HardhatRuntimeEnvironment) => {
+  const { mockPresale } = getProperConfig(hre);
+
+  const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
+
+  const presale = await deployments.get(presaleToDeploy);
   return BalanceRedirectPresale__factory.connect(presale.address, signer);
 };
 
@@ -40,6 +41,11 @@ const getBondedToken = async (deployments: DeploymentsExtension, signer: Signer)
   const bondedToken = await deployments.get("BondedToken");
   return ContinuousToken__factory.connect(bondedToken.address, signer);
 };
+
+task("initialize", "initialize bonding curve contracts and set permissions").setAction(async (_taskArgs, hre) => {
+  console.log("Initializing contracts");
+  await initialize(hre);
+});
 
 task(
   "update-presale-date",
@@ -81,7 +87,7 @@ task("close-presale", "closes the presale and let's people to start trading").se
 
 task("get-state", "returns presale current state").setAction(async (_taskArgs, hre) => {
   const { deployments, ethers } = hre;
-  const Presale = await getPresale(deployments, getSigner(ethers));
+  const Presale = await getPresale(deployments, getSigner(ethers), hre);
   console.log(await Presale.state());
 });
 
@@ -104,7 +110,7 @@ task("contribute", "buys (during the presale period) some bonded tokens and send
 
     const CollateralToken = await getCollateralToken(deployments, signer);
     const BondedToken = await getBondedToken(deployments, signer);
-    const Presale = await getPresale(deployments, signer);
+    const Presale = await getPresale(deployments, signer, hre);
 
     console.log("Generating tokens");
     await waitForTxConfirmation(CollateralToken.generateTokens(signerAddress, taskArgs.amount));
