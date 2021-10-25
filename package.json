@@ -1,6 +1,6 @@
 {
   "name": "atix-solidity-template",
-  "version": "0.0.2",
+  "version": "0.0.0",
   "description": "Atix Solidity project template",
   "author": "",
   "license": "ISC",
@@ -54,7 +54,7 @@
     "solhint": "3.3.2",
     "solhint-plugin-prettier": "0.0.5",
     "solidity-coverage": "0.7.12",
-    "standard-version": "9.1.0",
+    "standard-version": "9.3.2",
     "ts-generator": "0.1.1",
     "ts-node": "9.1.1",
     "typechain": "5.0.0",
@@ -101,5 +101,5 @@
     "initialize:rskTestnetMocked": "hardhat initialize --network rskTestnetMocked",
     "deploy:rskTestnetMockedWithSOV": "hardhat deploy --network rskTestnetMockedWithSOV --tags everything",
     "initialize:rskTestnetMockedWithSOV": "hardhat initialize --network rskTestnetMockedWithSOV"
-   }
+  }
 }
