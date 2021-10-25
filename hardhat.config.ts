@@ -61,13 +61,11 @@ type Parameters = {
 };
 declare module "hardhat/types/config" {
   export interface HardhatNetworkUserConfig {
-    deployTokens: boolean;
     mockPresale: boolean;
     parameters: Parameters;
   }
 
   export interface HardhatNetworkConfig {
-    deployTokens: boolean;
     mockPresale: boolean;
     parameters: Parameters;
   }
@@ -81,7 +79,6 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      deployTokens: true,
       mockPresale: true,
       parameters: {
         startDate: BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
@@ -100,7 +97,6 @@ const config: HardhatUserConfig = {
       chainId: chainIds.hardhat,
     },
     rskdev: {
-      deployTokens: false,
       mockPresale: false,
       parameters: {
         startDate:BigNumber.from(new Date().getTime()).div(1000).add(1000),
@@ -121,7 +117,6 @@ const config: HardhatUserConfig = {
       gasMultiplier: 1.25,
     },
     rskTestnetMocked: {
-      deployTokens: false,
       mockPresale: false,
       parameters: {
         startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),

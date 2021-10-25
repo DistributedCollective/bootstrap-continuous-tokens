@@ -5,10 +5,15 @@ import { DeploymentsExtension } from "hardhat-deploy/dist/types";
 import { task, types } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import ms from "ms";
-import { getProperConfig, initialize } from "../deploy/initialize";
-import { waitForTxConfirmation } from "../deploy/utils";
+import { initialize } from "../deploy/initialize";
+import { waitForTxConfirmation, getProperConfig } from "../deploy/utils";
 import {
-  BalanceRedirectPresale__factory, ContinuousToken__factory, Controller__factory, MarketMaker__factory, MiniMeToken__factory, MockedBalancedRedirectPresale__factory
+  BalanceRedirectPresale__factory,
+  ContinuousToken__factory,
+  Controller__factory,
+  MarketMaker__factory,
+  MiniMeToken__factory,
+  MockedBalancedRedirectPresale__factory,
 } from "../typechain";
 
 const getSigner = (ethers: typeof import("ethers/lib/ethers") & HardhatEthersHelpers) => ethers.provider.getSigner();

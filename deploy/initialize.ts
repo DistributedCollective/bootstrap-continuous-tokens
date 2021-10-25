@@ -1,9 +1,7 @@
 import { BigNumber, Signer } from "ethers";
 import { DeploymentsExtension } from "hardhat-deploy/types";
 import {
-  HardhatEthersHelpers,
-  HardhatNetworkUserConfig,
-  HardhatRuntimeEnvironment
+  HardhatEthersHelpers, HardhatRuntimeEnvironment
 } from "hardhat/types";
 import {
   ACL,
@@ -21,7 +19,7 @@ import {
   TapDisabled__factory
 } from "../typechain";
 import { DAOFactory__factory } from "../typechain/factories/DAOFactory__factory";
-import { GAS_LIMIT_PATCH, waitForTxConfirmation } from "./utils";
+import { GAS_LIMIT_PATCH, getProperConfig, waitForTxConfirmation } from "./utils";
 
 type FundrasingApps = {
   reserve: Reserve;
@@ -29,13 +27,6 @@ type FundrasingApps = {
   marketMaker: MarketMaker;
   tap: TapDisabled;
   controller: Controller;
-};
-
-// Note that the deployments are saved as if the network name is localhost
-// See https://github.com/wighawag/hardhat-deploy#flags-1
-export const getProperConfig = (hre: HardhatRuntimeEnvironment): HardhatNetworkUserConfig => {
-  const network = hre.network.name === "localhost" ? "hardhat" : hre.network.name;
-  return hre.config.networks[network] as HardhatNetworkUserConfig;
 };
 
 const getSigner = (ethers: typeof import("ethers/lib/ethers") & HardhatEthersHelpers) => ethers.provider.getSigner();
