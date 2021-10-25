@@ -20,6 +20,7 @@ import {
 } from "../typechain";
 import { DAOFactory__factory } from "../typechain/factories/DAOFactory__factory";
 import { GAS_LIMIT_PATCH, getProperConfig, waitForTxConfirmation } from "./utils";
+import { AddressZero } from "@ethersproject/constants";
 
 type FundrasingApps = {
   reserve: Reserve;
@@ -39,7 +40,9 @@ const createDAO = async (deployments: DeploymentsExtension, deployer: string, si
   const daoFactoryDeployment = await deployments.get("DAOFactory");
 
   const kernel = Kernel__factory.connect(kernelDeployment.address, signer);
-  await waitForTxConfirmation(kernel.initialize(aclDeployment.address, deployer));
+  if (!(await kernel.hasInitialized())){
+    await waitForTxConfirmation(kernel.initialize(aclDeployment.address, deployer));
+  }
 
   const daoFactory = DAOFactory__factory.connect(daoFactoryDeployment.address, signer);
   const newDaoTx = await waitForTxConfirmation(daoFactory.newDAO(deployer, { gasLimit: GAS_LIMIT_PATCH }));
@@ -56,11 +59,14 @@ const createDAO = async (deployments: DeploymentsExtension, deployer: string, si
   const aclAddress = await kernel.acl();
 
   const dao = ACL__factory.connect(aclAddress, signer);
-  await waitForTxConfirmation(
-    dao.createPermission(deployer, kernel.address, await kernel.APP_MANAGER_ROLE(), deployer, {
-      gasLimit: GAS_LIMIT_PATCH,
-    }),
-  );
+  const permissionManager = await dao.getPermissionManager(kernel.address, await kernel.APP_MANAGER_ROLE())
+  if (permissionManager == AddressZero){
+    await waitForTxConfirmation(
+      dao.createPermission(deployer, kernel.address, await kernel.APP_MANAGER_ROLE(), deployer, {
+        gasLimit: GAS_LIMIT_PATCH,
+      }),
+    );
+  }
   return daoAddress;
 };
 
@@ -74,8 +80,8 @@ const createPermissions = async (
   await waitForTxConfirmation(acl.createPermission(entities[0], app, role, manager, { gasLimit: GAS_LIMIT_PATCH }));
   console.log(`Permission created: entity ${entities[0]} | app ${app} | role ${role} | mananager ${manager}`);
   for (let i = 1; i < entities.length; i++) {
-    await waitForTxConfirmation(acl.grantPermission(entities[i], app, role, { gasLimit: GAS_LIMIT_PATCH }));
-    console.log(`Permission granted: entity ${entities[i]} | app ${app} | role ${role} | mananager ${manager}`);
+      await waitForTxConfirmation(acl.grantPermission(entities[i], app, role, { gasLimit: GAS_LIMIT_PATCH }));
+      console.log(`Permission granted: entity ${entities[i]} | app ${app} | role ${role} | mananager ${manager}`);
   }
 };
 
@@ -83,6 +89,7 @@ const createPermission = async (acl: ACL, entity: string, app: string, role: str
   createPermissions(acl, [entity], app, role, manager);
 
 const setupFundraisingPermission = async (
+  governance: string,
   deployer: string,
   fundraisingApps: FundrasingApps,
   daoAddress: string,
@@ -91,8 +98,173 @@ const setupFundraisingPermission = async (
   const dao = Kernel__factory.connect(daoAddress, signer);
   const acl = ACL__factory.connect(await dao.acl(), signer);
 
+<<<<<<< HEAD
   await waitForTxConfirmation(
     acl.grantPermission(fundraisingApps.aclConfigurator.address, acl.address, await acl.CREATE_PERMISSIONS_ROLE()),
+=======
+  const ANY_ENTITY = await acl.ANY_ENTITY();
+
+  const owner = deployer;
+  
+  // reserve
+  await createPermission(
+    acl,
+    governance,
+    fundraisingApps.reserve.address,
+    await fundraisingApps.reserve.SAFE_EXECUTE_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.reserve.address,
+    await fundraisingApps.reserve.ADD_PROTECTED_TOKEN_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.marketMaker.address,
+    fundraisingApps.reserve.address,
+    await fundraisingApps.reserve.TRANSFER_ROLE(),
+    owner,
+  );
+  // presale
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.presale.address,
+    await fundraisingApps.presale.OPEN_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    governance,
+    fundraisingApps.presale.address,
+    await fundraisingApps.presale.REDUCE_BENEFICIARY_PCT_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    ANY_ENTITY,
+    fundraisingApps.presale.address,
+    await fundraisingApps.presale.CONTRIBUTE_ROLE(),
+    owner,
+  );
+  // market maker
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    await fundraisingApps.marketMaker.OPEN_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    await fundraisingApps.marketMaker.UPDATE_BENEFICIARY_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    await fundraisingApps.marketMaker.UPDATE_FEES_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    await fundraisingApps.marketMaker.ADD_COLLATERAL_TOKEN_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    await fundraisingApps.marketMaker.REMOVE_COLLATERAL_TOKEN_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    await fundraisingApps.marketMaker.UPDATE_COLLATERAL_TOKEN_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    await fundraisingApps.marketMaker.OPEN_BUY_ORDER_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.controller.address,
+    fundraisingApps.marketMaker.address,
+    await fundraisingApps.marketMaker.OPEN_SELL_ORDER_ROLE(),
+    owner,
+  );
+  // controller
+  await createPermission(
+    acl,
+    governance,
+    fundraisingApps.controller.address,
+    await fundraisingApps.controller.UPDATE_BENEFICIARY_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    governance,
+    fundraisingApps.controller.address,
+    await fundraisingApps.controller.UPDATE_FEES_ROLE(),
+    owner,
+  );
+  // ADD_COLLATERAL_TOKEN_ROLE is handled later [after collaterals have been added]
+  await createPermission(
+    acl,
+    governance,
+    fundraisingApps.controller.address,
+    await fundraisingApps.controller.REMOVE_COLLATERAL_TOKEN_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    governance,
+    fundraisingApps.controller.address,
+    await fundraisingApps.controller.UPDATE_COLLATERAL_TOKEN_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    governance,
+    fundraisingApps.controller.address,
+    await fundraisingApps.controller.OPEN_PRESALE_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    fundraisingApps.presale.address,
+    fundraisingApps.controller.address,
+    await fundraisingApps.controller.OPEN_TRADING_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    ANY_ENTITY,
+    fundraisingApps.controller.address,
+    await fundraisingApps.controller.CONTRIBUTE_ROLE(),
+    owner,
+  );
+  await createPermission(
+    acl,
+    ANY_ENTITY,
+    fundraisingApps.controller.address,
+    await fundraisingApps.controller.OPEN_BUY_ORDER_ROLE(),
+    owner,
+>>>>>>> feat: transfer permissions to governance address after deployment
   );
 
   await waitForTxConfirmation(
@@ -126,11 +298,41 @@ const setupCollateral = async (
     deployer,
   );
 
-  // FIXME: add fees
   await waitForTxConfirmation(
     fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0),
   );
+
+  await waitForTxConfirmation(
+    acl.revokePermission(deployer,fundraisingApps.controller.address,await fundraisingApps.controller.ADD_COLLATERAL_TOKEN_ROLE(), {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
+  );
 };
+
+const transferPermissions = async (
+  deployments: DeploymentsExtension,
+  governance: string,
+  signer: Signer,
+) : Promise<void> => {
+
+  const kernelDeployment = await deployments.get("Kernel");
+  const kernel = Kernel__factory.connect(kernelDeployment.address, signer);
+
+  const aclAddress = await kernel.acl();
+
+  const acl = ACL__factory.connect(aclAddress, signer);
+  await waitForTxConfirmation(
+    acl.setPermissionManager(governance, kernel.address, await kernel.APP_MANAGER_ROLE(), {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
+  );
+  await waitForTxConfirmation(
+    acl.setPermissionManager(governance, acl.address, await acl.CREATE_PERMISSIONS_ROLE(), {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
+  );
+  
+}
 
 export const initialize = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts, ethers } = hre;
@@ -143,6 +345,7 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
 
   parameters.collateralTokenAddress ??= (await deployments.get("CollateralToken")).address;
   parameters.bondedTokenAddress ??= (await deployments.get("BondedToken")).address;
+  const governance = parameters.governanceAddress?parameters.governanceAddress:deployer;
 
   console.log(`Collateral token at address ${parameters.collateralTokenAddress}`);
   console.log(`Bondend token at address ${parameters.bondedTokenAddress}`);
@@ -168,7 +371,6 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
   };
 
   const params = {
-    owner: deployer,
     collateralToken: parameters.collateralTokenAddress,
     bondedToken: parameters.bondedTokenAddress,
     period: parameters.presalePeriod,
@@ -180,61 +382,77 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
     slippage: parameters.slippage,
     buyFee: parameters.buyFee,
     sellFee: parameters.selFee,
+    beneficiary: parameters.beneficiaryAddress,
+    governance: governance,
   };
 
-  await waitForTxConfirmation(
-    fundraisingApps.presale.initialize(
-      daoAddress,
-      fundraisingApps.controller.address,
-      fundraisingApps.marketMaker.address,
-      parameters.bondedTokenAddress,
-      fundraisingApps.reserve.address,
-      params.owner,
-      params.collateralToken,
-      params.period,
-      params.exchangeRate,
-      params.mintingForBeneficiaryPct,
-      params.openDate,
-    ),
-  );
+  if (!(await fundraisingApps.presale.hasInitialized())){
+    await waitForTxConfirmation(
+      fundraisingApps.presale.initialize(
+        daoAddress,
+        fundraisingApps.controller.address,
+        fundraisingApps.marketMaker.address,
+        parameters.bondedTokenAddress,
+        fundraisingApps.reserve.address,
+        params.beneficiary,
+        params.collateralToken,
+        params.period,
+        params.exchangeRate,
+        params.mintingForBeneficiaryPct,
+        params.openDate,
+      ),
+    );
+  };
 
   console.log(`Presale initialized`);
 
-  await waitForTxConfirmation(
-    fundraisingApps.marketMaker.initialize(
-      daoAddress,
-      fundraisingApps.controller.address,
-      parameters.bondedTokenAddress,
-      bancorFormulaDeployment.address,
-      fundraisingApps.reserve.address,
-      params.owner,
-      params.batchBlocks,
-      params.buyFee,
-      params.sellFee,
-    ),
-  );
+  if (!(await fundraisingApps.marketMaker.hasInitialized())){
+    await waitForTxConfirmation(
+      fundraisingApps.marketMaker.initialize(
+        daoAddress,
+        fundraisingApps.controller.address,
+        parameters.bondedTokenAddress,
+        bancorFormulaDeployment.address,
+        fundraisingApps.reserve.address,
+        params.beneficiary,
+        params.batchBlocks,
+        params.buyFee,
+        params.sellFee,
+      ),
+    );
+  }
 
   console.log(`MarketMaker initialized`);
 
-  await waitForTxConfirmation(
-    fundraisingApps.controller.initialize(
-      daoAddress,
-      fundraisingApps.presale.address,
-      fundraisingApps.marketMaker.address,
-      fundraisingApps.reserve.address,
-      fundraisingApps.tap.address,
-      [],
-    ),
-  );
+  if (!(await fundraisingApps.controller.hasInitialized())){
+    await waitForTxConfirmation(
+      fundraisingApps.controller.initialize(
+        daoAddress,
+        fundraisingApps.presale.address,
+        fundraisingApps.marketMaker.address,
+        fundraisingApps.reserve.address,
+        fundraisingApps.tap.address,
+        [],
+      ),
+    );
+  };
 
   console.log(`Controller initialized`);
 
-  await waitForTxConfirmation(fundraisingApps.reserve.initialize(daoAddress));
+  if (!(await fundraisingApps.reserve.hasInitialized())){
+    await waitForTxConfirmation(fundraisingApps.reserve.initialize(daoAddress));
+  };
 
   console.log(`Reserve initialized`);
 
+<<<<<<< HEAD
   await setupFundraisingPermission(deployer, fundraisingApps, daoAddress, signer);
   console.log("ACL configured");
+=======
+  await setupFundraisingPermission(params.governance,deployer, fundraisingApps, daoAddress, signer);
+
+  console.log("Setup fundraising permission done");
+>>>>>>> feat: transfer permissions to governance address after deployment
 
   await setupCollateral(
     deployer,
@@ -247,4 +465,11 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
   );
 
   console.log("Setup collateral done");
+
+  if(parameters.governanceAddress){
+    console.log("Transfering permissions");
+  
+    await transferPermissions(deployments, params.governance, signer);
+  }
+
 };

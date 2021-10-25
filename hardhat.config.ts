@@ -69,6 +69,10 @@ type Parameters = {
   collateralTokenAddress?: string;
   // the address of the bonded token, only necessary. if not provided a mock token will be deployed.
   bondedTokenAddress?: string;
+  // the address of the governance, permissions will be transfer to this address after deployment. If not provided, permissions remains to deployer address
+  governanceAddress?: string;
+  // the address of the beneficiary, fees will be transfer to this address. 
+  beneficiaryAddress: string;
 };
 declare module "hardhat/types/config" {
   export interface HardhatNetworkUserConfig {
@@ -102,6 +106,8 @@ const config: HardhatUserConfig = {
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000),
+        beneficiaryAddress: "0x61E81fFa505d5A6F11f923C2DFe705E4Bc8B7d7B",
+        governanceAddress: "0x61E81fFa505d5A6F11f923C2DFe705E4Bc8B7d7B",
       },
       accounts: {
         mnemonic,
@@ -122,6 +128,7 @@ const config: HardhatUserConfig = {
         selFee: PCT_BASE.mul(3).div(1000),
         collateralTokenAddress: "0x61E81fFa505d5A6F11f923C2DFe705E4Bc8B7d7B",
         bondedTokenAddress: "0x49bD7a016c3D88fdcD42ba7201CCB671C816CaCe",
+        beneficiaryAddress: "0xB0D1D7fad89CfC28394b0B1AB51d24c432170f5A",
       },
       url: "http://localhost:4444",
       // regtest default prefunded account
@@ -140,6 +147,8 @@ const config: HardhatUserConfig = {
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000),
+        beneficiaryAddress: "",
+        governanceAddress: "",
       },
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
@@ -158,6 +167,8 @@ const config: HardhatUserConfig = {
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000),
         collateralTokenAddress: "0x6a9A07972D07e58F0daf5122d11E069288A375fb",
+        beneficiaryAddress: "",
+        governanceAddress: "",
       },
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],

@@ -1,7 +1,7 @@
 import { deployments, ethers, getNamedAccounts } from "hardhat";
 import hre from "hardhat";
 import { expect } from "chai";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, Signer } from "ethers";
 import {
   BalanceRedirectPresale__factory,
   MiniMeToken__factory,
@@ -11,6 +11,7 @@ import {
   ContinuousToken__factory,
 } from "../typechain";
 import { initialize } from "../deploy/initialize";
+import { getProperConfig } from "../deploy/utils";
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
   await deployments.fixture("everything"); // ensure you start from a fresh deployments
@@ -28,6 +29,7 @@ const State = {
 const PPM = BigNumber.from(1e6);
 let reserveRatio: BigNumber;
 let presaleEchangeRate: BigNumber;
+let governance: Signer;
 
 describe("Presale Interaction", () => {
   let Presale: any, Controller: any, MarketMaker: any, ZEROToken: any, SOVToken: any, BancorFormula: any;
@@ -42,11 +44,23 @@ describe("Presale Interaction", () => {
 
     ({ deployer } = await getNamedAccounts());
     const [, account1] = await ethers.getSigners();
+    
+    const { parameters, mockPresale } = getProperConfig(hre);
+    
+    // Load the user with RBTC so he can pay for transactions
+    const rBTCAmount = (await ethers.provider.getSigner().getBalance()).div(2);
+    await ethers.provider.getSigner().sendTransaction({
+      to: parameters.governanceAddress,
+      value: rBTCAmount,
+    });
 
-    const sConfig = JSON.stringify(hre.network.config);
-    const config = JSON.parse(sConfig);
-    const { parameters, mockPresale } = config;
-
+    // Impersonate governance account to send transactions
+    await hre.network.provider.request({
+      method: "hardhat_impersonateAccount",
+      params: [parameters.governanceAddress],
+    });
+    governance = await ethers.getSigner(parameters.governanceAddress);
+ 
     reserveRatio = parameters.reserveRatio;
     presaleEchangeRate = parameters.presaleEchangeRate;
     const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
@@ -84,9 +98,13 @@ describe("Presale Interaction", () => {
     await expect(Controller.contribute(UserContribution)).to.be.revertedWith("PRESALE_INVALID_STATE");
   });
 
+  it("Should fail trying to open presale without permission", async () => {
+    await expect(Controller.openPresale()).to.be.revertedWith("APP_AUTH_FAILED");
+  })
+
   it("Should open presale and allow to contribute", async () => {
     expect(await Presale.state()).to.eq(State.Pending);
-    await Controller.openPresale();
+    await Controller.connect(governance).openPresale();
     expect(await Presale.state()).to.eq(State.Funding);
     expect(await Presale.contributorsCounter()).to.eq(0);
     await Controller.contribute(UserContribution.div(2));
