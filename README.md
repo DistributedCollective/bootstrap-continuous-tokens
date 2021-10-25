@@ -159,6 +159,8 @@ yarn initialize:rskTestnetMocked  #initialize deployed contracts and set permiss
 
 ## Built With
 
+* [Aragon One Court presale project](https://github.com/aragonone/court-presale)
+* [Atix Labs](https://atixlabs.com) template
 * [Hardhat](https://hardhat.org/) - Task runner
 
 ## Contributing
@@ -167,11 +169,11 @@ Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for details on our code of cond
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) and [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+We use [SemVer](http://semver.org/) and [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) for versioning. For the versions available, see the [tags on this repository](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/tags).
 
 To create a new release execute the script
 
-`npm run release`
+`yarn release`
 
 ## License
 

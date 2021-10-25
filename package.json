@@ -1,9 +1,9 @@
 {
-  "name": "atix-solidity-template",
+  "name": "continuous-token-presale",
   "version": "0.0.0",
-  "description": "Atix Solidity project template",
-  "author": "",
-  "license": "ISC",
+  "description": "Continuous token presale",
+  "author": "Sovryn 2021",
+  "license": "Apache-2.0",
   "dependencies": {
     "@ablack/fundraising-aragon-fundraising": "1.0.1",
     "@ablack/fundraising-batched-bancor-market-maker": "1.0.0",
