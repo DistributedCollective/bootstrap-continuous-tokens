@@ -117,7 +117,7 @@ const config: HardhatUserConfig = {
       gasMultiplier: 1.25,
     },
     rskTestnetMocked: {
-      mockPresale: false,
+      mockPresale: true,
       parameters: {
         startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),
         beneficiaryPCT: 200000,
@@ -128,13 +128,29 @@ const config: HardhatUserConfig = {
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000),
-        collateralTokenAddress: "0x6a9A07972D07e58F0daf5122d11E069288A375fb",
-        bondedTokenAddress: "0x65844bfb21FCFfa7eB5e0F1AD6f11467A523e270",
       },
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
       chainId: chainIds.rskTestnetMocked,
     },
+    rskTestnetMockedWithSOV: {
+      mockPresale: false,
+      parameters: {
+        startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),
+        beneficiaryPCT: 200000,
+        presalePeriod: 10 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
+        reserveRatio: PPM.mul(40).div(100),
+        batchBlock: 10,
+        slippage: PCT_BASE.mul(3).div(100),
+        buyFee: BigNumber.from(0),
+        selFee: PCT_BASE.mul(3).div(1000),
+        collateralTokenAddress: "0x6a9A07972D07E58f0daF5122D11e069288A375fB",
+      },
+      url: "https://public-node.testnet.rsk.co",
+      accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
+      chainId: chainIds.rskTestnetMocked,
+    }
   },
   paths: {
     artifacts: "./artifacts",

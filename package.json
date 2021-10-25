@@ -98,6 +98,8 @@
     "deploy:rskdev": "hardhat deploy --network rskdev --tags everything",
     "devchain:start": "ts-node ./scripts/start-dev-chain.ts",
     "deploy:rskTestnetMocked": "hardhat deploy --network rskTestnetMocked --tags everything",
-    "initialize:rskTestnetMocked": "hardhat initialize --network rskTestnetMocked"
-  }
+    "initialize:rskTestnetMocked": "hardhat initialize --network rskTestnetMocked",
+    "deploy:rskTestnetMockedWithSOV": "hardhat deploy --network rskTestnetMockedWithSOV --tags everything",
+    "initialize:rskTestnetMockedWithSOV": "hardhat initialize --network rskTestnetMockedWithSOV"
+   }
 }

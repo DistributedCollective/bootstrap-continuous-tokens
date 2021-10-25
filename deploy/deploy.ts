@@ -25,11 +25,11 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     "DAOFactory",
   ];
 
-  if (parameters.collateralTokenAddress) {
+  if (!parameters.collateralTokenAddress) {
     contractsToDeploy.push("CollateralToken");
   }
 
-  if (parameters.bondedTokenAddress) {
+  if (!parameters.bondedTokenAddress) {
     contractsToDeploy.push("BondedToken");
   }
 
