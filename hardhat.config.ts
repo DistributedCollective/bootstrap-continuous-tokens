@@ -145,7 +145,7 @@ const config: HardhatUserConfig = {
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000),
-        collateralTokenAddress: "0x6a9A07972D07E58f0daF5122D11e069288A375fB",
+        collateralTokenAddress: "0x6a9A07972D07e58F0daf5122d11E069288A375fb",
       },
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
