@@ -1,6 +1,6 @@
 # Zero Continuos Token deployment repository
 
-This project contains the boilerplate that must be used when dealing with Solidity based Smart Contracts developmen projects.
+This project is based on [Aragon One Court presale project](https://github.com/aragonone/court-presale) and provides a similar fashion presale and bonding curve based AMM to link two tokens.
 
 ## Getting Started
 
@@ -18,6 +18,7 @@ nvm use
 ```
 
 Create `.env` file (you can base on [`.env.example`](./.env.example))
+
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
@@ -145,26 +146,7 @@ npx hardhat claim-sell-order --network rskTestnetMocked --batch "229120"
 
 ### Deployment
 
-Use hardhat.config to set deployment parameters for each network
-
-```bash
-deployTokens  #false: will not deploy collateral and bonded tokens, you must specify the addresses that you are going to use and run initialize task
-              #true: will deploy collateral and bonded tokens and initialize all contracts
-mockPresale   #false: will deploy presale contract 
-              #true: will deplot a mocked presale contract version that allow update date to close presale(for testing purposes)
-startDate #the date upon which that presale is to be open [ignored if 0]
-beneficiaryPCT #the percentage of the raised funds that will be sent to beneficiary address during presale period
-presalePeriod #the period within which to accept contribution for that presale
-presaleEchangeRate #the exchangeRate [= 1/price] at which [bonded] tokens are to be purchased for that presale [in PPM]
-reserveRatio  #the reserve ratio to be used for that collateral token [in PPM]
-batchBlock  #the number of blocks batches are to last
-slippage  #the price slippage below which each batch is to be kept for that collateral token [in PCT_BASE]
-buyFee  #the fee to be deducted from buy orders [in PCT_BASE]
-selFee  #the fee to be deducted from sell orders [in PCT_BASE]
-collateralTokenAddress  #the address of the collateral token, only necessary if deployTokens == false
-bondedTokenAddress  #the address of the bonded token, only necessary if deployTokens == false
-
-```
+Use `hardhat.config.ts` to set deployment parameters for each network. Parameters description can be found in such file.
 
 ```bash
 yarn deploy:dev         # launches a `buidlervm` instance and deploys the contracts    

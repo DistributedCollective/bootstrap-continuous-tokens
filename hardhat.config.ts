@@ -47,20 +47,32 @@ if (!process.env.MNEMONIC) {
 }
 
 type Parameters = {
+  // the date (unixtime, ms) upon which that presale is to be open [ignored if 0]
   startDate: BigNumber;
+  // the percentage of the raised funds that will be sent to beneficiary address during presale period
   beneficiaryPCT: number;
+  // the amount of time, in ms, that the presale will last
   presalePeriod: number;
+  // the exchangeRate [= 1/price] at which [bonded] tokens are to be purchased for that presale [in PPM]
   presaleEchangeRate: BigNumber;
+  // the reserve ratio to be used for that collateral token [in PPM]
   reserveRatio: BigNumber;
+  // the amount of blocks a batch will contain
   batchBlock: number;
+  // the price slippage below which each batch is to be kept for that collateral token [in PCT_BASE]
   slippage: BigNumber;
+  // the fee to be deducted from buy orders [in PCT_BASE]
   buyFee: BigNumber;
+  // the fee to be deducted from sell orders [in PCT_BASE]
   selFee: BigNumber;
+  // the address of the collateral token, only necessary. If not provided, a mock token will be deployed
   collateralTokenAddress?: string;
+  // the address of the bonded token, only necessary. if not provided a mock token will be deployed.
   bondedTokenAddress?: string;
 };
 declare module "hardhat/types/config" {
   export interface HardhatNetworkUserConfig {
+    // If true it will deploy a mocked presale contract version that allow update date to close presale (for testing purposes)
     mockPresale: boolean;
     parameters: Parameters;
   }
@@ -99,7 +111,7 @@ const config: HardhatUserConfig = {
     rskdev: {
       mockPresale: false,
       parameters: {
-        startDate:BigNumber.from(new Date().getTime()).div(1000).add(1000),
+        startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),
         beneficiaryPCT: 200000,
         presalePeriod: 14 * DAYS,
         presaleEchangeRate: PPM.mul(10000).div(100),
@@ -150,7 +162,7 @@ const config: HardhatUserConfig = {
       url: "https://public-node.testnet.rsk.co",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
       chainId: chainIds.rskTestnetMocked,
-    }
+    },
   },
   paths: {
     artifacts: "./artifacts",
