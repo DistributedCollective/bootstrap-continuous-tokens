@@ -2,6 +2,11 @@
 
 This project is based on [Aragon One Court presale project](https://github.com/aragonone/court-presale) and provides a similar fashion presale and bonding curve based AMM to link two tokens.
 
+## Importante changes and future work
+
+- This contracts were decoupled from Aragon's ENS integration. This means, some contracts are manually deployed and initialized (requiring the system contracts to extend from `UnsafeAragonApp` instead).
+- Contracts deployment and configuration was set-up using several transactions in order to get a working version faster. This workflow is more expensive (although RSK is cheap) and slow. This might be refactored in order to use a configuration contract as the [original template one](https://github.com/aragonone/court-presale/blob/master/template/contracts/EOPBCTemplate.sol).
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
