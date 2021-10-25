@@ -33,6 +33,7 @@ describe("Presale Interaction", () => {
   let Presale: any, Controller: any, MarketMaker: any, ZEROToken: any, SOVToken: any, BancorFormula: any;
   const tokens = BigNumber.from(1000000);
   const contributionAmount = BigNumber.from(100000);
+  const UserContribution = contributionAmount.div(2);
   const amount = BigNumber.from(100);
   let deployer: string;
   let zeroBalanceBeforeClosing: BigNumber;
@@ -40,6 +41,7 @@ describe("Presale Interaction", () => {
     await setupTest();
 
     ({ deployer } = await getNamedAccounts());
+    const [, account1] = await ethers.getSigners();
 
     const sConfig = JSON.stringify(hre.network.config);
     const config = JSON.parse(sConfig);
@@ -64,6 +66,8 @@ describe("Presale Interaction", () => {
     const sovToken = await deployments.get("CollateralToken");
     SOVToken = MiniMeToken__factory.connect(sovToken.address, ethers.provider.getSigner());
     await SOVToken.generateTokens(deployer, tokens);
+    await SOVToken.generateTokens(account1.address, tokens);
+
 
     expect(await SOVToken.balanceOf(deployer)).to.eq(tokens);
 
@@ -71,22 +75,41 @@ describe("Presale Interaction", () => {
     Presale = await BalanceRedirectPresale__factory.connect(presale.address, ethers.provider.getSigner());
     await SOVToken.approve(Presale.address, tokens);
     await SOVToken.approve(MarketMaker.address, tokens);
+
+    await SOVToken.connect(account1).approve(Presale.address, tokens);
+    await SOVToken.connect(account1).approve(MarketMaker.address, tokens);
   });
 
   it("Should revert if presale is not open", async () => {
-    await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
+    await expect(Controller.contribute(UserContribution)).to.be.revertedWith("PRESALE_INVALID_STATE");
   });
 
   it("Should open presale and allow to contribute", async () => {
     expect(await Presale.state()).to.eq(State.Pending);
     await Controller.openPresale();
     expect(await Presale.state()).to.eq(State.Funding);
-    await Controller.contribute(contributionAmount);
+    expect(await Presale.contributorsCounter()).to.eq(0);
+    await Controller.contribute(UserContribution.div(2));
+    expect(await Presale.contributorsCounter()).to.eq(1);
+    expect(await Presale.contributors(deployer)).to.eq(UserContribution.div(2));
+  });
+
+  it("Should increase contribution amount but not increase contributors counter", async () => {
+    await Controller.contribute(UserContribution.div(2));
+    expect(await Presale.contributorsCounter()).to.eq(1);
+    expect(await Presale.contributors(deployer)).to.eq(UserContribution);
+  });
+
+  it("Should increase contributors counter", async () => {
+    const [, account1] = await ethers.getSigners();
+    await Controller.connect(account1).contribute(UserContribution);
+    expect(await Presale.contributorsCounter()).to.eq(2);
+    expect(await Presale.contributors(account1.address)).to.eq(UserContribution);
   });
 
   it("A user can query how many project tokens would be obtained for a given amount of contribution tokens", async () => {
-    const reportedAmount = await Presale.contributionToTokens(contributionAmount);
-    const expectedAmount = contributionAmount.mul(await Presale.exchangeRate()).div(await Presale.PPM());
+    const reportedAmount = await Presale.contributionToTokens(UserContribution);
+    const expectedAmount = UserContribution.mul(await Presale.exchangeRate()).div(await Presale.PPM());
     expect(expectedAmount).to.eq(reportedAmount);
   });
 
@@ -98,7 +121,7 @@ describe("Presale Interaction", () => {
 
   it("Reduces user contribution token balance", async () => {
     const userBalance = await SOVToken.balanceOf(deployer);
-    const expectedBalance = tokens.sub(contributionAmount);
+    const expectedBalance = tokens.sub(UserContribution);
     expect(expectedBalance).to.eq(userBalance);
   });
 
@@ -109,7 +132,7 @@ describe("Presale Interaction", () => {
 
   it("Vested tokens are assigned to the buyer", async () => {
     const userBalance = await ZEROToken.balanceOf(deployer);
-    const expectedAmount = contributionAmount.mul(await Presale.exchangeRate()).div(await Presale.PPM());
+    const expectedAmount = UserContribution.mul(await Presale.exchangeRate()).div(await Presale.PPM());
     expect(expectedAmount).to.eq(userBalance);
   });
 
@@ -162,7 +185,7 @@ describe("Presale Interaction", () => {
     const sovTokensForBeneficiary = totalRaised.sub(sovTokensForReserve);
     const reserve = await Presale.reserve();
 
-    expect(await SOVToken.balanceOf(deployer)).to.eq(tokens.sub(contributionAmount).add(sovTokensForBeneficiary));
+    expect(await SOVToken.balanceOf(deployer)).to.eq(tokens.sub(UserContribution).add(sovTokensForBeneficiary));
     expect(await SOVToken.balanceOf(reserve)).to.eq(sovTokensForReserve);
   });
 
