@@ -1,18 +1,8 @@
-import { ethers, deployments } from "hardhat";
-
+import { deployments, ethers } from "hardhat";
 import {
-  ACL__factory,
-  BalanceRedirectPresale__factory,
-  Controller__factory,
-  MarketMaker__factory,
-  MiniMeToken__factory,
-  TokenManager__factory,
-  Kernel__factory,
-  MarketMaker,
-  Controller,
-  Reserve__factory,
-  TapDisabled__factory,
+  Controller, MarketMaker
 } from "../typechain";
+
 
 type FundrasingApps = {
   //reserve: Reserve;
