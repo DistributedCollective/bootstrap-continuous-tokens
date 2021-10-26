@@ -191,6 +191,49 @@ describe("Bonding Curve", () => {
       const beneficiaryMarketMaker = await MarketMaker.beneficiary();
       expect(await account1.getAddress()).equal(beneficiaryMarketMaker);
     });
+    it("Should only allow governance to reduce presale beneficiary pct", async () => {
+      await expect(Presale.reduceBeneficiaryPct(10)).to.be.revertedWith("APP_AUTH_FAILED");
+      await Presale.connect(governance).reduceBeneficiaryPct(10);
+      expect(await Presale.mintingForBeneficiaryPct()).equal(10);
+    });
+    it("Should only allow governance to update fees", async () => {
+      await expect(Controller.updateFees(10,10)).to.be.revertedWith("APP_AUTH_FAILED");
+      await Controller.connect(governance).updateFees(10,10);
+      expect(await MarketMaker.sellFeePct()).equal(10);
+      expect(await MarketMaker.buyFeePct()).equal(10);
+    });
+    it("Should only allow governance to remove collateral token", async () => {
+      await expect(Controller.removeCollateralToken(SOVToken.address)).to.be.revertedWith("APP_AUTH_FAILED");
+      await Controller.connect(governance).removeCollateralToken(SOVToken.address);
+      const [
+        _whitelister,
+        _virtualSupply,
+        _virtualBalance,
+        _reserveRatio,
+        _slippage,
+      ] = await MarketMaker.getCollateralToken(SOVToken.address);
+      expect(!_whitelister);
+      expect(_reserveRatio).equal(0);
+      expect(_virtualSupply).equal(0);
+      expect(_virtualBalance).equal(0);
+      expect(_slippage).equal(0);
+    });
+    it("Should only allow governance to update collateral token", async () => {
+      await expect(Controller.updateCollateralToken(SOVToken.address,10,10,10,10)).to.be.revertedWith("APP_AUTH_FAILED");
+      await Controller.connect(governance).updateCollateralToken(SOVToken.address,10,10,10,10);
+      const [
+        _whitelister,
+        _virtualSupply,
+        _virtualBalance,
+        _reserveRatio,
+        _slippage,
+      ] = await MarketMaker.getCollateralToken(SOVToken.address);
+      expect(_whitelister);
+      expect(_reserveRatio).equal(10);
+      expect(_virtualSupply).equal(10);
+      expect(_virtualBalance).equal(10);
+      expect(_slippage).equal(10);
+    });
   });
 
   describe ("Presale", async () => {
