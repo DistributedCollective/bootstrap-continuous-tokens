@@ -60,6 +60,9 @@ describe("Bonding Curve", () => {
   let deployer: string;
   let beneficiary: string;
   let batchBlock: number;
+  let beneficiaryPCT: number;
+  let buyFeePCT: BigNumber;
+  let sellFeePCT: BigNumber;
   let account1: Signer;
 
   beforeEach(async () => {
@@ -72,7 +75,13 @@ describe("Bonding Curve", () => {
     parameters.governanceAddress ??= deployer;
     beneficiary = parameters.beneficiaryAddress;
     batchBlock = parameters.batchBlock;
-    
+    reserveRatio = parameters.reserveRatio;
+    slippage = parameters.slippage;
+    presaleEchangeRate = parameters.presaleEchangeRate;
+    beneficiaryPCT = parameters.beneficiaryPCT;
+    buyFeePCT = parameters.buyFee;
+    sellFeePCT = parameters.selFee;
+
     // Load the user with RBTC so he can pay for transactions
     const rBTCAmount = (await ethers.provider.getSigner().getBalance()).div(2);
     await ethers.provider.getSigner().sendTransaction({
@@ -87,9 +96,6 @@ describe("Bonding Curve", () => {
     });
     governance = await ethers.getSigner(parameters.governanceAddress);
  
-    reserveRatio = parameters.reserveRatio;
-    slippage = parameters.slippage;
-    presaleEchangeRate = parameters.presaleEchangeRate;
     const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
 
     const kernel = await deployments.get("Kernel");
@@ -107,8 +113,8 @@ describe("Bonding Curve", () => {
     const reserve = await deployments.get("Reserve");
     Reserve = await Reserve__factory.connect(reserve.address, ethers.provider.getSigner());
 
-    const bancorFormula = await MarketMaker.formula();
-    BancorFormula = await BancorFormula__factory.connect(bancorFormula, ethers.provider.getSigner());
+    const bancorFormula = await deployments.get("BancorFormula");
+    BancorFormula = await BancorFormula__factory.connect(bancorFormula.address, ethers.provider.getSigner());
 
     const zeroToken = await deployments.get("BondedToken");
     ZEROToken = ContinuousToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
@@ -143,6 +149,31 @@ describe("Bonding Curve", () => {
       expect(daoController).equal(daoMarketMaker);
       expect(daoMarketMaker).equal(daoReserve);
     });
+    it("Should initialize presale with correct parameters", async () => {
+      expect(await Presale.controller()).equal(Controller.address);
+      expect(await Presale.marketMaker()).equal(MarketMaker.address);
+      expect(await Presale.bondedToken()).equal(ZEROToken.address);
+      expect(await Presale.reserve()).equal(Reserve.address);
+      expect(await Presale.beneficiary()).equal(beneficiary);
+      expect(await Presale.contributionToken()).equal(SOVToken.address);
+      expect(await Presale.exchangeRate()).equal(presaleEchangeRate);
+      expect(await Presale.mintingForBeneficiaryPct()).equal(beneficiaryPCT);
+    });
+    it("Should initialize market maker with correct parameters", async () => {
+      expect(await MarketMaker.controller()).equal(Controller.address);
+      expect(await MarketMaker.bondedToken()).equal(ZEROToken.address);
+      expect(await MarketMaker.formula()).equal(BancorFormula.address);
+      expect(await MarketMaker.reserve()).equal(Reserve.address);
+      expect(await MarketMaker.beneficiary()).equal(beneficiary);
+      expect(await MarketMaker.batchBlocks()).equal(batchBlock);
+      expect(await MarketMaker.buyFeePct()).equal(buyFeePCT);
+      expect(await MarketMaker.sellFeePct()).equal(sellFeePCT);
+    });
+    it("Should initialize controller with correct parameters", async () => {
+      expect(await Controller.presale()).equal(Presale.address);
+      expect(await Controller.marketMaker()).equal(MarketMaker.address);
+      expect(await Controller.reserve()).equal(Reserve.address);
+    })
     it("Should get collateral token", async () => {
       const [
         _whitelister,
