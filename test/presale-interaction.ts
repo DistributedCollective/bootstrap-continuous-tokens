@@ -56,12 +56,13 @@ describe("Bonding Curve", () => {
   let deployer: string;
   let beneficiary: string;
   let batchBlock: number;
+  let account1: Signer;
 
   beforeEach(async () => {
     await setupTest();
 
     ({ deployer } = await getNamedAccounts());
-    const [, account1] = await ethers.getSigners();
+    [, account1] = await ethers.getSigners();
     
     const { parameters, mockPresale } = getProperConfig(hre);
     parameters.governanceAddress ??= deployer;
@@ -107,7 +108,7 @@ describe("Bonding Curve", () => {
     const sovToken = await deployments.get("CollateralToken");
     SOVToken = MiniMeToken__factory.connect(sovToken.address, ethers.provider.getSigner());
     await SOVToken.generateTokens(deployer, tokens);
-    await SOVToken.generateTokens(account1.address, tokens);
+    await SOVToken.generateTokens(await account1.getAddress(), tokens);
 
 
     expect(await SOVToken.balanceOf(deployer)).to.eq(tokens);
@@ -126,14 +127,14 @@ describe("Bonding Curve", () => {
       await expect(ACL.createPermission(deployer, Controller.address, await Controller.WITHDRAW_ROLE(),deployer)).to.be.revertedWith("APP_AUTH_FAILED");
     });
     it("Should fail trying to grant permissions from deployer", async() => {
-      await expect(ACL.grantPermission(deployer,Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE())).to.be.revertedWith("ACL_AUTH_NO_MANAGER");
+      await expect(ACL.grantPermission(await account1.getAddress(),Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE())).to.be.revertedWith("ACL_AUTH_NO_MANAGER");
     });
     it("Should create permissions from governance address", async () => {
-      await ACL.connect(governance).createPermission(deployer, Controller.address, await Controller.WITHDRAW_ROLE(),deployer);
+      await ACL.connect(governance).createPermission(await account1.getAddress(), Controller.address, await Controller.WITHDRAW_ROLE(),await account1.getAddress());
     });
     it("Should create and grant permissions from governance", async() => {
       await ACL.connect(governance).createPermission(await governance.getAddress(), Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE(),await governance.getAddress());
-      await ACL.connect(governance).grantPermission(deployer, Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE());
+      await ACL.connect(governance).grantPermission(await account1.getAddress(), Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE());
     });
   });
 
@@ -165,13 +166,12 @@ describe("Bonding Curve", () => {
     });
   
     it("Should increase contributors counter", async () => {
-      const [, account1] = await ethers.getSigners();
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
       await Controller.connect(account1).contribute(contributionAmount);
       expect(await Presale.contributorsCounter()).to.eq(2);
       expect(await Presale.contributors(deployer)).to.eq(contributionAmount);
-      expect(await Presale.contributors(account1.address)).to.eq(contributionAmount);
+      expect(await Presale.contributors(await account1.getAddress())).to.eq(contributionAmount);
     });
   
     it("A user can query how many project tokens would be obtained for a given amount of contribution tokens", async () => {
