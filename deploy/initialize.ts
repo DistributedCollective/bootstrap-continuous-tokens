@@ -10,6 +10,7 @@ import {
   BalanceRedirectPresale__factory,
   Controller,
   Controller__factory,
+  Kernel,
   Kernel__factory,
   MarketMaker,
   MarketMaker__factory,
@@ -312,6 +313,7 @@ const setupCollateral = async (
 const transferPermissions = async (
   deployments: DeploymentsExtension,
   governance: string,
+  deployer: string,
   signer: Signer,
 ) : Promise<void> => {
 
@@ -321,17 +323,35 @@ const transferPermissions = async (
   const aclAddress = await kernel.acl();
 
   const acl = ACL__factory.connect(aclAddress, signer);
+
+  await transferPermission(acl, kernel.address, governance, deployer, await kernel.APP_MANAGER_ROLE());
+  await transferPermission(acl, acl.address, governance, deployer, await acl.CREATE_PERMISSIONS_ROLE());
+
+}
+
+const transferPermission = async (
+  acl: ACL,
+  app: string,
+  governance: string,
+  deployer: string,
+  role: string,
+) : Promise<void> => {
+
   await waitForTxConfirmation(
-    acl.setPermissionManager(governance, kernel.address, await kernel.APP_MANAGER_ROLE(), {
+    acl.grantPermission(governance, app, role, {
       gasLimit: GAS_LIMIT_PATCH,
     }),
   );
   await waitForTxConfirmation(
-    acl.setPermissionManager(governance, acl.address, await acl.CREATE_PERMISSIONS_ROLE(), {
+    acl.revokePermission(deployer, app, role, {
       gasLimit: GAS_LIMIT_PATCH,
     }),
   );
-  
+  await waitForTxConfirmation(
+    acl.setPermissionManager(governance, app, role, {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
+  );
 }
 
 export const initialize = async (hre: HardhatRuntimeEnvironment) => {
@@ -469,7 +489,7 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
   if(parameters.governanceAddress){
     console.log("Transfering permissions");
   
-    await transferPermissions(deployments, params.governance, signer);
+    await transferPermissions(deployments, params.governance,deployer, signer);
   }
 
 };

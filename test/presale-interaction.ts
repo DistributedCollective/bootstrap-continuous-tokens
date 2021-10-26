@@ -9,6 +9,10 @@ import {
   MarketMaker__factory,
   BancorFormula__factory,
   ContinuousToken__factory,
+  Kernel__factory,
+  ACL__factory,
+  Kernel,
+  ACL,
   Controller,
   BalanceRedirectPresale,
   ContinuousToken,
@@ -39,7 +43,14 @@ let presaleEchangeRate: BigNumber;
 let governance: Signer;
 
 describe("Bonding Curve", () => {
-  let Presale: BalanceRedirectPresale, Controller: Controller, MarketMaker: MarketMaker, ZEROToken: ContinuousToken, SOVToken: MiniMeToken, BancorFormula: BancorFormula;
+  let Presale: BalanceRedirectPresale; 
+  let Controller: Controller;
+  let MarketMaker: MarketMaker; 
+  let Kernel: Kernel;
+  let ACL: ACL;
+  let ZEROToken: ContinuousToken; 
+  let SOVToken: MiniMeToken;
+  let BancorFormula: BancorFormula;
   const tokens = BigNumber.from(1000000);
   const contributionAmount = BigNumber.from(100000);
   let deployer: string;
@@ -75,6 +86,12 @@ describe("Bonding Curve", () => {
     presaleEchangeRate = parameters.presaleEchangeRate;
     const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
 
+    const kernel = await deployments.get("Kernel");
+    Kernel = await Kernel__factory.connect(kernel.address, ethers.provider.getSigner());
+
+    const aclAddress = await Kernel.acl();
+    ACL = await ACL__factory.connect(aclAddress, ethers.provider.getSigner());
+
     const controller = await deployments.get("Controller");
     Controller = await Controller__factory.connect(controller.address, ethers.provider.getSigner());
 
@@ -102,6 +119,22 @@ describe("Bonding Curve", () => {
 
     await SOVToken.connect(account1).approve(Presale.address, tokens);
     await SOVToken.connect(account1).approve(MarketMaker.address, tokens);
+  });
+
+  describe ("Transfering Permissions", async () => {
+    it("Should fail trying to create permissions from deployer", async () => {
+      await expect(ACL.createPermission(deployer, Controller.address, await Controller.WITHDRAW_ROLE(),deployer)).to.be.revertedWith("APP_AUTH_FAILED");
+    });
+    it("Should fail trying to grant permissions from deployer", async() => {
+      await expect(ACL.grantPermission(deployer,Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE())).to.be.revertedWith("ACL_AUTH_NO_MANAGER");
+    });
+    it("Should create permissions from governance address", async () => {
+      await ACL.connect(governance).createPermission(deployer, Controller.address, await Controller.WITHDRAW_ROLE(),deployer);
+    });
+    it("Should create and grant permissions from governance", async() => {
+      await ACL.connect(governance).createPermission(await governance.getAddress(), Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE(),await governance.getAddress());
+      await ACL.connect(governance).grantPermission(deployer, Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE());
+    });
   });
 
   describe ("Presale", async () => {
