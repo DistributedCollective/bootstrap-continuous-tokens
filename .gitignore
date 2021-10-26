@@ -9,7 +9,6 @@ coverage/
 dist/
 lib/
 node_modules/
-typechain/
 profiles/
 docs/
 
