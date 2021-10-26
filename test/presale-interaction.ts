@@ -11,6 +11,7 @@ import {
   ContinuousToken__factory,
   Kernel__factory,
   ACL__factory,
+  Reserve__factory,
   Kernel,
   ACL,
   Controller,
@@ -19,6 +20,7 @@ import {
   MiniMeToken,
   BancorFormula,
   MarketMaker,
+  Reserve,
 } from "../typechain";
 
 import { initialize } from "../deploy/initialize";
@@ -39,6 +41,7 @@ const State = {
 
 const PPM = BigNumber.from(1e6);
 let reserveRatio: BigNumber;
+let slippage: BigNumber;
 let presaleEchangeRate: BigNumber;
 let governance: Signer;
 
@@ -46,6 +49,7 @@ describe("Bonding Curve", () => {
   let Presale: BalanceRedirectPresale; 
   let Controller: Controller;
   let MarketMaker: MarketMaker; 
+  let Reserve: Reserve;
   let Kernel: Kernel;
   let ACL: ACL;
   let ZEROToken: ContinuousToken; 
@@ -84,6 +88,7 @@ describe("Bonding Curve", () => {
     governance = await ethers.getSigner(parameters.governanceAddress);
  
     reserveRatio = parameters.reserveRatio;
+    slippage = parameters.slippage;
     presaleEchangeRate = parameters.presaleEchangeRate;
     const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
 
@@ -99,6 +104,9 @@ describe("Bonding Curve", () => {
     const marketMaker = await deployments.get("MarketMaker");
     MarketMaker = await MarketMaker__factory.connect(marketMaker.address, ethers.provider.getSigner());
 
+    const reserve = await deployments.get("Reserve");
+    Reserve = await Reserve__factory.connect(reserve.address, ethers.provider.getSigner());
+
     const bancorFormula = await MarketMaker.formula();
     BancorFormula = await BancorFormula__factory.connect(bancorFormula, ethers.provider.getSigner());
 
@@ -110,7 +118,6 @@ describe("Bonding Curve", () => {
     await SOVToken.generateTokens(deployer, tokens);
     await SOVToken.generateTokens(await account1.getAddress(), tokens);
 
-
     expect(await SOVToken.balanceOf(deployer)).to.eq(tokens);
 
     const presale = await deployments.get(presaleToDeploy);
@@ -120,6 +127,48 @@ describe("Bonding Curve", () => {
 
     await SOVToken.connect(account1).approve(Presale.address, tokens);
     await SOVToken.connect(account1).approve(MarketMaker.address, tokens);
+  });
+
+  describe("Initialization", async () => {
+    it("Should initialize contracts", async () => {
+      expect(await Controller.hasInitialized());
+      expect(await MarketMaker.hasInitialized());
+      expect(await Reserve.hasInitialized());
+      expect(await Presale.hasInitialized());
+    });
+    it("Should have same dao", async () => {
+      const daoController = await Controller.kernel();
+      const daoMarketMaker = await MarketMaker.kernel();
+      const daoReserve = await Reserve.kernel();
+      expect(daoController).equal(daoMarketMaker);
+      expect(daoMarketMaker).equal(daoReserve);
+    });
+    it("Should get collateral token", async () => {
+      const [
+        _whitelister,
+        _virtualSupply,
+        _virtualBalance,
+        _reserveRatio,
+        _slippage,
+      ] = await MarketMaker.getCollateralToken(SOVToken.address);
+      expect(_whitelister);
+      expect(_reserveRatio).equal(reserveRatio);
+      expect(_virtualSupply).equal(0);
+      expect(_virtualBalance).equal(0);
+      expect(_slippage).equal(slippage);
+    });
+    it("Should get presale bonded token and collateral token", async () => {
+      const collateralToken = await Controller.contributionToken();
+      const bondedToken = await Controller.token();
+      expect(collateralToken).equal(SOVToken.address);
+      expect(bondedToken).equal(ZEROToken.address);
+    });
+    it("Should get beneficiary address", async () => {
+      const beneficiaryMarketMaker = await MarketMaker.beneficiary();
+      const beneficiaryPresale = await Presale.beneficiary();
+      expect(beneficiary).equal(beneficiaryMarketMaker);
+      expect(beneficiary).equal(beneficiaryPresale);
+    });
   });
 
   describe ("Transfering Permissions", async () => {
@@ -135,6 +184,12 @@ describe("Bonding Curve", () => {
     it("Should create and grant permissions from governance", async() => {
       await ACL.connect(governance).createPermission(await governance.getAddress(), Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE(),await governance.getAddress());
       await ACL.connect(governance).grantPermission(await account1.getAddress(), Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE());
+    });
+    it("Should only allow governance to update market maker beneficiary", async () => {
+      await expect(Controller.updateBeneficiary(await account1.getAddress())).to.be.revertedWith("APP_AUTH_FAILED");
+      await Controller.connect(governance).updateBeneficiary(await account1.getAddress());
+      const beneficiaryMarketMaker = await MarketMaker.beneficiary();
+      expect(await account1.getAddress()).equal(beneficiaryMarketMaker);
     });
   });
 
