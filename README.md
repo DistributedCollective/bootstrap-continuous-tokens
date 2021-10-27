@@ -5,7 +5,6 @@ This project is based on [Aragon One Court presale project](https://github.com/a
 ## Importante changes and future work
 
 - This contracts were decoupled from Aragon's ENS integration. This means, some contracts are manually deployed and initialized (requiring the system contracts to extend from `UnsafeAragonApp` instead).
-- Contracts deployment and configuration was set-up using several transactions in order to get a working version faster. This workflow is more expensive (although RSK is cheap) and slow. This might be refactored in order to use a configuration contract as the [original template one](https://github.com/aragonone/court-presale/blob/master/template/contracts/EOPBCTemplate.sol).
 
 ## Getting Started
 
