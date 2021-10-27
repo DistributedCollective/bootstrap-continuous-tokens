@@ -97,193 +97,19 @@ const setupFundraisingPermission = async (
   const dao = Kernel__factory.connect(daoAddress, signer);
   const acl = ACL__factory.connect(await dao.acl(), signer);
 
-<<<<<<< HEAD
   await waitForTxConfirmation(
     acl.grantPermission(fundraisingApps.aclConfigurator.address, acl.address, await acl.CREATE_PERMISSIONS_ROLE()),
-=======
-  const ANY_ENTITY = await acl.ANY_ENTITY();
-  
-  // reserve
-  await createPermission(
-    acl,
-    governance,
-    fundraisingApps.reserve.address,
-    await fundraisingApps.reserve.SAFE_EXECUTE_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.reserve.address,
-    await fundraisingApps.reserve.ADD_PROTECTED_TOKEN_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.marketMaker.address,
-    fundraisingApps.reserve.address,
-    await fundraisingApps.reserve.TRANSFER_ROLE(),
-    governance,
-  );
-  // presale
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.presale.address,
-    await fundraisingApps.presale.OPEN_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    governance,
-    fundraisingApps.presale.address,
-    await fundraisingApps.presale.REDUCE_BENEFICIARY_PCT_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    ANY_ENTITY,
-    fundraisingApps.presale.address,
-    await fundraisingApps.presale.CONTRIBUTE_ROLE(),
-    governance,
-  );
-  // market maker
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    await fundraisingApps.marketMaker.OPEN_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    await fundraisingApps.marketMaker.UPDATE_BENEFICIARY_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    await fundraisingApps.marketMaker.UPDATE_FEES_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    await fundraisingApps.marketMaker.ADD_COLLATERAL_TOKEN_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    await fundraisingApps.marketMaker.REMOVE_COLLATERAL_TOKEN_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    await fundraisingApps.marketMaker.UPDATE_COLLATERAL_TOKEN_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    await fundraisingApps.marketMaker.OPEN_BUY_ORDER_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.controller.address,
-    fundraisingApps.marketMaker.address,
-    await fundraisingApps.marketMaker.OPEN_SELL_ORDER_ROLE(),
-    governance,
-  );
-  // controller
-  await createPermission(
-    acl,
-    governance,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.UPDATE_BENEFICIARY_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    governance,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.UPDATE_FEES_ROLE(),
-    governance,
-  );
-  // ADD_COLLATERAL_TOKEN_ROLE is handled later [after collaterals have been added]
-  await createPermission(
-    acl,
-    governance,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.REMOVE_COLLATERAL_TOKEN_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    governance,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.UPDATE_COLLATERAL_TOKEN_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    governance,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.OPEN_PRESALE_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    fundraisingApps.presale.address,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.OPEN_TRADING_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    ANY_ENTITY,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.CONTRIBUTE_ROLE(),
-    governance,
-  );
-  await createPermission(
-    acl,
-    ANY_ENTITY,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.OPEN_BUY_ORDER_ROLE(),
-<<<<<<< HEAD
-    owner,
->>>>>>> feat: transfer permissions to governance address after deployment
   );
 
   await waitForTxConfirmation(
     fundraisingApps.aclConfigurator.setupFundraisingPermissions(
-      await acl.address,
-      deployer,
+      acl.address,
+      governance,
       fundraisingApps.reserve.address,
       fundraisingApps.presale.address,
       fundraisingApps.marketMaker.address,
       fundraisingApps.controller.address,
     ),
-=======
-    governance,
-  );
-  await createPermission(
-    acl,
-    ANY_ENTITY,
-    fundraisingApps.controller.address,
-    await fundraisingApps.controller.OPEN_SELL_ORDER_ROLE(),
-    governance,
->>>>>>> fix: replace owner with governance
   );
 };
 
@@ -472,18 +298,8 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
 
   console.log(`Reserve initialized`);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  await setupFundraisingPermission(deployer, fundraisingApps, daoAddress, signer);
+  await setupFundraisingPermission(governance, fundraisingApps, daoAddress, signer);
   console.log("ACL configured");
-=======
-  await setupFundraisingPermission(params.governance,deployer, fundraisingApps, daoAddress, signer);
-=======
-  await setupFundraisingPermission(params.governance, fundraisingApps, daoAddress, signer);
->>>>>>> fix: replace owner with governance
-
-  console.log("Setup fundraising permission done");
->>>>>>> feat: transfer permissions to governance address after deployment
 
   await setupCollateral(
     deployer,
