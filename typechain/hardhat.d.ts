@@ -213,9 +213,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20__factory>;
     getContractFactory(
-      name: "OLDACL",
+      name: "ACLConfigurator",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.OLDACL__factory>;
+    ): Promise<Contracts.ACLConfigurator__factory>;
     getContractFactory(
       name: "Agent",
       signerOrOptions?: ethers.Signer | FactoryOptions

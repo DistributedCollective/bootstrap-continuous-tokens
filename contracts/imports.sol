@@ -1,5 +1,5 @@
 pragma solidity 0.4.24;
 
-import "@aragon/os/contracts/kernel/Kernel.sol";
+// Importing this files so they get compiled
 import "@aragon/os/contracts/factory/DAOFactory.sol";
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
