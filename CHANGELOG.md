@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1-alpha.1](https://sovryn.github.com/swamp-thing-sovryn/zero-continuous-token-presale/compare/v0.0.1-alpha.0...v0.0.1-alpha.1) (2021-10-28)
+
+
+### Features
+
+* configure ACL in a single transaction ([e39eeff](https://sovryn.github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/e39eeff2c8224f94e47ae9b84a7f146cbd2f562c))
+
 ### 0.0.1-alpha.0 (2021-10-25)
 
 
