@@ -5,6 +5,13 @@ This project is based on [Aragon One Court presale project](https://github.com/a
 ## Importante changes and future work
 
 - This contracts were decoupled from Aragon's ENS integration. This means, some contracts are manually deployed and initialized (requiring the system contracts to extend from `UnsafeAragonApp` instead).
+- Provide a sample `IContinuousToken` implementation for those who are not willing to provide their own.
+
+## How to integrate with this project
+
+Among other things that are detailed in the project config, there is an important requirement that this project has: the bonded / continuous token must comply with the [IContinuousToken](./contracts/IContinuousToken.sol) interface. This way, both the Presale and the MarketMaker (the bonding curve based market making contract) will require to `mint` and `burn` the continuous token.
+
+Due to the fact that the continuous token might require some special rules defined in they project they belong to, it's important to define and deploy such token using the separate project. To do so, please implement the before mentioned interface so everything could work as expected.
 
 ## Getting Started
 
