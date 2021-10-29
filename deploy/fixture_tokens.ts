@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types/runtime";
-import { BalanceRedirectPresale__factory, Controller__factory, MiniMeToken__factory } from "../typechain";
+import { BalanceRedirectPresale__factory, ContinuousToken__factory, Controller__factory } from "../typechain";
 
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log("Setting up accounts");
@@ -13,9 +13,9 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const recipient = "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B";
 
   const collateralToken = await deployments.get("CollateralToken");
-  const CollateralToken = MiniMeToken__factory.connect(collateralToken.address, txSender);
+  const CollateralToken = ContinuousToken__factory.connect(collateralToken.address, txSender);
   const bondedToken = await deployments.get("BondedToken");
-  const BondedToken = MiniMeToken__factory.connect(bondedToken.address, txSender);
+  const BondedToken = ContinuousToken__factory.connect(bondedToken.address, txSender);
 
   // Load the user with RBTC so he can pay for transactions
   const rBTCAmount = (await ethers.provider.getSigner().getBalance()).div(2);
@@ -26,8 +26,8 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   // Mint some collateral tokens to the users
   const tokensAmount = ethers.BigNumber.from("1000000000000000000").mul(ethers.BigNumber.from("10000"));
-  await CollateralToken.generateTokens(recipient, tokensAmount);
-  await CollateralToken.generateTokens(await txSender.getAddress(), tokensAmount);
+  await CollateralToken.mint(recipient, tokensAmount);
+  await CollateralToken.mint(await txSender.getAddress(), tokensAmount);
 
   // Buy some bonded tokens using the deployer (as we don't have access to the recipient private key but we want to test from Metamask)
   const controller = await deployments.get("Controller");
