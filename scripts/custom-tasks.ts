@@ -9,10 +9,10 @@ import { initialize } from "../deploy/initialize";
 import { waitForTxConfirmation, getProperConfig } from "../deploy/utils";
 import {
   BalanceRedirectPresale__factory,
-  ContinuousToken__factory,
   Controller__factory,
   MarketMaker__factory,
   MockedBalancedRedirectPresale__factory,
+  MockedContinuousToken__factory,
 } from "../typechain";
 
 const getSigner = (ethers: typeof import("ethers/lib/ethers") & HardhatEthersHelpers) => ethers.provider.getSigner();
@@ -38,12 +38,12 @@ const getPresale = async (deployments: DeploymentsExtension, signer: Signer, hre
 
 const getCollateralToken = async (deployments: DeploymentsExtension, signer: Signer) => {
   const collateralToken = await deployments.get("CollateralToken");
-  return ContinuousToken__factory.connect(collateralToken.address, signer);
+  return MockedContinuousToken__factory.connect(collateralToken.address, signer);
 };
 
 const getBondedToken = async (deployments: DeploymentsExtension, signer: Signer) => {
   const bondedToken = await deployments.get("BondedToken");
-  return ContinuousToken__factory.connect(bondedToken.address, signer);
+  return MockedContinuousToken__factory.connect(bondedToken.address, signer);
 };
 
 task("initialize", "initialize bonding curve contracts and set permissions").setAction(async (_taskArgs, hre) => {

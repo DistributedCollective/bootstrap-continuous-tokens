@@ -7,7 +7,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const deployed = await deploy("BondedToken", {
     from: deployer,
-    contract: "ContinuousToken",
+    contract: "MockedContinuousToken",
     args: ["Bonded Token", "BOND", 18, 0],
   });
   if (deployed.newlyDeployed) {

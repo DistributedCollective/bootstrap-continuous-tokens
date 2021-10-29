@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types/runtime";
-import { BalanceRedirectPresale__factory, ContinuousToken__factory, Controller__factory } from "../typechain";
+import { BalanceRedirectPresale__factory, MockedContinuousToken__factory, Controller__factory } from "../typechain";
 
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log("Setting up accounts");
@@ -13,9 +13,9 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const recipient = "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B";
 
   const collateralToken = await deployments.get("CollateralToken");
-  const CollateralToken = ContinuousToken__factory.connect(collateralToken.address, txSender);
+  const CollateralToken = MockedContinuousToken__factory.connect(collateralToken.address, txSender);
   const bondedToken = await deployments.get("BondedToken");
-  const BondedToken = ContinuousToken__factory.connect(bondedToken.address, txSender);
+  const BondedToken = MockedContinuousToken__factory.connect(bondedToken.address, txSender);
 
   // Load the user with RBTC so he can pay for transactions
   const rBTCAmount = (await ethers.provider.getSigner().getBalance()).div(2);

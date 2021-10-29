@@ -57,26 +57,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC721Receiver__factory>;
     getContractFactory(
-      name: "ITokenController",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ITokenController__factory>;
-    getContractFactory(
-      name: "ApproveAndCallFallBack",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ApproveAndCallFallBack__factory>;
-    getContractFactory(
-      name: "Controlled",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Controlled__factory>;
-    getContractFactory(
-      name: "MiniMeToken",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MiniMeToken__factory>;
-    getContractFactory(
-      name: "MiniMeTokenFactory",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MiniMeTokenFactory__factory>;
-    getContractFactory(
       name: "ACL",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ACL__factory>;
@@ -229,13 +209,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BondingCurve__factory>;
     getContractFactory(
-      name: "ContinuousToken",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ContinuousToken__factory>;
-    getContractFactory(
       name: "Controller",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Controller__factory>;
+    getContractFactory(
+      name: "IContinuousToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IContinuousToken__factory>;
     getContractFactory(
       name: "IMarketMaker",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -256,6 +236,10 @@ declare module "hardhat/types/runtime" {
       name: "MockedBalancedRedirectPresale",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockedBalancedRedirectPresale__factory>;
+    getContractFactory(
+      name: "MockedContinuousToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockedContinuousToken__factory>;
     getContractFactory(
       name: "Vault",
       signerOrOptions?: ethers.Signer | FactoryOptions

@@ -6,7 +6,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deploy } = deployments;
   const deployed = await deploy("CollateralToken", {
     from: deployer,
-    contract: "ContinuousToken",
+    contract: "MockedContinuousToken",
     args: ["Collateral Token", "COLL", 18, 0],
   });
   if (deployed.newlyDeployed) {
