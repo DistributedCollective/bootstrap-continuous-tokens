@@ -6,9 +6,12 @@
 pragma solidity 0.4.24;
 
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
-import "@aragon/os/contracts/lib/token/ERC20.sol";
+import "../IContinuousToken.sol";
 
-contract ContinuousToken is ERC20 {
+/// This token was created for testing purposes. It can be used on a testnet or local environment
+/// to mint tokens and play around with them.
+/// IT SHOULD NOT BE USED IN A PRODUCTION DEPLOYMENT
+contract MockedContinuousToken is IContinuousToken {
     using SafeMath for uint256;
 
     event Transfer(address indexed from, address indexed to, uint256 value);

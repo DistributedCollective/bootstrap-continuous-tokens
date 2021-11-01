@@ -9,11 +9,10 @@ import { initialize } from "../deploy/initialize";
 import { waitForTxConfirmation, getProperConfig } from "../deploy/utils";
 import {
   BalanceRedirectPresale__factory,
-  ContinuousToken__factory,
   Controller__factory,
   MarketMaker__factory,
-  MiniMeToken__factory,
   MockedBalancedRedirectPresale__factory,
+  MockedContinuousToken__factory,
 } from "../typechain";
 
 const getSigner = (ethers: typeof import("ethers/lib/ethers") & HardhatEthersHelpers) => ethers.provider.getSigner();
@@ -39,12 +38,12 @@ const getPresale = async (deployments: DeploymentsExtension, signer: Signer, hre
 
 const getCollateralToken = async (deployments: DeploymentsExtension, signer: Signer) => {
   const collateralToken = await deployments.get("CollateralToken");
-  return MiniMeToken__factory.connect(collateralToken.address, signer);
+  return MockedContinuousToken__factory.connect(collateralToken.address, signer);
 };
 
 const getBondedToken = async (deployments: DeploymentsExtension, signer: Signer) => {
   const bondedToken = await deployments.get("BondedToken");
-  return ContinuousToken__factory.connect(bondedToken.address, signer);
+  return MockedContinuousToken__factory.connect(bondedToken.address, signer);
 };
 
 task("initialize", "initialize bonding curve contracts and set permissions").setAction(async (_taskArgs, hre) => {
@@ -102,7 +101,7 @@ task("mint-collateral", "mints some collateral tokens (SOV) and sends them to th
   .setAction(async (taskArgs, hre) => {
     const { deployments, ethers } = hre;
     const CollateralToken = await getCollateralToken(deployments, getSigner(ethers));
-    await waitForTxConfirmation(CollateralToken.generateTokens(taskArgs.recipient, taskArgs.amount));
+    await waitForTxConfirmation(CollateralToken.mint(taskArgs.recipient, taskArgs.amount));
   });
 
 task("contribute", "buys (during the presale period) some bonded tokens and sends them to the recipient")
@@ -118,7 +117,7 @@ task("contribute", "buys (during the presale period) some bonded tokens and send
     const Presale = await getPresale(deployments, signer, hre);
 
     console.log("Generating tokens");
-    await waitForTxConfirmation(CollateralToken.generateTokens(signerAddress, taskArgs.amount));
+    await waitForTxConfirmation(CollateralToken.mint(signerAddress, taskArgs.amount));
     console.log("Approving transactions");
     await waitForTxConfirmation(CollateralToken.approve(Presale.address, 0));
     await waitForTxConfirmation(CollateralToken.approve(Presale.address, taskArgs.amount));

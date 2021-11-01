@@ -4,11 +4,10 @@ import { expect } from "chai";
 import { BigNumber, Signer } from "ethers";
 import {
   BalanceRedirectPresale__factory,
-  MiniMeToken__factory,
   Controller__factory,
   MarketMaker__factory,
   BancorFormula__factory,
-  ContinuousToken__factory,
+  MockedContinuousToken__factory,
   Kernel__factory,
   ACL__factory,
   Reserve__factory,
@@ -16,8 +15,7 @@ import {
   ACL,
   Controller,
   BalanceRedirectPresale,
-  ContinuousToken,
-  MiniMeToken,
+  MockedContinuousToken,
   BancorFormula,
   MarketMaker,
   Reserve,
@@ -29,7 +27,7 @@ import { getProperConfig } from "../deploy/utils";
 const setupTest = deployments.createFixture(async ({ deployments }) => {
   await deployments.fixture("everything"); // ensure you start from a fresh deployments
   //initialize contracts
-  await initialize(hre)
+  await initialize(hre);
 });
 
 const State = {
@@ -46,14 +44,14 @@ let presaleEchangeRate: BigNumber;
 let governance: Signer;
 
 describe("Bonding Curve", () => {
-  let Presale: BalanceRedirectPresale; 
+  let Presale: BalanceRedirectPresale;
   let Controller: Controller;
-  let MarketMaker: MarketMaker; 
+  let MarketMaker: MarketMaker;
   let Reserve: Reserve;
   let Kernel: Kernel;
   let ACL: ACL;
-  let ZEROToken: ContinuousToken; 
-  let SOVToken: MiniMeToken;
+  let ZEROToken: MockedContinuousToken;
+  let SOVToken: MockedContinuousToken;
   let BancorFormula: BancorFormula;
   const tokens = BigNumber.from(1000000);
   const contributionAmount = BigNumber.from(100000);
@@ -70,7 +68,7 @@ describe("Bonding Curve", () => {
 
     ({ deployer } = await getNamedAccounts());
     [, account1] = await ethers.getSigners();
-    
+
     const { parameters, mockPresale } = getProperConfig(hre);
     parameters.governanceAddress ??= deployer;
     beneficiary = parameters.beneficiaryAddress;
@@ -95,7 +93,7 @@ describe("Bonding Curve", () => {
       params: [parameters.governanceAddress],
     });
     governance = await ethers.getSigner(parameters.governanceAddress);
- 
+
     const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
 
     const kernel = await deployments.get("Kernel");
@@ -117,12 +115,12 @@ describe("Bonding Curve", () => {
     BancorFormula = await BancorFormula__factory.connect(bancorFormula.address, ethers.provider.getSigner());
 
     const zeroToken = await deployments.get("BondedToken");
-    ZEROToken = ContinuousToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
+    ZEROToken = MockedContinuousToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
 
     const sovToken = await deployments.get("CollateralToken");
-    SOVToken = MiniMeToken__factory.connect(sovToken.address, ethers.provider.getSigner());
-    await SOVToken.generateTokens(deployer, tokens);
-    await SOVToken.generateTokens(await account1.getAddress(), tokens);
+    SOVToken = MockedContinuousToken__factory.connect(sovToken.address, ethers.provider.getSigner());
+    await SOVToken.mint(deployer, tokens);
+    await SOVToken.mint(await account1.getAddress(), tokens);
 
     expect(await SOVToken.balanceOf(deployer)).to.eq(tokens);
 
@@ -173,15 +171,10 @@ describe("Bonding Curve", () => {
       expect(await Controller.presale()).equal(Presale.address);
       expect(await Controller.marketMaker()).equal(MarketMaker.address);
       expect(await Controller.reserve()).equal(Reserve.address);
-    })
+    });
     it("Should get collateral token", async () => {
-      const [
-        _whitelister,
-        _virtualSupply,
-        _virtualBalance,
-        _reserveRatio,
-        _slippage,
-      ] = await MarketMaker.getCollateralToken(SOVToken.address);
+      const [_whitelister, _virtualSupply, _virtualBalance, _reserveRatio, _slippage] =
+        await MarketMaker.getCollateralToken(SOVToken.address);
       expect(_whitelister);
       expect(_reserveRatio).equal(reserveRatio);
       expect(_virtualSupply).equal(0);
@@ -202,19 +195,41 @@ describe("Bonding Curve", () => {
     });
   });
 
-  describe ("Transfering Permissions", async () => {
+  describe("Transfering Permissions", async () => {
     it("Should fail trying to create permissions from deployer", async () => {
-      await expect(ACL.createPermission(deployer, Controller.address, await Controller.WITHDRAW_ROLE(),deployer)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(
+        ACL.createPermission(deployer, Controller.address, await Controller.WITHDRAW_ROLE(), deployer),
+      ).to.be.revertedWith("APP_AUTH_FAILED");
     });
-    it("Should fail trying to grant permissions from deployer", async() => {
-      await expect(ACL.grantPermission(await account1.getAddress(),Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE())).to.be.revertedWith("ACL_AUTH_NO_MANAGER");
+    it("Should fail trying to grant permissions from deployer", async () => {
+      await expect(
+        ACL.grantPermission(
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.ADD_COLLATERAL_TOKEN_ROLE(),
+        ),
+      ).to.be.revertedWith("ACL_AUTH_NO_MANAGER");
     });
     it("Should create permissions from governance address", async () => {
-      await ACL.connect(governance).createPermission(await account1.getAddress(), Controller.address, await Controller.WITHDRAW_ROLE(),await account1.getAddress());
+      await ACL.connect(governance).createPermission(
+        await account1.getAddress(),
+        Controller.address,
+        await Controller.WITHDRAW_ROLE(),
+        await account1.getAddress(),
+      );
     });
-    it("Should create and grant permissions from governance", async() => {
-      await ACL.connect(governance).createPermission(await governance.getAddress(), Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE(),await governance.getAddress());
-      await ACL.connect(governance).grantPermission(await account1.getAddress(), Controller.address, await Controller.ADD_COLLATERAL_TOKEN_ROLE());
+    it("Should create and grant permissions from governance", async () => {
+      await ACL.connect(governance).createPermission(
+        await governance.getAddress(),
+        Controller.address,
+        await Controller.ADD_COLLATERAL_TOKEN_ROLE(),
+        await governance.getAddress(),
+      );
+      await ACL.connect(governance).grantPermission(
+        await account1.getAddress(),
+        Controller.address,
+        await Controller.ADD_COLLATERAL_TOKEN_ROLE(),
+      );
     });
     it("Should only allow governance to update market maker beneficiary", async () => {
       await expect(Controller.updateBeneficiary(await account1.getAddress())).to.be.revertedWith("APP_AUTH_FAILED");
@@ -228,21 +243,16 @@ describe("Bonding Curve", () => {
       expect(await Presale.mintingForBeneficiaryPct()).equal(10);
     });
     it("Should only allow governance to update fees", async () => {
-      await expect(Controller.updateFees(10,10)).to.be.revertedWith("APP_AUTH_FAILED");
-      await Controller.connect(governance).updateFees(10,10);
+      await expect(Controller.updateFees(10, 10)).to.be.revertedWith("APP_AUTH_FAILED");
+      await Controller.connect(governance).updateFees(10, 10);
       expect(await MarketMaker.sellFeePct()).equal(10);
       expect(await MarketMaker.buyFeePct()).equal(10);
     });
     it("Should only allow governance to remove collateral token", async () => {
       await expect(Controller.removeCollateralToken(SOVToken.address)).to.be.revertedWith("APP_AUTH_FAILED");
       await Controller.connect(governance).removeCollateralToken(SOVToken.address);
-      const [
-        _whitelister,
-        _virtualSupply,
-        _virtualBalance,
-        _reserveRatio,
-        _slippage,
-      ] = await MarketMaker.getCollateralToken(SOVToken.address);
+      const [_whitelister, _virtualSupply, _virtualBalance, _reserveRatio, _slippage] =
+        await MarketMaker.getCollateralToken(SOVToken.address);
       expect(!_whitelister);
       expect(_reserveRatio).equal(0);
       expect(_virtualSupply).equal(0);
@@ -250,15 +260,12 @@ describe("Bonding Curve", () => {
       expect(_slippage).equal(0);
     });
     it("Should only allow governance to update collateral token", async () => {
-      await expect(Controller.updateCollateralToken(SOVToken.address,10,10,10,10)).to.be.revertedWith("APP_AUTH_FAILED");
-      await Controller.connect(governance).updateCollateralToken(SOVToken.address,10,10,10,10);
-      const [
-        _whitelister,
-        _virtualSupply,
-        _virtualBalance,
-        _reserveRatio,
-        _slippage,
-      ] = await MarketMaker.getCollateralToken(SOVToken.address);
+      await expect(Controller.updateCollateralToken(SOVToken.address, 10, 10, 10, 10)).to.be.revertedWith(
+        "APP_AUTH_FAILED",
+      );
+      await Controller.connect(governance).updateCollateralToken(SOVToken.address, 10, 10, 10, 10);
+      const [_whitelister, _virtualSupply, _virtualBalance, _reserveRatio, _slippage] =
+        await MarketMaker.getCollateralToken(SOVToken.address);
       expect(_whitelister);
       expect(_reserveRatio).equal(10);
       expect(_virtualSupply).equal(10);
@@ -267,15 +274,15 @@ describe("Bonding Curve", () => {
     });
   });
 
-  describe ("Presale", async () => {
+  describe("Presale", async () => {
     it("Should revert if presale is not open", async () => {
       await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
     });
-  
+
     it("Should fail trying to open presale without permission", async () => {
       await expect(Controller.openPresale()).to.be.revertedWith("APP_AUTH_FAILED");
-    })
-  
+    });
+
     it("Should open presale and allow to contribute", async () => {
       expect(await Presale.state()).to.eq(State.Pending);
       await Controller.connect(governance).openPresale();
@@ -285,7 +292,7 @@ describe("Bonding Curve", () => {
       expect(await Presale.contributorsCounter()).to.eq(1);
       expect(await Presale.contributors(deployer)).to.eq(contributionAmount);
     });
-  
+
     it("Should increase contribution amount but not increase contributors counter", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
@@ -293,7 +300,7 @@ describe("Bonding Curve", () => {
       expect(await Presale.contributorsCounter()).to.eq(1);
       expect(await Presale.contributors(deployer)).to.eq(contributionAmount.mul(2));
     });
-  
+
     it("Should increase contributors counter", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
@@ -302,13 +309,13 @@ describe("Bonding Curve", () => {
       expect(await Presale.contributors(deployer)).to.eq(contributionAmount);
       expect(await Presale.contributors(await account1.getAddress())).to.eq(contributionAmount);
     });
-  
+
     it("A user can query how many project tokens would be obtained for a given amount of contribution tokens", async () => {
       const reportedAmount = await Presale.contributionToTokens(contributionAmount);
       const expectedAmount = contributionAmount.mul(await Presale.exchangeRate()).div(await Presale.PPM());
       expect(expectedAmount).to.eq(reportedAmount);
     });
-  
+
     it("Mints the correct amount of project tokens", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
@@ -316,7 +323,7 @@ describe("Bonding Curve", () => {
       const expectedAmount = contributionAmount.mul(await Presale.exchangeRate()).div(await Presale.PPM());
       expect(expectedAmount).to.eq(totalSupply);
     });
-  
+
     it("Reduces user contribution token balance", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
@@ -324,14 +331,14 @@ describe("Bonding Curve", () => {
       const expectedBalance = tokens.sub(contributionAmount);
       expect(expectedBalance).to.eq(userBalance);
     });
-  
+
     it("Increases presale contribution token balance", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
       const appBalance = await SOVToken.balanceOf(Presale.address);
       expect(appBalance).to.eq(contributionAmount);
     });
-  
+
     it("Vested tokens are assigned to the buyer", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
@@ -339,21 +346,21 @@ describe("Bonding Curve", () => {
       const expectedAmount = contributionAmount.mul(await Presale.exchangeRate()).div(await Presale.PPM());
       expect(expectedAmount).to.eq(userBalance);
     });
-  
+
     it("Keeps track of total tokens raised", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
       const raised = await Presale.totalRaised();
       expect(raised).to.eq(contributionAmount);
     });
-  
+
     it("Should revert trying to close presale", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
-  
+
       await expect(Controller.closePresale()).to.be.revertedWith("PRESALE_INVALID_STATE");
     });
-  
+
     it("Should finish presale", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
@@ -363,45 +370,43 @@ describe("Bonding Curve", () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       await hre.timeAndMine.mine("1");
-  
+
       expect(await Presale.state()).to.eq(State.Finished);
       await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
     });
-  
+
     it("Should close presale", async () => {
-      await openAndClosePresale(Controller,contributionAmount);
+      await openAndClosePresale(Controller, contributionAmount);
       expect(await Presale.state()).to.eq(State.Closed);
       await expect(Controller.contribute(contributionAmount)).to.be.revertedWith("PRESALE_INVALID_STATE");
     });
-  
+
     it("Raised funds are transferred to the fundraising reserve and the beneficiary address", async () => {
-      
       const zeroBalanceBeforeClosing = await ZEROToken.balanceOf(beneficiary);
-      await openAndClosePresale(Controller,contributionAmount);
-  
+      await openAndClosePresale(Controller, contributionAmount);
+
       expect((await SOVToken.balanceOf(Presale.address)).toNumber()).to.eq(0);
-  
+
       const totalSold = await Presale.totalRaised();
       const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
       const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary));
       expect(await ZEROToken.balanceOf(beneficiary)).to.eq(
         zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary.mul(presaleEchangeRate).div(PPM)),
       );
-  
+
       const totalRaised = await Presale.totalRaised();
-  
+
       const aux = totalRaised.mul(PPM).div(PPM.sub(mintingForBeneficiary));
       const sovTokensForReserve = aux.mul(reserveRatio).div(PPM);
       const sovTokensForBeneficiary = totalRaised.sub(sovTokensForReserve);
       const reserve = await Presale.reserve();
-  
+
       expect(await SOVToken.balanceOf(beneficiary)).to.eq(sovTokensForBeneficiary);
       expect(await SOVToken.balanceOf(reserve)).to.eq(sovTokensForReserve);
     });
-
   });
 
-  describe ("Market Maker", async () => {
+  describe("Market Maker", async () => {
     it("Market maker should not be open", async () => {
       await Controller.connect(governance).openPresale();
       await Controller.contribute(contributionAmount);
@@ -411,20 +416,20 @@ describe("Bonding Curve", () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       await hre.timeAndMine.mine("1");
-  
+
       expect(await Presale.state()).to.eq(State.Finished);
       expect(!(await MarketMaker.isOpen()));
     });
 
     it("Market maker should be open", async () => {
-      await openAndClosePresale(Controller,contributionAmount);
+      await openAndClosePresale(Controller, contributionAmount);
       expect(await MarketMaker.isOpen());
     });
-  
+
     it("Should open a buy order", async () => {
       const amount = BigNumber.from(100);
-      await openAndClosePresale(Controller,contributionAmount);
-  
+      await openAndClosePresale(Controller, contributionAmount);
+
       const zeroSupplyBefore = await ZEROToken.totalSupply();
       const reserve = await Controller.reserve();
       const sovReserveBalanceBefore = await SOVToken.balanceOf(reserve);
@@ -437,7 +442,7 @@ describe("Bonding Curve", () => {
           }
         })
         .find((event: any) => event?.name === "NewBatch");
-  
+
       const tokensTobeMinted = await MarketMaker.tokensToBeMinted();
       const purchaseReturn = await BancorFormula.calculatePurchaseReturn(
         newBatch1?.args.supply,
@@ -445,14 +450,14 @@ describe("Bonding Curve", () => {
         newBatch1?.args.reserveRatio,
         amount,
       );
-  
+
       expect(tokensTobeMinted).to.eq(purchaseReturn);
       expect(await SOVToken.balanceOf(reserve)).to.eq(sovReserveBalanceBefore.add(amount));
-  
+
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       await hre.timeAndMine.mine(batchBlock);
-  
+
       const tx2 = await (await Controller.openBuyOrder(SOVToken.address, amount)).wait();
       const newBatch2 = tx2.logs
         .map((log: any) => {
@@ -462,30 +467,30 @@ describe("Bonding Curve", () => {
           }
         })
         .find((event: any) => event?.name === "NewBatch");
-      
+
       expect(newBatch2?.args.supply).to.eq(tokensTobeMinted.add(await ZEROToken.totalSupply()));
       expect(newBatch2?.args.supply).to.eq(tokensTobeMinted.add(newBatch1?.args.supply));
       expect(newBatch2?.args.balance).to.eq(newBatch1?.args.balance.add(amount));
-  
+
       const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
       await Controller.claimBuyOrder(deployer, newBatch1?.args.id, SOVToken.address);
       expect(await ZEROToken.totalSupply()).to.eq(zeroSupplyBefore.add(tokensTobeMinted));
       expect(await ZEROToken.balanceOf(deployer)).to.eq(zeroBalanceBefore.add(purchaseReturn));
     });
-  
+
     it("Should open a sell order", async () => {
       const amount = BigNumber.from(1000);
-      await openAndClosePresale(Controller,contributionAmount);
-  
-      await Controller.openBuyOrder(SOVToken.address, amount)
+      await openAndClosePresale(Controller, contributionAmount);
+
+      await Controller.openBuyOrder(SOVToken.address, amount);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       await hre.timeAndMine.mine(batchBlock);
-  
+
       const zeroSupplyBefore = await ZEROToken.totalSupply();
       const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
       const sovBalanceBefore = await SOVToken.balanceOf(deployer);
-  
+
       const tx1 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
       const newBatch1 = tx1.logs
         .map((log: any) => {
@@ -495,25 +500,24 @@ describe("Bonding Curve", () => {
           }
         })
         .find((event: any) => event?.name === "NewBatch");
-  
+
       expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount));
       expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount));
-  
+
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       await hre.timeAndMine.mine(batchBlock);
-  
+
       const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
-  
+
       await Controller.claimSellOrder(deployer, newBatch1?.args.id, SOVToken.address);
-  
+
       expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed));
     });
-  })
-  
+  });
 });
 
-async function openAndClosePresale(Controller:Controller, contributionAmount:BigNumber) {
+async function openAndClosePresale(Controller: Controller, contributionAmount: BigNumber) {
   await Controller.connect(governance).openPresale();
   await Controller.contribute(contributionAmount);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

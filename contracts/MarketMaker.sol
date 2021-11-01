@@ -6,7 +6,7 @@ import "@aragon/os/contracts/common/IsContract.sol";
 import "@aragon/os/contracts/common/SafeERC20.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "@aragon/os/contracts/lib/token/ERC20.sol";
-import "./ContinuousToken.sol";
+import "./IContinuousToken.sol";
 import "./Vault.sol";
 import "@ablack/fundraising-bancor-formula/contracts/BancorFormula.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/IAragonFundraisingController.sol";
@@ -98,7 +98,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
     }
 
     IAragonFundraisingController public controller;
-    ContinuousToken public bondedToken;
+    IContinuousToken public bondedToken;
     Vault public reserve;
     address public beneficiary;
     IBancorFormula public formula;
@@ -195,7 +195,7 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
     function initialize(
         IKernel _kernel,
         IAragonFundraisingController _controller,
-        ContinuousToken _bondedToken,
+        IContinuousToken _bondedToken,
         IBancorFormula _formula,
         Vault _reserve,
         address _beneficiary,

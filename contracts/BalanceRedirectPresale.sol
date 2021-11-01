@@ -6,7 +6,7 @@ import "@aragon/os/contracts/common/SafeERC20.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "@aragon/os/contracts/lib/math/SafeMath64.sol";
 import "@aragon/os/contracts/lib/token/ERC20.sol";
-import "./ContinuousToken.sol";
+import "./IContinuousToken.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/IAragonFundraisingController.sol";
 
 import "@ablack/fundraising-shared-interfaces/contracts/IPresale.sol";
@@ -55,7 +55,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
 
     IAragonFundraisingController public controller;
     IMarketMaker public marketMaker;
-    ContinuousToken public bondedToken;
+    IContinuousToken public bondedToken;
     address public reserve;
     address public beneficiary;
     ERC20 internal erc20ContribToken;
@@ -97,7 +97,7 @@ contract BalanceRedirectPresale is IsContract, UnsafeAragonApp, IPresale {
         IKernel _kernel,
         IAragonFundraisingController _controller,
         IMarketMaker _marketMaker,
-        ContinuousToken _bondedToken,
+        IContinuousToken _bondedToken,
         address _reserve,
         address _beneficiary,
         ERC20 _erc20ContribToken,

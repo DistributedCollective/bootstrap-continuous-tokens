@@ -1,22 +1,19 @@
-import {HardhatRuntimeEnvironment} from 'hardhat/types';
-import {DeployFunction} from 'hardhat-deploy/types';
-import { ethers } from "hardhat";
+import { DeployFunction } from "hardhat-deploy/types";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-    const { deployments, getNamedAccounts } = hre;
-    const { deployer } = await getNamedAccounts();
-    const { deploy } = deployments;
-    const MiniMeTokenFactory = await deployments.get('MiniMeTokenFactory');
-    const deployed = await deploy('CollateralToken', {
-        from: deployer,
-        contract: "MiniMeToken",
-        args: [MiniMeTokenFactory.address, ethers.constants.AddressZero, 0, "Collateral Token", 18, "COLL", true],
-      });
-    if(deployed.newlyDeployed){
-        console.log(`CollateralToken deployed at ${deployed.address}`);    
-    }
+  const { deployments, getNamedAccounts } = hre;
+  const { deployer } = await getNamedAccounts();
+  const { deploy } = deployments;
+  const deployed = await deploy("CollateralToken", {
+    from: deployer,
+    contract: "MockedContinuousToken",
+    args: ["Collateral Token", "COLL", 18, 0],
+  });
+  if (deployed.newlyDeployed) {
+    console.log(`CollateralToken deployed at ${deployed.address}`);
+  }
+};
 
-  };
-
-  export default deployFunc;
-  deployFunc.tags = ['CollateralToken'];
-  deployFunc.dependencies = ['MiniMeTokenFactory'];
+export default deployFunc;
+deployFunc.tags = ["CollateralToken"];
+deployFunc.dependencies = ["MiniMeTokenFactory"];
