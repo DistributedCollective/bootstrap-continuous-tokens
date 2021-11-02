@@ -96,14 +96,13 @@ describe("Bonding Curve", () => {
 
     const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
 
-    const kernel = await deployments.get("Kernel");
-    Kernel = await Kernel__factory.connect(kernel.address, ethers.provider.getSigner());
+    const controller = await deployments.get("Controller");
+    Controller = await Controller__factory.connect(controller.address, ethers.provider.getSigner());
+
+    Kernel = await Kernel__factory.connect(await Controller.kernel(), ethers.provider.getSigner());
 
     const aclAddress = await Kernel.acl();
     ACL = await ACL__factory.connect(aclAddress, ethers.provider.getSigner());
-
-    const controller = await deployments.get("Controller");
-    Controller = await Controller__factory.connect(controller.address, ethers.provider.getSigner());
 
     const marketMaker = await deployments.get("MarketMaker");
     MarketMaker = await MarketMaker__factory.connect(marketMaker.address, ethers.provider.getSigner());
@@ -218,13 +217,7 @@ describe("Bonding Curve", () => {
         await account1.getAddress(),
       );
     });
-    it("Should create and grant permissions from governance", async () => {
-      await ACL.connect(governance).createPermission(
-        await governance.getAddress(),
-        Controller.address,
-        await Controller.ADD_COLLATERAL_TOKEN_ROLE(),
-        await governance.getAddress(),
-      );
+    it("Should grant permissions from governance", async () => {
       await ACL.connect(governance).grantPermission(
         await account1.getAddress(),
         Controller.address,
@@ -514,6 +507,68 @@ describe("Bonding Curve", () => {
       await Controller.claimSellOrder(deployer, newBatch1?.args.id, SOVToken.address);
 
       expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed));
+    });
+  });
+  describe("Closing Bonding Curve", async () => {
+    it("Should fail trying to open a buy order after revoke permissions", async () => {
+      await openAndClosePresale(Controller, contributionAmount);
+      const amount = BigNumber.from(100);
+      //check permissions previously
+      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(true);
+      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(true);
+
+      //revoke buy order permissions
+      await ACL.connect(governance).revokePermission(
+        await ACL.ANY_ENTITY(),
+        Controller.address,
+        await Controller.OPEN_BUY_ORDER_ROLE(),
+      );
+
+      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(false);
+      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(false);
+
+      await expect(Controller.openBuyOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");;
+      await expect(Controller.connect(account1).openBuyOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+    });
+    it("Should fail trying to open a sell order after revoke permissions", async () => {
+      await openAndClosePresale(Controller, contributionAmount);
+      const amount = BigNumber.from(100);
+      //check permissions previously
+      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(true);
+      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(true);
+
+      //revoke sell order permissions
+      await ACL.connect(governance).revokePermission(
+        await ACL.ANY_ENTITY(),
+        Controller.address,
+        await Controller.OPEN_SELL_ORDER_ROLE(),
+      );
+
+      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(false);
+      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(false);
+
+      await expect(Controller.openSellOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(Controller.connect(account1).openSellOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+    });
+    it("Should fail trying deployer to transfer reserve fund", async () => {
+      await openAndClosePresale(Controller, contributionAmount);
+      const reserveBalanceBefore = await SOVToken.balanceOf(Reserve.address);
+      await expect(Reserve.transfer(SOVToken.address, await governance.getAddress(), reserveBalanceBefore)).to.be.revertedWith("APP_AUTH_FAILED");
+    });
+    it("Should allow to governance to transfer reserve funds", async () => {
+      await openAndClosePresale(Controller, contributionAmount);
+      await ACL.connect(governance).grantPermission(
+        await governance.getAddress(),
+        Reserve.address,
+        await Reserve.TRANSFER_ROLE(),
+      );
+      const reserveBalanceBefore = await SOVToken.balanceOf(Reserve.address);
+      const governanceBalanceBefore =  await SOVToken.balanceOf(await governance.getAddress());
+      await Reserve.connect(governance).transfer(SOVToken.address, await governance.getAddress(), reserveBalanceBefore);
+      const reserveBalanceAfter = await SOVToken.balanceOf(Reserve.address);
+      const governanceBalanceAfter =  await SOVToken.balanceOf(await governance.getAddress());
+      expect(reserveBalanceAfter).equal(BigNumber.from(0));
+      expect(governanceBalanceAfter).equal(governanceBalanceBefore.add(reserveBalanceBefore));
     });
   });
 });
