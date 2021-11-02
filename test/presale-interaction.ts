@@ -58,7 +58,7 @@ describe("Bonding Curve", () => {
   let deployer: string;
   let beneficiary: string;
   let batchBlock: number;
-  let beneficiaryPCT: number;
+  let mintingBeneficiaryPCT: BigNumber;
   let buyFeePCT: BigNumber;
   let sellFeePCT: BigNumber;
   let account1: Signer;
@@ -76,7 +76,7 @@ describe("Bonding Curve", () => {
     reserveRatio = parameters.reserveRatio;
     slippage = parameters.slippage;
     presaleEchangeRate = parameters.presaleEchangeRate;
-    beneficiaryPCT = parameters.beneficiaryPCT;
+    mintingBeneficiaryPCT = parameters.mintingBeneficiaryPCT;
     buyFeePCT = parameters.buyFee;
     sellFeePCT = parameters.selFee;
 
@@ -155,7 +155,7 @@ describe("Bonding Curve", () => {
       expect(await Presale.beneficiary()).equal(beneficiary);
       expect(await Presale.contributionToken()).equal(SOVToken.address);
       expect(await Presale.exchangeRate()).equal(presaleEchangeRate);
-      expect(await Presale.mintingForBeneficiaryPct()).equal(beneficiaryPCT);
+      expect(await Presale.mintingForBeneficiaryPct()).equal(mintingBeneficiaryPCT);
     });
     it("Should initialize market maker with correct parameters", async () => {
       expect(await MarketMaker.controller()).equal(Controller.address);
@@ -387,11 +387,12 @@ describe("Bonding Curve", () => {
 
       expect((await SOVToken.balanceOf(Presale.address)).toNumber()).to.eq(0);
 
-      const totalSold = await Presale.totalRaised();
+      const totalSold = await Presale.totalSold();
       const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
       const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary));
       expect(await ZEROToken.balanceOf(beneficiary)).to.eq(
-        zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary.mul(presaleEchangeRate).div(PPM)),
+        zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary)
+        // zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary.mul(presaleEchangeRate).div(PPM)),
       );
 
       const totalRaised = await Presale.totalRaised();

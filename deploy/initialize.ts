@@ -229,7 +229,7 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
     period: parameters.presalePeriod,
     openDate: parameters.startDate,
     exchangeRate: parameters.presaleEchangeRate,
-    mintingForBeneficiaryPct: parameters.beneficiaryPCT,
+    mintingForBeneficiaryPct: parameters.mintingBeneficiaryPCT,
     reserveRatio: parameters.reserveRatio,
     batchBlocks: parameters.batchBlock,
     slippage: parameters.slippage,

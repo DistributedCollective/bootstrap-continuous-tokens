@@ -50,7 +50,7 @@ type Parameters = {
   // the date (unixtime, ms) upon which that presale is to be open [ignored if 0]
   startDate: BigNumber;
   // the percentage of the raised funds that will be sent to beneficiary address during presale period
-  beneficiaryPCT: number;
+  mintingBeneficiaryPCT: BigNumber;
   // the amount of time, in ms, that the presale will last
   presalePeriod: number;
   // the exchangeRate [= 1/price] at which [bonded] tokens are to be purchased for that presale [in PPM]
@@ -98,7 +98,7 @@ const config: HardhatUserConfig = {
       mockPresale: true,
       parameters: {
         startDate: BigNumber.from(new Date().getTime()).div(1000).add(DAYS),
-        beneficiaryPCT: 200000,
+        mintingBeneficiaryPCT: PPM.mul(35).div(100),
         presalePeriod: 14 * DAYS,
         presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
@@ -118,7 +118,7 @@ const config: HardhatUserConfig = {
       mockPresale: false,
       parameters: {
         startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),
-        beneficiaryPCT: 200000,
+        mintingBeneficiaryPCT: PPM.mul(35).div(100),
         presalePeriod: 14 * DAYS,
         presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
@@ -139,7 +139,7 @@ const config: HardhatUserConfig = {
       mockPresale: true,
       parameters: {
         startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),
-        beneficiaryPCT: 200000,
+        mintingBeneficiaryPCT: PPM.mul(35).div(100),
         presalePeriod: 2 * DAYS,
         presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
@@ -158,7 +158,7 @@ const config: HardhatUserConfig = {
       mockPresale: false,
       parameters: {
         startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),
-        beneficiaryPCT: 200000,
+        mintingBeneficiaryPCT: PPM.mul(35).div(100),
         presalePeriod: 10 * DAYS,
         presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
