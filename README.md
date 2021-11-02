@@ -129,6 +129,7 @@ open-buy-order                                open a buy order of bonded tokens 
 claim-buy-order                               claim a buy order of bonded tokens
 open-sell-order                               open a sell order of bonded tokens after presale period
 claim-sell-order                              claim a sell order of bonded tokens
+print-system-info                             prints system useful data to montior the presale and the bonding curve status
 ```
 
 For example, if the `MockedBalanceRedirect` presale was deployed, the following commands can be executed in order to open, contribute and then close it:

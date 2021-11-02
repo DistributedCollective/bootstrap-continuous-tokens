@@ -1,6 +1,6 @@
 import { HardhatEthersHelpers } from "@nomiclabs/hardhat-ethers/types";
 import { addMilliseconds } from "date-fns";
-import { Signer } from "ethers";
+import { BigNumberish, Signer } from "ethers";
 import { DeploymentsExtension } from "hardhat-deploy/dist/types";
 import { task, types } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
@@ -208,3 +208,62 @@ task("claim-sell-order", "claim a sell order of bonded tokens")
     console.log("Claiming a sell order");
     await waitForTxConfirmation(Controller.claimSellOrder(signerAddress, taskArgs.batch, CollateralToken.address));
   });
+
+task("print-system-info", "prints system useful data to montior the presale and the bonding curve status").setAction(
+  async (taskArgs, hre) => {
+    const { deployments, ethers } = hre;
+    const config = getProperConfig(hre);
+    const signer = getSigner(ethers);
+
+    const CollateralToken = await getCollateralToken(deployments, signer);
+    const BondedToken = await getBondedToken(deployments, signer);
+    const Presale = await getPresale(deployments, signer, hre);
+    const reserve = await deployments.get("Reserve");
+
+    const formatUnits = ethers.utils.formatUnits;
+    const formatValue = (value: BigNumberish) => formatUnits(value, 18);
+
+    const [
+      totalRaised,
+      totalSold,
+      isPresaleClosed,
+      reserveFunds,
+      beneficiaryContributionTokens,
+      beneficiaryBondedTokens,
+    ] = await Promise.all([
+      Presale.totalRaised().then(formatValue),
+      Presale.totalSold().then(formatValue),
+      Presale.isClosed(),
+      CollateralToken.balanceOf(reserve.address).then(formatValue),
+      CollateralToken.balanceOf(config.parameters.beneficiaryAddress).then(formatValue),
+      BondedToken.balanceOf(config.parameters.beneficiaryAddress).then(formatValue),
+    ]);
+
+    console.table([
+      {
+        Key: "Total Raised",
+        Value: totalRaised.toString(),
+      },
+      {
+        Key: "Total Sold",
+        Value: totalSold.toString(),
+      },
+      {
+        Key: "Is Presale closed?",
+        Value: isPresaleClosed,
+      },
+      {
+        Key: "Reserve funds",
+        Value: reserveFunds,
+      },
+      {
+        Key: "Beneficiary Holdings (Collateral Tokens)",
+        Value: beneficiaryContributionTokens,
+      },
+      {
+        Key: "Beneficiary Holdings (Bonded Tokens)",
+        Value: beneficiaryBondedTokens,
+      },
+    ]);
+  },
+);
