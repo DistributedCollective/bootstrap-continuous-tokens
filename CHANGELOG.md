@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/compare/v1.0.0...v1.0.1) (2021-11-03)
+
+
+### Bug Fixes
+
+* added some logs and made it work on some steps were it was failing ([1dc9aff](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/1dc9aff9c2bddf6de153783a540a53da78888f1c))
+
 ## [1.0.0](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/compare/v0.0.1-alpha.1...v1.0.0) (2021-11-03)
 
 
