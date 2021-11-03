@@ -10,7 +10,6 @@ import "@typechain/hardhat";
 import chai from "chai";
 import { config as dotenvConfig } from "dotenv";
 import { solidity } from "ethereum-waffle";
-import { constants } from "ethers";
 import "hardhat-contract-sizer";
 import "hardhat-deploy";
 import "hardhat-docgen";
@@ -20,7 +19,7 @@ import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
 import { HardhatUserConfig } from "hardhat/types";
 import { resolve } from "path";
-import { BigNumber } from "ethers";
+import { BigNumber, Wallet } from "ethers";
 import "solidity-coverage";
 import "./scripts/custom-tasks";
 
@@ -45,6 +44,9 @@ if (!process.env.MNEMONIC) {
 } else {
   mnemonic = process.env.MNEMONIC;
 }
+
+const getPrivateKey = () =>
+  process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [Wallet.createRandom().privateKey];
 
 type Parameters = {
   // the date (unixtime, ms) upon which that presale is to be open [ignored if 0]
@@ -71,7 +73,7 @@ type Parameters = {
   bondedTokenAddress?: string;
   // the address of the governance, permissions will be transfer to this address after deployment. If not provided, permissions remains to deployer address
   governanceAddress?: string;
-  // the address of the beneficiary, fees will be transfer to this address. 
+  // the address of the beneficiary, fees will be transfer to this address.
   beneficiaryAddress: string;
 };
 declare module "hardhat/types/config" {
@@ -151,7 +153,7 @@ const config: HardhatUserConfig = {
         governanceAddress: "",
       },
       url: "https://public-node.testnet.rsk.co",
-      accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
+      accounts: getPrivateKey(),
       chainId: chainIds.rskTestnetMocked,
     },
     rskTestnetMockedWithSOV: {
@@ -171,7 +173,7 @@ const config: HardhatUserConfig = {
         governanceAddress: "",
       },
       url: "https://public-node.testnet.rsk.co",
-      accounts: [process.env.DEPLOYER_PRIVATE_KEY || constants.AddressZero],
+      accounts: getPrivateKey(),
       chainId: chainIds.rskTestnetMocked,
     },
   },
