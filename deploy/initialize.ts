@@ -40,7 +40,7 @@ const createDAO = async (deployments: DeploymentsExtension, deployer: string, si
   const daoFactoryDeployment = await deployments.get("DAOFactory");
 
   const kernel = Kernel__factory.connect(kernelDeployment.address, signer);
-  if (!(await kernel.hasInitialized())){
+  if (!(await kernel.hasInitialized())) {
     await waitForTxConfirmation(kernel.initialize(aclDeployment.address, deployer));
   }
 
@@ -56,12 +56,13 @@ const createDAO = async (deployments: DeploymentsExtension, deployer: string, si
     })
     .find(dao => dao !== undefined);
 
+  console.log(`DAO address is ${daoAddress}`);
   const dao = Kernel__factory.connect(daoAddress, signer);
   const aclAddress = await dao.acl();
 
   const acl = ACL__factory.connect(aclAddress, signer);
-  const permissionManager = await acl.getPermissionManager(daoAddress, await dao.APP_MANAGER_ROLE())
-  if (permissionManager == AddressZero){
+  const permissionManager = await acl.getPermissionManager(daoAddress, await dao.APP_MANAGER_ROLE());
+  if (permissionManager == AddressZero) {
     await waitForTxConfirmation(
       acl.createPermission(deployer, daoAddress, await dao.APP_MANAGER_ROLE(), deployer, {
         gasLimit: GAS_LIMIT_PATCH,
@@ -81,8 +82,8 @@ const createPermissions = async (
   await waitForTxConfirmation(acl.createPermission(entities[0], app, role, manager, { gasLimit: GAS_LIMIT_PATCH }));
   console.log(`Permission created: entity ${entities[0]} | app ${app} | role ${role} | mananager ${manager}`);
   for (let i = 1; i < entities.length; i++) {
-      await waitForTxConfirmation(acl.grantPermission(entities[i], app, role, { gasLimit: GAS_LIMIT_PATCH }));
-      console.log(`Permission granted: entity ${entities[i]} | app ${app} | role ${role} | mananager ${manager}`);
+    await waitForTxConfirmation(acl.grantPermission(entities[i], app, role, { gasLimit: GAS_LIMIT_PATCH }));
+    console.log(`Permission granted: entity ${entities[i]} | app ${app} | role ${role} | mananager ${manager}`);
   }
 };
 
@@ -98,9 +99,14 @@ const setupFundraisingPermission = async (
   const dao = Kernel__factory.connect(daoAddress, signer);
   const acl = ACL__factory.connect(await dao.acl(), signer);
 
+  console.log(daoAddress);
   await waitForTxConfirmation(
-    acl.grantPermission(fundraisingApps.aclConfigurator.address, acl.address, await acl.CREATE_PERMISSIONS_ROLE()),
+    acl.grantPermission(fundraisingApps.aclConfigurator.address, acl.address, await acl.CREATE_PERMISSIONS_ROLE(), {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
   );
+
+  console.log("ACLConfigurator granted permissions role");
 
   await waitForTxConfirmation(
     fundraisingApps.aclConfigurator.setupFundraisingPermissions(
@@ -110,6 +116,7 @@ const setupFundraisingPermission = async (
       fundraisingApps.presale.address,
       fundraisingApps.marketMaker.address,
       fundraisingApps.controller.address,
+      { gasLimit: GAS_LIMIT_PATCH },
     ),
   );
 };
@@ -134,11 +141,23 @@ const setupCollateral = async (
     deployer,
   );
 
+  console.log("ADD COLLATERAL TOKEN ROLE permission created")
+
   await waitForTxConfirmation(
-    fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0),
+    fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0, {
+      gasLimit: GAS_LIMIT_PATCH,
+    }),
   );
-  
-  await transferPermission(acl, fundraisingApps.controller.address, governance, deployer, await fundraisingApps.controller.ADD_COLLATERAL_TOKEN_ROLE());
+
+  console.log("Collateral token added");
+
+  await transferPermission(
+    acl,
+    fundraisingApps.controller.address,
+    governance,
+    deployer,
+    await fundraisingApps.controller.ADD_COLLATERAL_TOKEN_ROLE(),
+  );
 };
 
 const transferPermissions = async (
@@ -146,15 +165,13 @@ const transferPermissions = async (
   governance: string,
   deployer: string,
   signer: Signer,
-) : Promise<void> => {
-
+): Promise<void> => {
   const dao = Kernel__factory.connect(daoAddress, signer);
-  const acl = ACL__factory.connect(await dao.acl(), signer);;
+  const acl = ACL__factory.connect(await dao.acl(), signer);
 
   await transferPermission(acl, daoAddress, governance, deployer, await dao.APP_MANAGER_ROLE());
   await transferPermission(acl, acl.address, governance, deployer, await acl.CREATE_PERMISSIONS_ROLE());
-
-}
+};
 
 const transferPermission = async (
   acl: ACL,
@@ -162,8 +179,7 @@ const transferPermission = async (
   governance: string,
   deployer: string,
   role: string,
-) : Promise<void> => {
-
+): Promise<void> => {
   await waitForTxConfirmation(
     acl.grantPermission(governance, app, role, {
       gasLimit: GAS_LIMIT_PATCH,
@@ -179,7 +195,7 @@ const transferPermission = async (
       gasLimit: GAS_LIMIT_PATCH,
     }),
   );
-}
+};
 
 export const initialize = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts, ethers } = hre;
@@ -192,7 +208,7 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
 
   parameters.collateralTokenAddress ??= (await deployments.get("CollateralToken")).address;
   parameters.bondedTokenAddress ??= (await deployments.get("BondedToken")).address;
-  const governance = parameters.governanceAddress?parameters.governanceAddress:deployer;
+  const governance = parameters.governanceAddress ? parameters.governanceAddress : deployer;
 
   console.log(`Collateral token at address ${parameters.collateralTokenAddress}`);
   console.log(`Bondend token at address ${parameters.bondedTokenAddress}`);
@@ -233,7 +249,7 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
     governance: governance,
   };
 
-  if (!(await fundraisingApps.presale.hasInitialized())){
+  if (!(await fundraisingApps.presale.hasInitialized())) {
     await waitForTxConfirmation(
       fundraisingApps.presale.initialize(
         daoAddress,
@@ -249,11 +265,11 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
         params.openDate,
       ),
     );
-  };
+  }
 
   console.log(`Presale initialized`);
 
-  if (!(await fundraisingApps.marketMaker.hasInitialized())){
+  if (!(await fundraisingApps.marketMaker.hasInitialized())) {
     await waitForTxConfirmation(
       fundraisingApps.marketMaker.initialize(
         daoAddress,
@@ -271,7 +287,7 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
 
   console.log(`MarketMaker initialized`);
 
-  if (!(await fundraisingApps.controller.hasInitialized())){
+  if (!(await fundraisingApps.controller.hasInitialized())) {
     await waitForTxConfirmation(
       fundraisingApps.controller.initialize(
         daoAddress,
@@ -282,13 +298,13 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
         [],
       ),
     );
-  };
+  }
 
   console.log(`Controller initialized`);
 
-  if (!(await fundraisingApps.reserve.hasInitialized())){
+  if (!(await fundraisingApps.reserve.hasInitialized())) {
     await waitForTxConfirmation(fundraisingApps.reserve.initialize(daoAddress));
-  };
+  }
 
   console.log(`Reserve initialized`);
 
@@ -308,10 +324,9 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
 
   console.log("Setup collateral done");
 
-  if(parameters.governanceAddress){
+  if (parameters.governanceAddress) {
     console.log("Transfering permissions");
-  
-    await transferPermissions(daoAddress, params.governance,deployer, signer);
-  }
 
+    await transferPermissions(daoAddress, params.governance, deployer, signer);
+  }
 };
