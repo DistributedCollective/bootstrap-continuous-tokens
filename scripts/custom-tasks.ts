@@ -36,15 +36,20 @@ const getPresale = async (deployments: DeploymentsExtension, signer: Signer, hre
   return BalanceRedirectPresale__factory.connect(presale.address, signer);
 };
 
-const getCollateralToken = async (deployments: DeploymentsExtension, signer: Signer) => {
-  const collateralToken = await deployments.get("CollateralToken");
-  return MockedContinuousToken__factory.connect(collateralToken.address, signer);
-};
+const getTokenAddress =
+  (token: "BondedToken" | "CollateralToken") =>
+  async (hre: HardhatRuntimeEnvironment, deployments: DeploymentsExtension, signer: Signer) => {
+    const config = getProperConfig(hre);
+    const configAddress =
+      token === "CollateralToken" ? config.parameters.collateralTokenAddress : config.parameters.bondedTokenAddress;
+    return MockedContinuousToken__factory.connect(configAddress || (await deployments.get(token)).address, signer);
+  };
 
-const getBondedToken = async (deployments: DeploymentsExtension, signer: Signer) => {
-  const bondedToken = await deployments.get("BondedToken");
-  return MockedContinuousToken__factory.connect(bondedToken.address, signer);
-};
+const getCollateralToken = async (hre: HardhatRuntimeEnvironment, deployments: DeploymentsExtension, signer: Signer) =>
+  getTokenAddress("CollateralToken")(hre, deployments, signer);
+
+const getBondedToken = async (hre: HardhatRuntimeEnvironment, deployments: DeploymentsExtension, signer: Signer) =>
+  getTokenAddress("BondedToken")(hre, deployments, signer);
 
 task("initialize", "initialize bonding curve contracts and set permissions").setAction(async (_taskArgs, hre) => {
   console.log("Initializing contracts");
@@ -100,7 +105,7 @@ task("mint-collateral", "mints some collateral tokens (SOV) and sends them to th
   .addParam("amount", "Amount of tokens to mint", "1", types.string)
   .setAction(async (taskArgs, hre) => {
     const { deployments, ethers } = hre;
-    const CollateralToken = await getCollateralToken(deployments, getSigner(ethers));
+    const CollateralToken = await getCollateralToken(hre, deployments, getSigner(ethers));
     await waitForTxConfirmation(CollateralToken.mint(taskArgs.recipient, taskArgs.amount));
   });
 
@@ -112,8 +117,8 @@ task("contribute", "buys (during the presale period) some bonded tokens and send
     const signer = getSigner(ethers);
     const signerAddress = await signer.getAddress();
 
-    const CollateralToken = await getCollateralToken(deployments, signer);
-    const BondedToken = await getBondedToken(deployments, signer);
+    const CollateralToken = await getCollateralToken(hre, deployments, signer);
+    const BondedToken = await getBondedToken(hre, deployments, signer);
     const Presale = await getPresale(deployments, signer, hre);
 
     console.log("Generating tokens");
@@ -137,7 +142,7 @@ task("open-buy-order", "open a buy order of bonded tokens after presale period")
     const { deployments, ethers } = hre;
     const signer = getSigner(ethers);
 
-    const CollateralToken = await getCollateralToken(deployments, signer);
+    const CollateralToken = await getCollateralToken(hre, deployments, signer);
     const Controller = await getController(deployments, getSigner(ethers));
     const MarketMaker = await getMarketMaker(deployments, getSigner(ethers));
 
@@ -164,7 +169,7 @@ task("claim-buy-order", "claim a buy order of bonded tokens")
     const signer = getSigner(ethers);
     const signerAddress = await signer.getAddress();
 
-    const CollateralToken = await getCollateralToken(deployments, signer);
+    const CollateralToken = await getCollateralToken(hre, deployments, signer);
     const Controller = await getController(deployments, getSigner(ethers));
 
     console.log("Claiming a buy order");
@@ -177,7 +182,7 @@ task("open-sell-order", "open a sell order of bonded tokens after presale period
     const { deployments, ethers } = hre;
     const signer = getSigner(ethers);
 
-    const CollateralToken = await getCollateralToken(deployments, signer);
+    const CollateralToken = await getCollateralToken(hre, deployments, signer);
     const Controller = await getController(deployments, getSigner(ethers));
     const MarketMaker = await getMarketMaker(deployments, getSigner(ethers));
 
@@ -202,7 +207,7 @@ task("claim-sell-order", "claim a sell order of bonded tokens")
     const signer = getSigner(ethers);
     const signerAddress = await signer.getAddress();
 
-    const CollateralToken = await getCollateralToken(deployments, signer);
+    const CollateralToken = await getCollateralToken(hre, deployments, signer);
     const Controller = await getController(deployments, getSigner(ethers));
 
     console.log("Claiming a sell order");
@@ -215,8 +220,8 @@ task("print-system-info", "prints system useful data to montior the presale and 
     const config = getProperConfig(hre);
     const signer = getSigner(ethers);
 
-    const CollateralToken = await getCollateralToken(deployments, signer);
-    const BondedToken = await getBondedToken(deployments, signer);
+    const CollateralToken = await getCollateralToken(hre, deployments, signer);
+    const BondedToken = await getBondedToken(hre, deployments, signer);
     const Presale = await getPresale(deployments, signer, hre);
     const reserve = await deployments.get("Reserve");
 
