@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://sovryn.github.com/swamp-thing-sovryn/zero-continuous-token-presale/compare/v0.0.1-alpha.1...v1.0.0) (2021-11-03)
+
+
+### Features
+
+* print system info command ([b14586b](https://sovryn.github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/b14586ba42a82b79f228cd2c8c25a56372f67501))
+* **tests:** add revoke buy and sell order permissions and transfer reserve funds tests ([9c8d0d7](https://sovryn.github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/9c8d0d735937b47ff371629b94cc2155104da0b3))
+
 ### [0.0.1-alpha.1](https://sovryn.github.com/swamp-thing-sovryn/zero-continuous-token-presale/compare/v0.0.1-alpha.0...v0.0.1-alpha.1) (2021-10-28)
 
 
