@@ -22,6 +22,8 @@ import { resolve } from "path";
 import { BigNumber, Wallet } from "ethers";
 import "solidity-coverage";
 import "./scripts/custom-tasks";
+import ms from "ms";
+import { addMilliseconds } from "date-fns";
 
 chai.use(solidity);
 
@@ -36,6 +38,12 @@ const chainIds = {
 const PPM = BigNumber.from(1e6);
 const PCT_BASE = BigNumber.from((1e18).toString());
 const DAYS = 24 * 3600;
+
+const startInAnHourFromNow = () => {
+  const delta = ms("1 hour");
+  const newDate = addMilliseconds(new Date(), delta);
+  return BigNumber.from(newDate.getTime()).div(1000);
+};
 
 // Ensure that we have all the environment variables we need.
 let mnemonic: string;
@@ -157,9 +165,9 @@ const config: HardhatUserConfig = {
     rskTestnetMockedWithSOV: {
       mockPresale: false,
       parameters: {
-        startDate: BigNumber.from(new Date().getTime()).div(1000).add(1000),
+        startDate: startInAnHourFromNow(),
         mintingBeneficiaryPCT: PPM.mul(35).div(100),
-        presalePeriod: 10 * DAYS,
+        presalePeriod: 1 * DAYS,
         presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
         batchBlock: 10,
@@ -167,6 +175,27 @@ const config: HardhatUserConfig = {
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000),
         collateralTokenAddress: "0x6a9A07972D07e58F0daf5122d11E069288A375fb",
+        beneficiaryAddress: "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
+        governanceAddress: "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
+      },
+      url: "https://testnet.sovryn.app/rpc",
+      accounts: getPrivateKey(),
+      chainId: chainIds.rskTestnetMocked,
+    },
+    myntRSKTestnet: {
+      mockPresale: false,
+      parameters: {
+        startDate: startInAnHourFromNow(),
+        mintingBeneficiaryPCT: PPM.mul(BigNumber.from("1575").div(100)).div(100),
+        presalePeriod: 1 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
+        reserveRatio: PPM.mul(40).div(100),
+        batchBlock: 10,
+        slippage: PCT_BASE.mul(3).div(100),
+        buyFee: BigNumber.from(0),
+        selFee: PCT_BASE.mul(3).div(1000),
+        collateralTokenAddress: "0x6a9A07972D07e58F0daf5122d11E069288A375fb",
+        bondedTokenAddress: "0x139483e22575826183F5b56dd242f8f2C1AEf327",
         beneficiaryAddress: "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
         governanceAddress: "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
       },
