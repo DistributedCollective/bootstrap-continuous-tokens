@@ -1,6 +1,6 @@
 import { HardhatEthersHelpers } from "@nomiclabs/hardhat-ethers/types";
 import { addMilliseconds } from "date-fns";
-import { BigNumberish, Signer } from "ethers";
+import { BigNumberish, BigNumber, Signer } from "ethers";
 import { DeploymentsExtension } from "hardhat-deploy/dist/types";
 import { task, types } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
@@ -232,6 +232,9 @@ task("print-system-info", "prints system useful data to montior the presale and 
       totalRaised,
       totalSold,
       isPresaleClosed,
+      presaleOpenTime,
+      presaleDuration,
+      contributorsCount,
       reserveFunds,
       beneficiaryContributionTokens,
       beneficiaryBondedTokens,
@@ -239,6 +242,9 @@ task("print-system-info", "prints system useful data to montior the presale and 
       Presale.totalRaised().then(formatValue),
       Presale.totalSold().then(formatValue),
       Presale.isClosed(),
+      Presale.openDate().then((openDate: BigNumber) => new Date(openDate.toNumber() * 1000).toISOString()),
+      Presale.period().then((period: BigNumber) => ms(period.toNumber() * 1000)),
+      Presale.contributorsCounter().then(formatValue),
       CollateralToken.balanceOf(reserve.address).then(formatValue),
       CollateralToken.balanceOf(config.parameters.beneficiaryAddress).then(formatValue),
       BondedToken.balanceOf(config.parameters.beneficiaryAddress).then(formatValue),
@@ -256,6 +262,18 @@ task("print-system-info", "prints system useful data to montior the presale and 
       {
         Key: "Is Presale closed?",
         Value: isPresaleClosed,
+      },
+      {
+        Key: "Presale Open Time (UTC)",
+        Value: presaleOpenTime,
+      },
+      {
+        Key: "Presale duration",
+        Value: presaleDuration,
+      },
+      {
+        Key: "Contributors Count",
+        Value: contributorsCount,
       },
       {
         Key: "Reserve funds",
