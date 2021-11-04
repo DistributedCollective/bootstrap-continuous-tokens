@@ -1,10 +1,10 @@
 pragma solidity 0.4.24;
 
-import "./Agent.sol";
+import "./Vault.sol";
 
 // Renaming this contract
 /* solhint-disable */
-contract Reserve is Agent {
+contract Reserve is Vault {
 
 }
 /* solhint-enable */

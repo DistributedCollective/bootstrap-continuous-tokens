@@ -22,86 +22,31 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface ReserveInterface extends ethers.utils.Interface {
   functions: {
-    "ADD_PROTECTED_TOKEN_ROLE()": FunctionFragment;
-    "supportsInterface(bytes4)": FunctionFragment;
     "hasInitialized()": FunctionFragment;
-    "ERC1271_INTERFACE_ID()": FunctionFragment;
-    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
-    "isValidSignature(bytes32,bytes)": FunctionFragment;
-    "ERC1271_RETURN_INVALID_SIGNATURE()": FunctionFragment;
     "TRANSFER_ROLE()": FunctionFragment;
-    "getProtectedTokensLength()": FunctionFragment;
     "getEVMScriptExecutor(bytes)": FunctionFragment;
     "getRecoveryVault()": FunctionFragment;
-    "RUN_SCRIPT_ROLE()": FunctionFragment;
-    "SAFE_EXECUTE_ROLE()": FunctionFragment;
-    "REMOVE_PROTECTED_TOKEN_ROLE()": FunctionFragment;
     "deposit(address,uint256)": FunctionFragment;
     "isDepositable()": FunctionFragment;
-    "presignHash(bytes32)": FunctionFragment;
-    "DESIGNATE_SIGNER_ROLE()": FunctionFragment;
-    "removeProtectedToken(address)": FunctionFragment;
-    "EXECUTE_ROLE()": FunctionFragment;
-    "addProtectedToken(address)": FunctionFragment;
     "allowRecoverability(address)": FunctionFragment;
     "appId()": FunctionFragment;
-    "protectedTokens(uint256)": FunctionFragment;
     "getInitializationBlock()": FunctionFragment;
-    "ERC1271_RETURN_VALID_SIGNATURE()": FunctionFragment;
     "transferToVault(address)": FunctionFragment;
     "canPerform(address,bytes32,uint256[])": FunctionFragment;
     "getEVMScriptRegistry()": FunctionFragment;
-    "setDesignatedSigner(address)": FunctionFragment;
-    "designatedSigner()": FunctionFragment;
-    "safeExecute(address,bytes)": FunctionFragment;
-    "PROTECTED_TOKENS_CAP()": FunctionFragment;
-    "ADD_PRESIGNED_HASH_ROLE()": FunctionFragment;
-    "isPresigned(bytes32)": FunctionFragment;
-    "execute(address,uint256,bytes)": FunctionFragment;
     "transfer(address,address,uint256)": FunctionFragment;
-    "canForward(address,bytes)": FunctionFragment;
     "initialize(address)": FunctionFragment;
     "kernel()": FunctionFragment;
-    "forward(bytes)": FunctionFragment;
     "isPetrified()": FunctionFragment;
     "balance(address)": FunctionFragment;
-    "isForwarder()": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "ADD_PROTECTED_TOKEN_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [BytesLike]
-  ): string;
   encodeFunctionData(
     functionFragment: "hasInitialized",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "ERC1271_INTERFACE_ID",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "onERC721Received",
-    values: [string, string, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isValidSignature",
-    values: [BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ERC1271_RETURN_INVALID_SIGNATURE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "TRANSFER_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getProtectedTokensLength",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -113,18 +58,6 @@ interface ReserveInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "RUN_SCRIPT_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "SAFE_EXECUTE_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "REMOVE_PROTECTED_TOKEN_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "deposit",
     values: [string, BigNumberish]
   ): string;
@@ -133,40 +66,12 @@ interface ReserveInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "presignHash",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DESIGNATE_SIGNER_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "removeProtectedToken",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "EXECUTE_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "addProtectedToken",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "allowRecoverability",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "appId", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "protectedTokens",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getInitializationBlock",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ERC1271_RETURN_VALID_SIGNATURE",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -182,88 +87,23 @@ interface ReserveInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setDesignatedSigner",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "designatedSigner",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "safeExecute",
-    values: [string, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "PROTECTED_TOKENS_CAP",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "ADD_PRESIGNED_HASH_ROLE",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isPresigned",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "execute",
-    values: [string, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "transfer",
     values: [string, string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "canForward",
-    values: [string, BytesLike]
-  ): string;
   encodeFunctionData(functionFragment: "initialize", values: [string]): string;
   encodeFunctionData(functionFragment: "kernel", values?: undefined): string;
-  encodeFunctionData(functionFragment: "forward", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "isPetrified",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "balance", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "isForwarder",
-    values?: undefined
-  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "ADD_PROTECTED_TOKEN_ROLE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "hasInitialized",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "ERC1271_INTERFACE_ID",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "onERC721Received",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isValidSignature",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ERC1271_RETURN_INVALID_SIGNATURE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "TRANSFER_ROLE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getProtectedTokensLength",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -274,41 +114,9 @@ interface ReserveInterface extends ethers.utils.Interface {
     functionFragment: "getRecoveryVault",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "RUN_SCRIPT_ROLE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "SAFE_EXECUTE_ROLE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "REMOVE_PROTECTED_TOKEN_ROLE",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isDepositable",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "presignHash",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DESIGNATE_SIGNER_ROLE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "removeProtectedToken",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "EXECUTE_ROLE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "addProtectedToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -317,15 +125,7 @@ interface ReserveInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "appId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "protectedTokens",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getInitializationBlock",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ERC1271_RETURN_VALID_SIGNATURE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -337,67 +137,22 @@ interface ReserveInterface extends ethers.utils.Interface {
     functionFragment: "getEVMScriptRegistry",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "setDesignatedSigner",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "designatedSigner",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "safeExecute",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "PROTECTED_TOKENS_CAP",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ADD_PRESIGNED_HASH_ROLE",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isPresigned",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "canForward", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "kernel", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "forward", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isPetrified",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "balance", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "isForwarder",
-    data: BytesLike
-  ): Result;
 
   events: {
-    "SafeExecute(address,address,bytes)": EventFragment;
-    "Execute(address,address,uint256,bytes)": EventFragment;
-    "AddProtectedToken(address)": EventFragment;
-    "RemoveProtectedToken(address)": EventFragment;
-    "PresignHash(address,bytes32)": EventFragment;
-    "SetDesignatedSigner(address,address,address)": EventFragment;
-    "ReceiveERC721(address,address,address,uint256,bytes)": EventFragment;
     "VaultTransfer(address,address,uint256)": EventFragment;
     "VaultDeposit(address,address,uint256)": EventFragment;
     "ScriptResult(address,bytes,bytes,bytes)": EventFragment;
     "RecoverToVault(address,address,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "SafeExecute"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Execute"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "AddProtectedToken"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RemoveProtectedToken"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "PresignHash"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetDesignatedSigner"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ReceiveERC721"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VaultTransfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "VaultDeposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ScriptResult"): EventFragment;
@@ -448,44 +203,9 @@ export class Reserve extends BaseContract {
   interface: ReserveInterface;
 
   functions: {
-    ADD_PROTECTED_TOKEN_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    supportsInterface(
-      _interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     hasInitialized(overrides?: CallOverrides): Promise<[boolean]>;
 
-    ERC1271_INTERFACE_ID(overrides?: CallOverrides): Promise<[string]>;
-
-    onERC721Received(
-      _operator: string,
-      _from: string,
-      _tokenId: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "isValidSignature(bytes32,bytes)"(
-      _hash: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    "isValidSignature(bytes,bytes)"(
-      _data: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    ERC1271_RETURN_INVALID_SIGNATURE(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     TRANSFER_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    getProtectedTokensLength(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getEVMScriptExecutor(
       _script: BytesLike,
@@ -493,12 +213,6 @@ export class Reserve extends BaseContract {
     ): Promise<[string]>;
 
     getRecoveryVault(overrides?: CallOverrides): Promise<[string]>;
-
-    RUN_SCRIPT_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    SAFE_EXECUTE_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    REMOVE_PROTECTED_TOKEN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
     deposit(
       _token: string,
@@ -508,25 +222,6 @@ export class Reserve extends BaseContract {
 
     isDepositable(overrides?: CallOverrides): Promise<[boolean]>;
 
-    presignHash(
-      _hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    DESIGNATE_SIGNER_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    removeProtectedToken(
-      _token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    EXECUTE_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    addProtectedToken(
-      _token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     allowRecoverability(
       arg0: string,
       overrides?: CallOverrides
@@ -534,16 +229,7 @@ export class Reserve extends BaseContract {
 
     appId(overrides?: CallOverrides): Promise<[string]>;
 
-    protectedTokens(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     getInitializationBlock(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    ERC1271_RETURN_VALID_SIGNATURE(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
 
     transferToVault(
       _token: string,
@@ -559,44 +245,12 @@ export class Reserve extends BaseContract {
 
     getEVMScriptRegistry(overrides?: CallOverrides): Promise<[string]>;
 
-    setDesignatedSigner(
-      _designatedSigner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    designatedSigner(overrides?: CallOverrides): Promise<[string]>;
-
-    safeExecute(
-      _target: string,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    PROTECTED_TOKENS_CAP(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    ADD_PRESIGNED_HASH_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    isPresigned(arg0: BytesLike, overrides?: CallOverrides): Promise<[boolean]>;
-
-    execute(
-      _target: string,
-      _ethValue: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     transfer(
       _token: string,
       _to: string,
       _value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    canForward(
-      _sender: string,
-      _evmScript: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
 
     initialize(
       _kernel: string,
@@ -605,54 +259,14 @@ export class Reserve extends BaseContract {
 
     kernel(overrides?: CallOverrides): Promise<[string]>;
 
-    forward(
-      _evmScript: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     isPetrified(overrides?: CallOverrides): Promise<[boolean]>;
 
     balance(_token: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    isForwarder(overrides?: CallOverrides): Promise<[boolean]>;
   };
-
-  ADD_PROTECTED_TOKEN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  supportsInterface(
-    _interfaceId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
 
   hasInitialized(overrides?: CallOverrides): Promise<boolean>;
 
-  ERC1271_INTERFACE_ID(overrides?: CallOverrides): Promise<string>;
-
-  onERC721Received(
-    _operator: string,
-    _from: string,
-    _tokenId: BigNumberish,
-    _data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "isValidSignature(bytes32,bytes)"(
-    _hash: BytesLike,
-    _signature: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  "isValidSignature(bytes,bytes)"(
-    _data: BytesLike,
-    _signature: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  ERC1271_RETURN_INVALID_SIGNATURE(overrides?: CallOverrides): Promise<string>;
-
   TRANSFER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  getProtectedTokensLength(overrides?: CallOverrides): Promise<BigNumber>;
 
   getEVMScriptExecutor(
     _script: BytesLike,
@@ -660,12 +274,6 @@ export class Reserve extends BaseContract {
   ): Promise<string>;
 
   getRecoveryVault(overrides?: CallOverrides): Promise<string>;
-
-  RUN_SCRIPT_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  SAFE_EXECUTE_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  REMOVE_PROTECTED_TOKEN_ROLE(overrides?: CallOverrides): Promise<string>;
 
   deposit(
     _token: string,
@@ -675,25 +283,6 @@ export class Reserve extends BaseContract {
 
   isDepositable(overrides?: CallOverrides): Promise<boolean>;
 
-  presignHash(
-    _hash: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  DESIGNATE_SIGNER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  removeProtectedToken(
-    _token: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  EXECUTE_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  addProtectedToken(
-    _token: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   allowRecoverability(
     arg0: string,
     overrides?: CallOverrides
@@ -701,14 +290,7 @@ export class Reserve extends BaseContract {
 
   appId(overrides?: CallOverrides): Promise<string>;
 
-  protectedTokens(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   getInitializationBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-  ERC1271_RETURN_VALID_SIGNATURE(overrides?: CallOverrides): Promise<string>;
 
   transferToVault(
     _token: string,
@@ -724,44 +306,12 @@ export class Reserve extends BaseContract {
 
   getEVMScriptRegistry(overrides?: CallOverrides): Promise<string>;
 
-  setDesignatedSigner(
-    _designatedSigner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  designatedSigner(overrides?: CallOverrides): Promise<string>;
-
-  safeExecute(
-    _target: string,
-    _data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  PROTECTED_TOKENS_CAP(overrides?: CallOverrides): Promise<BigNumber>;
-
-  ADD_PRESIGNED_HASH_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  isPresigned(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-
-  execute(
-    _target: string,
-    _ethValue: BigNumberish,
-    _data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   transfer(
     _token: string,
     _to: string,
     _value: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  canForward(
-    _sender: string,
-    _evmScript: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
 
   initialize(
     _kernel: string,
@@ -770,56 +320,14 @@ export class Reserve extends BaseContract {
 
   kernel(overrides?: CallOverrides): Promise<string>;
 
-  forward(
-    _evmScript: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   isPetrified(overrides?: CallOverrides): Promise<boolean>;
 
   balance(_token: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  isForwarder(overrides?: CallOverrides): Promise<boolean>;
-
   callStatic: {
-    ADD_PROTECTED_TOKEN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    supportsInterface(
-      _interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     hasInitialized(overrides?: CallOverrides): Promise<boolean>;
 
-    ERC1271_INTERFACE_ID(overrides?: CallOverrides): Promise<string>;
-
-    onERC721Received(
-      _operator: string,
-      _from: string,
-      _tokenId: BigNumberish,
-      _data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "isValidSignature(bytes32,bytes)"(
-      _hash: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "isValidSignature(bytes,bytes)"(
-      _data: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    ERC1271_RETURN_INVALID_SIGNATURE(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     TRANSFER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    getProtectedTokensLength(overrides?: CallOverrides): Promise<BigNumber>;
 
     getEVMScriptExecutor(
       _script: BytesLike,
@@ -827,12 +335,6 @@ export class Reserve extends BaseContract {
     ): Promise<string>;
 
     getRecoveryVault(overrides?: CallOverrides): Promise<string>;
-
-    RUN_SCRIPT_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    SAFE_EXECUTE_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    REMOVE_PROTECTED_TOKEN_ROLE(overrides?: CallOverrides): Promise<string>;
 
     deposit(
       _token: string,
@@ -842,19 +344,6 @@ export class Reserve extends BaseContract {
 
     isDepositable(overrides?: CallOverrides): Promise<boolean>;
 
-    presignHash(_hash: BytesLike, overrides?: CallOverrides): Promise<void>;
-
-    DESIGNATE_SIGNER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    removeProtectedToken(
-      _token: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    EXECUTE_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    addProtectedToken(_token: string, overrides?: CallOverrides): Promise<void>;
-
     allowRecoverability(
       arg0: string,
       overrides?: CallOverrides
@@ -862,14 +351,7 @@ export class Reserve extends BaseContract {
 
     appId(overrides?: CallOverrides): Promise<string>;
 
-    protectedTokens(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     getInitializationBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ERC1271_RETURN_VALID_SIGNATURE(overrides?: CallOverrides): Promise<string>;
 
     transferToVault(_token: string, overrides?: CallOverrides): Promise<void>;
 
@@ -882,32 +364,6 @@ export class Reserve extends BaseContract {
 
     getEVMScriptRegistry(overrides?: CallOverrides): Promise<string>;
 
-    setDesignatedSigner(
-      _designatedSigner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    designatedSigner(overrides?: CallOverrides): Promise<string>;
-
-    safeExecute(
-      _target: string,
-      _data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    PROTECTED_TOKENS_CAP(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ADD_PRESIGNED_HASH_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    isPresigned(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-
-    execute(
-      _target: string,
-      _ethValue: BigNumberish,
-      _data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     transfer(
       _token: string,
       _to: string,
@@ -915,84 +371,16 @@ export class Reserve extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    canForward(
-      _sender: string,
-      _evmScript: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     initialize(_kernel: string, overrides?: CallOverrides): Promise<void>;
 
     kernel(overrides?: CallOverrides): Promise<string>;
 
-    forward(_evmScript: BytesLike, overrides?: CallOverrides): Promise<void>;
-
     isPetrified(overrides?: CallOverrides): Promise<boolean>;
 
     balance(_token: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    isForwarder(overrides?: CallOverrides): Promise<boolean>;
   };
 
   filters: {
-    SafeExecute(
-      sender?: string | null,
-      target?: string | null,
-      data?: null
-    ): TypedEventFilter<
-      [string, string, string],
-      { sender: string; target: string; data: string }
-    >;
-
-    Execute(
-      sender?: string | null,
-      target?: string | null,
-      ethValue?: null,
-      data?: null
-    ): TypedEventFilter<
-      [string, string, BigNumber, string],
-      { sender: string; target: string; ethValue: BigNumber; data: string }
-    >;
-
-    AddProtectedToken(
-      token?: string | null
-    ): TypedEventFilter<[string], { token: string }>;
-
-    RemoveProtectedToken(
-      token?: string | null
-    ): TypedEventFilter<[string], { token: string }>;
-
-    PresignHash(
-      sender?: string | null,
-      hash?: BytesLike | null
-    ): TypedEventFilter<[string, string], { sender: string; hash: string }>;
-
-    SetDesignatedSigner(
-      sender?: string | null,
-      oldSigner?: string | null,
-      newSigner?: string | null
-    ): TypedEventFilter<
-      [string, string, string],
-      { sender: string; oldSigner: string; newSigner: string }
-    >;
-
-    ReceiveERC721(
-      token?: string | null,
-      operator?: string | null,
-      from?: string | null,
-      tokenId?: null,
-      data?: null
-    ): TypedEventFilter<
-      [string, string, string, BigNumber, string],
-      {
-        token: string;
-        operator: string;
-        from: string;
-        tokenId: BigNumber;
-        data: string;
-      }
-    >;
-
     VaultTransfer(
       token?: string | null,
       to?: string | null,
@@ -1032,44 +420,9 @@ export class Reserve extends BaseContract {
   };
 
   estimateGas: {
-    ADD_PROTECTED_TOKEN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    supportsInterface(
-      _interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     hasInitialized(overrides?: CallOverrides): Promise<BigNumber>;
 
-    ERC1271_INTERFACE_ID(overrides?: CallOverrides): Promise<BigNumber>;
-
-    onERC721Received(
-      _operator: string,
-      _from: string,
-      _tokenId: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "isValidSignature(bytes32,bytes)"(
-      _hash: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "isValidSignature(bytes,bytes)"(
-      _data: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ERC1271_RETURN_INVALID_SIGNATURE(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     TRANSFER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getProtectedTokensLength(overrides?: CallOverrides): Promise<BigNumber>;
 
     getEVMScriptExecutor(
       _script: BytesLike,
@@ -1077,12 +430,6 @@ export class Reserve extends BaseContract {
     ): Promise<BigNumber>;
 
     getRecoveryVault(overrides?: CallOverrides): Promise<BigNumber>;
-
-    RUN_SCRIPT_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    SAFE_EXECUTE_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    REMOVE_PROTECTED_TOKEN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
     deposit(
       _token: string,
@@ -1092,25 +439,6 @@ export class Reserve extends BaseContract {
 
     isDepositable(overrides?: CallOverrides): Promise<BigNumber>;
 
-    presignHash(
-      _hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    DESIGNATE_SIGNER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    removeProtectedToken(
-      _token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    EXECUTE_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    addProtectedToken(
-      _token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     allowRecoverability(
       arg0: string,
       overrides?: CallOverrides
@@ -1118,16 +446,7 @@ export class Reserve extends BaseContract {
 
     appId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    protectedTokens(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getInitializationBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ERC1271_RETURN_VALID_SIGNATURE(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     transferToVault(
       _token: string,
@@ -1143,43 +462,11 @@ export class Reserve extends BaseContract {
 
     getEVMScriptRegistry(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setDesignatedSigner(
-      _designatedSigner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    designatedSigner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    safeExecute(
-      _target: string,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    PROTECTED_TOKENS_CAP(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ADD_PRESIGNED_HASH_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isPresigned(arg0: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    execute(
-      _target: string,
-      _ethValue: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     transfer(
       _token: string,
       _to: string,
       _value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    canForward(
-      _sender: string,
-      _evmScript: BytesLike,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     initialize(
@@ -1189,63 +476,15 @@ export class Reserve extends BaseContract {
 
     kernel(overrides?: CallOverrides): Promise<BigNumber>;
 
-    forward(
-      _evmScript: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     isPetrified(overrides?: CallOverrides): Promise<BigNumber>;
 
     balance(_token: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    isForwarder(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    ADD_PROTECTED_TOKEN_ROLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    supportsInterface(
-      _interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     hasInitialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    ERC1271_INTERFACE_ID(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    onERC721Received(
-      _operator: string,
-      _from: string,
-      _tokenId: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "isValidSignature(bytes32,bytes)"(
-      _hash: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isValidSignature(bytes,bytes)"(
-      _data: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ERC1271_RETURN_INVALID_SIGNATURE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     TRANSFER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getProtectedTokensLength(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     getEVMScriptExecutor(
       _script: BytesLike,
@@ -1253,14 +492,6 @@ export class Reserve extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getRecoveryVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    RUN_SCRIPT_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    SAFE_EXECUTE_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    REMOVE_PROTECTED_TOKEN_ROLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     deposit(
       _token: string,
@@ -1270,27 +501,6 @@ export class Reserve extends BaseContract {
 
     isDepositable(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    presignHash(
-      _hash: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    DESIGNATE_SIGNER_ROLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    removeProtectedToken(
-      _token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    EXECUTE_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    addProtectedToken(
-      _token: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     allowRecoverability(
       arg0: string,
       overrides?: CallOverrides
@@ -1298,16 +508,7 @@ export class Reserve extends BaseContract {
 
     appId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    protectedTokens(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getInitializationBlock(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ERC1271_RETURN_VALID_SIGNATURE(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1327,50 +528,11 @@ export class Reserve extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    setDesignatedSigner(
-      _designatedSigner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    designatedSigner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    safeExecute(
-      _target: string,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    PROTECTED_TOKENS_CAP(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ADD_PRESIGNED_HASH_ROLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isPresigned(
-      arg0: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    execute(
-      _target: string,
-      _ethValue: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     transfer(
       _token: string,
       _to: string,
       _value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    canForward(
-      _sender: string,
-      _evmScript: BytesLike,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     initialize(
@@ -1380,18 +542,11 @@ export class Reserve extends BaseContract {
 
     kernel(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    forward(
-      _evmScript: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     isPetrified(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     balance(
       _token: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    isForwarder(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
