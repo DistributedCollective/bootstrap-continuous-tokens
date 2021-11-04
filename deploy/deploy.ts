@@ -34,6 +34,8 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     contractsToDeploy.push("BondedToken");
   }
 
+  console.log(`deploying contracts: ${contractsToDeploy}`);
+
   //all contracts have to be deployed in a same deployments.run() because otherwise the tests don't work well and can't find deployments(hardhat-deploy issue)
   await deployments.run(contractsToDeploy, { writeDeploymentsToFiles: true });
 
