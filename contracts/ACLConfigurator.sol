@@ -24,8 +24,6 @@ contract ACLConfigurator {
         Controller controller
     ) external notAlreadySetup {
         address ANY_ENTITY = _acl.ANY_ENTITY();
-        _acl.createPermission(_owner, reserve, reserve.SAFE_EXECUTE_ROLE(), _owner);
-        _acl.createPermission(controller, reserve, reserve.ADD_PROTECTED_TOKEN_ROLE(), _owner);
         _acl.createPermission(marketMaker, reserve, reserve.TRANSFER_ROLE(), _owner);
         // presale
         _acl.createPermission(controller, presale, presale.OPEN_ROLE(), _owner);

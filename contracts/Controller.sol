@@ -6,7 +6,6 @@ import "@aragon/os/contracts/common/IsContract.sol";
 import "@aragon/os/contracts/common/SafeERC20.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import "@aragon/os/contracts/lib/token/ERC20.sol";
-import "./Agent.sol";
 import "./MarketMaker.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/IPresale.sol";
 import "@ablack/fundraising-shared-interfaces/contracts/ITap.sol";
@@ -63,7 +62,7 @@ contract Controller is EtherTokenConstant, IsContract, IAragonFundraisingControl
 
     IPresale public presale;
     MarketMaker public marketMaker;
-    Agent public reserve;
+    address public reserve;
     ITap public tap;
     address[] public toReset;
 
@@ -81,14 +80,13 @@ contract Controller is EtherTokenConstant, IsContract, IAragonFundraisingControl
         IKernel _kernel,
         IPresale _presale,
         MarketMaker _marketMaker,
-        Agent _reserve,
+        address _reserve,
         ITap _tap,
         address[] _toReset
     ) external onlyInit {
         require(isContract(_kernel), ERROR_CONTRACT_IS_EOA);
         require(isContract(_presale), ERROR_CONTRACT_IS_EOA);
         require(isContract(_marketMaker), ERROR_CONTRACT_IS_EOA);
-        require(isContract(_reserve), ERROR_CONTRACT_IS_EOA);
         require(isContract(_tap), ERROR_CONTRACT_IS_EOA);
         require(_toReset.length < TO_RESET_CAP, ERROR_INVALID_TOKENS);
 
@@ -243,9 +241,6 @@ contract Controller is EtherTokenConstant, IsContract, IAragonFundraisingControl
         uint256 _floor
     ) external auth(ADD_COLLATERAL_TOKEN_ROLE) {
         marketMaker.addCollateralToken(_collateral, _virtualSupply, _virtualBalance, _reserveRatio, _slippage);
-        if (_collateral != ETH) {
-            reserve.addProtectedToken(_collateral);
-        }
         if (_rate > 0) {
             tap.addTappedToken(_collateral, _rate, _floor);
         }
