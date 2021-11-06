@@ -113,23 +113,24 @@ so that you can use the tools there installed.
 
 ### Custom tasks
 
-There were added some custom `hardhat` tasks to help with the token manipulation and deployment mostly for testing purposes.
+There were added some custom `hardhat` tasks to help with the token manipulation and deployment mostly for testing or debugging purposes.
 
-```bash
+```
 npx hardhat help
 
-initialize                                    initialize bonding curve contracts and set permissions
-close-presale                                	closes the presale and let's people to start trading
-contribute                                   	buys (during the presale period) some bonded tokens and sends them to the recipient
-get-state                                    	returns presale current state
-mint-collateral                              	mints some collateral tokens (SOV) and sends them to the recipient address
-open-presale                                 	starts the presale
-update-presale-date                          	Testing command that updates the mocked presale date to a specific value so state can be changed
-open-buy-order                                open a buy order of bonded tokens after presale period
-claim-buy-order                               claim a buy order of bonded tokens
-open-sell-order                               open a sell order of bonded tokens after presale period
-claim-sell-order                              claim a sell order of bonded tokens
-print-system-info                             prints system useful data to montior the presale and the bonding curve status
+initialize                      initialize bonding curve contracts and set permissions
+close-presale                   closes the presale and let's people to start trading
+contribute                     	buys (during the presale period) some bonded tokens and sends them to the recipient
+get-state                       returns presale current state
+mint-collateral                 mints some collateral tokens (SOV) and sends them to the recipient address
+open-presale                    starts the presale
+update-presale-date             Testing command that updates the mocked presale date to a specific value so state can be changed
+open-buy-order                  open a buy order of bonded tokens after presale period
+claim-buy-order                 claim a buy order of bonded tokens
+open-sell-order                 open a sell order of bonded tokens after presale period
+claim-sell-order                claim a sell order of bonded tokens
+print-system-info               prints system useful data to montior the presale and the bonding curve status
+emergency-remove-from-reserve   Recovers the funds from the reserve
 ```
 
 For example, if the `MockedBalanceRedirect` presale was deployed, the following commands can be executed in order to open, contribute and then close it:
@@ -168,6 +169,16 @@ yarn devchain:start     # launches an RSK regtest node. Requires Docker to be in
 yarn deploy:rskTestnetMocked # deploys to RSK tesnet with mocked Presale Contract so the state can be tweaked
 yarn initialize:rskTestnetMocked  #initialize deployed contracts and set permissions
 ```
+
+### Funds recovery
+
+In case funds needs to be recovered from the reserve, the following steps:
+
+1. Disable opening buy and sell orders (done by the governance account)
+2. Granting funds retirements permission to an account (done by the governance account)
+3. Execute the transfer (by the account that has such permissions, it could be the governance itself)
+
+There is a task that will let execute `(2)` and `(3)` steps but a complete example can be found in [this test](test/presale-interaction.ts).
 
 ## Built With
 
