@@ -8,11 +8,14 @@ import ms from "ms";
 import { initialize } from "../deploy/initialize";
 import { waitForTxConfirmation, getProperConfig } from "../deploy/utils";
 import {
+  ACL__factory,
   BalanceRedirectPresale__factory,
   Controller__factory,
+  Kernel__factory,
   MarketMaker__factory,
   MockedBalancedRedirectPresale__factory,
   MockedContinuousToken__factory,
+  Reserve__factory,
 } from "../typechain";
 
 const getSigner = (ethers: typeof import("ethers/lib/ethers") & HardhatEthersHelpers) => ethers.provider.getSigner();
@@ -213,6 +216,55 @@ task("claim-sell-order", "claim a sell order of bonded tokens")
     console.log("Claiming a sell order");
     await waitForTxConfirmation(Controller.claimSellOrder(signerAddress, taskArgs.batch, CollateralToken.address));
   });
+
+task("emergency-remove-from-reserve", "Recovers the funds from the reserve").setAction(async (taskArgs, hre) => {
+  const { deployments, ethers } = hre;
+  const reserve = await deployments.get("Reserve");
+
+  const wallet = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY || "", ethers.provider);
+  const signer = wallet;
+  const governanceAddress = await signer.getAddress();
+
+  console.log(`Governance address is ${governanceAddress}`);
+
+  const Reserve = await Reserve__factory.connect(reserve.address, signer);
+
+  const controller = await deployments.get("Controller");
+  const Controller = await Controller__factory.connect(controller.address, signer);
+
+  const Kernel = await Kernel__factory.connect(await Controller.kernel(), signer);
+  const aclAddress = await Kernel.acl();
+  const ACL = await ACL__factory.connect(aclAddress, signer);
+
+  const CollateralToken = await getCollateralToken(hre, deployments, signer);
+  console.log(Reserve.address);
+
+  const reserveBalanceBefore = await CollateralToken.balanceOf(Reserve.address);
+  console.log("Reserve balance before emergency stop: ", reserveBalanceBefore.toString());
+  const governanceBalanceBefore = await CollateralToken.balanceOf(governanceAddress);
+  console.log("Governance balance before emergency stop: ", governanceBalanceBefore.toString());
+
+  await waitForTxConfirmation(
+    ACL.grantPermission(
+      governanceAddress,
+      Reserve.address,
+      await Reserve.TRANSFER_ROLE(),
+      {
+        gasLimit: 3400000,
+      },
+    ),
+  );
+
+  console.log("Permission granted");
+
+  await waitForTxConfirmation(
+    Reserve.transfer(CollateralToken.address, governanceAddress, reserveBalanceBefore, { gasLimit: 3400000 }),
+  );
+  const reserveBalanceAfter = await CollateralToken.balanceOf(Reserve.address);
+  console.log("Reserve balance after emergency stop: ", reserveBalanceAfter.toString());
+  const governanceBalanceAfter = await CollateralToken.balanceOf(governanceAddress);
+  console.log("Governance balance after emergency stop: ", governanceBalanceAfter.toString());
+});
 
 task("print-system-info", "prints system useful data to montior the presale and the bonding curve status").setAction(
   async (taskArgs, hre) => {
