@@ -116,8 +116,8 @@ const config: HardhatUserConfig = {
         slippage: PCT_BASE.mul(3).div(100),
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000),
-        beneficiaryAddress: "0x61E81fFa505d5A6F11f923C2DFe705E4Bc8B7d7B",
-        governanceAddress: "0x61E81fFa505d5A6F11f923C2DFe705E4Bc8B7d7B",
+        beneficiaryAddress: "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
+        governanceAddress: "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
       },
       accounts: {
         mnemonic,
@@ -186,7 +186,7 @@ const config: HardhatUserConfig = {
       mockPresale: false,
       parameters: {
         startDate: startInAnHourFromNow(),
-        mintingBeneficiaryPCT: PPM.mul(BigNumber.from("1575").div(100)).div(100),
+        mintingBeneficiaryPCT: PPM.mul(BigNumber.from("1575")).div(100).div(100),
         presalePeriod: 1 * DAYS,
         presaleEchangeRate: PPM.mul(10000).div(100),
         reserveRatio: PPM.mul(40).div(100),
