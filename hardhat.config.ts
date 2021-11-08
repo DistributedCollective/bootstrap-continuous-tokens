@@ -19,7 +19,7 @@ import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
 import { HardhatUserConfig } from "hardhat/types";
 import { resolve } from "path";
-import { BigNumber, Wallet } from "ethers";
+import { BigNumber, Wallet, constants } from "ethers";
 import "solidity-coverage";
 import "./scripts/custom-tasks";
 import ms from "ms";
@@ -33,6 +33,7 @@ const chainIds = {
   ganache: 1337,
   hardhat: 31337,
   rskTestnetMocked: 31,
+  rskMainnet: 30,
 };
 
 const PPM = BigNumber.from(1e6);
@@ -202,6 +203,27 @@ const config: HardhatUserConfig = {
       url: "https://testnet.sovryn.app/rpc",
       accounts: getPrivateKey(),
       chainId: chainIds.rskTestnetMocked,
+    },
+    myntRSKMainnet: {
+      mockPresale: false,
+      parameters: {
+        startDate: BigNumber.from("1633964400"), // "2021-10-11T15:00:00.000Z"
+        mintingBeneficiaryPCT: PPM.mul(BigNumber.from("1575")).div(100).div(100),
+        presalePeriod: 7 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
+        reserveRatio: PPM.mul(40).div(100),
+        batchBlock: 10,
+        slippage: PCT_BASE.mul(3).div(100),
+        buyFee: BigNumber.from(0),
+        selFee: PCT_BASE.mul(3).div(1000),
+        collateralTokenAddress: "0xefc78fc7d48b64958315949279ba181c2114abbd",
+        bondedTokenAddress: constants.AddressZero, /// To be updated after Mynt deployment
+        beneficiaryAddress: "0x924f5ad34698Fd20c90Fe5D5A8A0abd3b42dc711",
+        governanceAddress: "0x924f5ad34698Fd20c90Fe5D5A8A0abd3b42dc711",
+      },
+      url: "https://mainnet.sovryn.app/rpc",
+      accounts: getPrivateKey(),
+      chainId: chainIds.rskMainnet,
     },
   },
   paths: {
