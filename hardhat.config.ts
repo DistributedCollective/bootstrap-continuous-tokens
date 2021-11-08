@@ -19,7 +19,7 @@ import { removeConsoleLog } from "hardhat-preprocessor";
 import "hardhat-prettier";
 import { HardhatUserConfig } from "hardhat/types";
 import { resolve } from "path";
-import { BigNumber, Wallet, constants } from "ethers";
+import { BigNumber, Wallet } from "ethers";
 import "solidity-coverage";
 import "./scripts/custom-tasks";
 import ms from "ms";
@@ -217,7 +217,7 @@ const config: HardhatUserConfig = {
         buyFee: BigNumber.from(0),
         selFee: PCT_BASE.mul(3).div(1000),
         collateralTokenAddress: "0xefc78fc7d48b64958315949279ba181c2114abbd",
-        bondedTokenAddress: constants.AddressZero, /// To be updated after Mynt deployment
+        bondedTokenAddress: "0x2e6B1d146064613E8f521Eb3c6e65070af964EbB",
         beneficiaryAddress: "0x924f5ad34698Fd20c90Fe5D5A8A0abd3b42dc711",
         governanceAddress: "0x924f5ad34698Fd20c90Fe5D5A8A0abd3b42dc711",
       },
