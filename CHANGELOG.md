@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/compare/v1.0.2...v1.1.0) (2021-11-08)
+
+
+### Features
+
+* emergency-remove-from-reserve task and documentation ([12aa1b7](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/12aa1b710f6fc691f53a61e6b6763ef74c8fb0e4))
+* improved print-system-info task to show more data about the presale ([9ee2caa](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/9ee2caa268bbff3c470c20870eea6b9228561b88))
+* mynt mainnet deployment addresses ([4dd449b](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/4dd449bf7e03bf282c257815e206899e7c21e254))
+* mynt production deployment configs ([be35d54](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/be35d54d0c6f2f203d5d3bde5d31e4b71a4c5c54))
+* setup of Mynt RSK testnet deployment ([0bfd628](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/0bfd628770c584ab6ad8693abdfc641c7773ac94))
+* updated MyntToken address after deployment ([e216281](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/e216281ad26aeea90271534a0b49509dfd434543))
+
+
+### Bug Fixes
+
+* beneficiaryPercent was being rounded to 15 instead of being 15.75 ([e3222e5](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/e3222e551d667d27364c59ef137401dffebd15b0))
+* fixed print-system-info task so it can work with already deployed tokens ([a09a41b](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/commit/a09a41bcf25e41836cca97b3897b3124a34e4e1c))
+
 ### [1.0.2](https://sovryn.github.com/swamp-thing-sovryn/zero-continuous-token-presale/compare/v1.0.1...v1.0.2) (2021-11-03)
 
 ### [1.0.1](https://github.com/swamp-thing-sovryn/zero-continuous-token-presale/compare/v1.0.0...v1.0.1) (2021-11-03)
