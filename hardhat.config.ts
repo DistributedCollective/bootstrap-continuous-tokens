@@ -207,7 +207,7 @@ const config: HardhatUserConfig = {
     myntRSKMainnet: {
       mockPresale: false,
       parameters: {
-        startDate: BigNumber.from("1633964400"), // "2021-10-11T15:00:00.000Z"
+        startDate: BigNumber.from("1636383600"), // "2021-10-11T15:00:00.000Z"
         mintingBeneficiaryPCT: PPM.mul(BigNumber.from("1575")).div(100).div(100),
         presalePeriod: 7 * DAYS,
         presaleEchangeRate: PPM.mul(10000).div(100),
@@ -224,6 +224,7 @@ const config: HardhatUserConfig = {
       url: "https://mainnet.sovryn.app/rpc",
       accounts: getPrivateKey(),
       chainId: chainIds.rskMainnet,
+      timeout: 20000 * 100
     },
   },
   paths: {
