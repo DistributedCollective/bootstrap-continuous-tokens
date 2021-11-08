@@ -141,7 +141,7 @@ const setupCollateral = async (
     deployer,
   );
 
-  console.log("ADD COLLATERAL TOKEN ROLE permission created")
+  console.log("ADD COLLATERAL TOKEN ROLE permission created");
 
   await waitForTxConfirmation(
     fundraisingApps.controller.addCollateralToken(collateralTokenAddress, 0, 0, reserveRatio, slippage, 0, 0, {
@@ -263,6 +263,9 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
         params.exchangeRate,
         params.mintingForBeneficiaryPct,
         params.openDate,
+        {
+          gasLimit: GAS_LIMIT_PATCH,
+        },
       ),
     );
   }
@@ -281,6 +284,9 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
         params.batchBlocks,
         params.buyFee,
         params.sellFee,
+        {
+          gasLimit: GAS_LIMIT_PATCH,
+        },
       ),
     );
   }
@@ -296,6 +302,9 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
         fundraisingApps.reserve.address,
         fundraisingApps.tap.address,
         [],
+        {
+          gasLimit: GAS_LIMIT_PATCH,
+        },
       ),
     );
   }
@@ -303,7 +312,11 @@ export const initialize = async (hre: HardhatRuntimeEnvironment) => {
   console.log(`Controller initialized`);
 
   if (!(await fundraisingApps.reserve.hasInitialized())) {
-    await waitForTxConfirmation(fundraisingApps.reserve.initialize(daoAddress));
+    await waitForTxConfirmation(
+      fundraisingApps.reserve.initialize(daoAddress, {
+        gasLimit: GAS_LIMIT_PATCH,
+      }),
+    );
   }
 
   console.log(`Reserve initialized`);
