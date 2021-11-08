@@ -1,8 +1,8 @@
-# Zero Continuos Token deployment repository
+# Boostrap continuous token deployment repository
 
 This project is based on [Aragon One Court presale project](https://github.com/aragonone/court-presale) and provides a similar fashion presale and bonding curve based AMM to link two tokens.
 
-## Importante changes and future work
+## Important changes and future work
 
 - This contracts were decoupled from Aragon's ENS integration. This means, some contracts are manually deployed and initialized (requiring the system contracts to extend from `UnsafeAragonApp` instead).
 - Provide a sample `IContinuousToken` implementation for those who are not willing to provide their own.
