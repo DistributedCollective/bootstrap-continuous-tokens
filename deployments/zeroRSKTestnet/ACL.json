@@ -1,0 +1,971 @@
+{
+  "address": "0x261CDe8d3143a73f0d40026d1984454EbE60C077",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "hasInitialized",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "createBurnedPermission",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "burnPermissionManager",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_entity",
+          "type": "address"
+        },
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "grantPermission",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_entity",
+          "type": "address"
+        },
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getPermissionParamsLength",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_paramsHash",
+          "type": "bytes32"
+        },
+        {
+          "name": "_who",
+          "type": "address"
+        },
+        {
+          "name": "_where",
+          "type": "address"
+        },
+        {
+          "name": "_what",
+          "type": "bytes32"
+        },
+        {
+          "name": "_how",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "evalParams",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "NO_PERMISSION",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_script",
+          "type": "bytes"
+        }
+      ],
+      "name": "getEVMScriptExecutor",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getRecoveryVault",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "CREATE_PERMISSIONS_ROLE",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_entity",
+          "type": "address"
+        },
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        },
+        {
+          "name": "_params",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "grantPermissionP",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_who",
+          "type": "address"
+        },
+        {
+          "name": "_where",
+          "type": "address"
+        },
+        {
+          "name": "_what",
+          "type": "bytes32"
+        }
+      ],
+      "name": "hasPermission",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "allowRecoverability",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "appId",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getInitializationBlock",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_entity",
+          "type": "address"
+        },
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "revokePermission",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "name": "transferToVault",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_entity",
+          "type": "address"
+        },
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        },
+        {
+          "name": "_index",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPermissionParam",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8"
+        },
+        {
+          "name": "",
+          "type": "uint8"
+        },
+        {
+          "name": "",
+          "type": "uint240"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_sender",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        },
+        {
+          "name": "_params",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "canPerform",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getEVMScriptRegistry",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "ANY_ENTITY",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "removePermissionManager",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_newManager",
+          "type": "address"
+        },
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "setPermissionManager",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getPermissionManager",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_entity",
+          "type": "address"
+        },
+        {
+          "name": "_app",
+          "type": "address"
+        },
+        {
+          "name": "_role",
+          "type": "bytes32"
+        },
+        {
+          "name": "_manager",
+          "type": "address"
+        }
+      ],
+      "name": "createPermission",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_permissionsCreator",
+          "type": "address"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "EMPTY_PARAM_HASH",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "kernel",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isPetrified",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "BURN_ENTITY",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_who",
+          "type": "address"
+        },
+        {
+          "name": "_where",
+          "type": "address"
+        },
+        {
+          "name": "_what",
+          "type": "bytes32"
+        },
+        {
+          "name": "_how",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "hasPermission",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_who",
+          "type": "address"
+        },
+        {
+          "name": "_where",
+          "type": "address"
+        },
+        {
+          "name": "_what",
+          "type": "bytes32"
+        },
+        {
+          "name": "_how",
+          "type": "bytes"
+        }
+      ],
+      "name": "hasPermission",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "entity",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "app",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "name": "allowed",
+          "type": "bool"
+        }
+      ],
+      "name": "SetPermission",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "entity",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "app",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "name": "paramsHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "SetPermissionParams",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "app",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "name": "manager",
+          "type": "address"
+        }
+      ],
+      "name": "ChangePermissionManager",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "executor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "script",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "name": "input",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "name": "returnData",
+          "type": "bytes"
+        }
+      ],
+      "name": "ScriptResult",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "vault",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RecoverToVault",
+      "type": "event"
+    }
+  ],
+  "transactionHash": "0xa9a233f044d223595eb1f771b157864471334b48b510e0d25d4272d477cd6a4f",
+  "receipt": {
+    "to": null,
+    "from": "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
+    "contractAddress": "0x261CDe8d3143a73f0d40026d1984454EbE60C077",
+    "transactionIndex": 3,
+    "gasUsed": "2769672",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xcb6c6dc7b1ab2e5ba0b43ae26fee67be595d16c375418def7d9d98a1a8f5ac03",
+    "transactionHash": "0xa9a233f044d223595eb1f771b157864471334b48b510e0d25d4272d477cd6a4f",
+    "logs": [],
+    "blockNumber": 2383300,
+    "cumulativeGasUsed": "3239550",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "c0610d08bb5b39d5a913143ed6b9b91b",
+  "metadata": "{\"compiler\":{\"version\":\"0.4.24+commit.e67f0147\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"hasInitialized\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"}],\"name\":\"createBurnedPermission\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"}],\"name\":\"burnPermissionManager\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_entity\",\"type\":\"address\"},{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"}],\"name\":\"grantPermission\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_entity\",\"type\":\"address\"},{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"}],\"name\":\"getPermissionParamsLength\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_paramsHash\",\"type\":\"bytes32\"},{\"name\":\"_who\",\"type\":\"address\"},{\"name\":\"_where\",\"type\":\"address\"},{\"name\":\"_what\",\"type\":\"bytes32\"},{\"name\":\"_how\",\"type\":\"uint256[]\"}],\"name\":\"evalParams\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"NO_PERMISSION\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_script\",\"type\":\"bytes\"}],\"name\":\"getEVMScriptExecutor\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getRecoveryVault\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"CREATE_PERMISSIONS_ROLE\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_entity\",\"type\":\"address\"},{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"},{\"name\":\"_params\",\"type\":\"uint256[]\"}],\"name\":\"grantPermissionP\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_who\",\"type\":\"address\"},{\"name\":\"_where\",\"type\":\"address\"},{\"name\":\"_what\",\"type\":\"bytes32\"}],\"name\":\"hasPermission\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"token\",\"type\":\"address\"}],\"name\":\"allowRecoverability\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"appId\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getInitializationBlock\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_entity\",\"type\":\"address\"},{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"}],\"name\":\"revokePermission\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_token\",\"type\":\"address\"}],\"name\":\"transferToVault\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_entity\",\"type\":\"address\"},{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"},{\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getPermissionParam\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"},{\"name\":\"\",\"type\":\"uint8\"},{\"name\":\"\",\"type\":\"uint240\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_sender\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"},{\"name\":\"_params\",\"type\":\"uint256[]\"}],\"name\":\"canPerform\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getEVMScriptRegistry\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"ANY_ENTITY\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"}],\"name\":\"removePermissionManager\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_newManager\",\"type\":\"address\"},{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"}],\"name\":\"setPermissionManager\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"}],\"name\":\"getPermissionManager\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_entity\",\"type\":\"address\"},{\"name\":\"_app\",\"type\":\"address\"},{\"name\":\"_role\",\"type\":\"bytes32\"},{\"name\":\"_manager\",\"type\":\"address\"}],\"name\":\"createPermission\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_permissionsCreator\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"EMPTY_PARAM_HASH\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"kernel\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"isPetrified\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"BURN_ENTITY\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_who\",\"type\":\"address\"},{\"name\":\"_where\",\"type\":\"address\"},{\"name\":\"_what\",\"type\":\"bytes32\"},{\"name\":\"_how\",\"type\":\"uint256[]\"}],\"name\":\"hasPermission\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_who\",\"type\":\"address\"},{\"name\":\"_where\",\"type\":\"address\"},{\"name\":\"_what\",\"type\":\"bytes32\"},{\"name\":\"_how\",\"type\":\"bytes\"}],\"name\":\"hasPermission\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"entity\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"app\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"allowed\",\"type\":\"bool\"}],\"name\":\"SetPermission\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"entity\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"app\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"paramsHash\",\"type\":\"bytes32\"}],\"name\":\"SetPermissionParams\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"app\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"name\":\"manager\",\"type\":\"address\"}],\"name\":\"ChangePermissionManager\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"executor\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"script\",\"type\":\"bytes\"},{\"indexed\":false,\"name\":\"input\",\"type\":\"bytes\"},{\"indexed\":false,\"name\":\"returnData\",\"type\":\"bytes\"}],\"name\":\"ScriptResult\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"token\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"RecoverToVault\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{\"allowRecoverability(address)\":{\"details\":\"By default deriving from AragonApp makes it recoverable\",\"params\":{\"token\":\"Token address that would be recovered\"},\"return\":\"bool whether the app allows the recovery\"},\"burnPermissionManager(address,bytes32)\":{\"params\":{\"_app\":\"Address of the app in which the permission is being burned\",\"_role\":\"Identifier for the group of actions being burned\"}},\"canPerform(address,bytes32,uint256[])\":{\"details\":\"Check whether an action can be performed by a sender for a particular role on this app\",\"params\":{\"_params\":\"Permission params for the role\",\"_role\":\"Role on this app\",\"_sender\":\"Sender of the call\"},\"return\":\"Boolean indicating whether the sender has the permissions to perform the action.        Always returns false if the app hasn't been initialized yet.\"},\"createBurnedPermission(address,bytes32)\":{\"params\":{\"_app\":\"Address of the app in which the permission is being burned\",\"_role\":\"Identifier for the group of actions being burned\"}},\"createPermission(address,address,bytes32,address)\":{\"details\":\"Creates a permission that wasn't previously set and managed.     If a created permission is removed it is possible to reset it with createPermission.     This is the **ONLY** way to create permissions and set managers to permissions that don't     have a manager.     In terms of the ACL being initialized, this function implicitly protects all the other     state-changing external functions, as they all require the sender to be a manager.\",\"params\":{\"_app\":\"Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)\",\"_entity\":\"Address of the whitelisted entity that will be able to perform the role\",\"_manager\":\"Address of the entity that will be able to grant and revoke the permission further.\",\"_role\":\"Identifier for the group of actions in app given access to perform\"}},\"getInitializationBlock()\":{\"return\":\"Block number in which the contract was initialized\"},\"getPermissionManager(address,bytes32)\":{\"details\":\"Get manager for permission\",\"params\":{\"_app\":\"Address of the app\",\"_role\":\"Identifier for a group of actions in app\"},\"return\":\"address of the manager for the permission\"},\"getPermissionParam(address,address,bytes32,uint256)\":{\"params\":{\"_app\":\"Address of the app\",\"_entity\":\"Address of the whitelisted entity that will be able to perform the role\",\"_index\":\"Index of parameter in the array\",\"_role\":\"Identifier for a group of actions in app\"},\"return\":\"Parameter (id, op, value)\"},\"getPermissionParamsLength(address,address,bytes32)\":{\"params\":{\"_app\":\"Address of the app\",\"_entity\":\"Address of the whitelisted entity that will be able to perform the role\",\"_role\":\"Identifier for a group of actions in app\"},\"return\":\"Length of the array\"},\"getRecoveryVault()\":{\"details\":\"Get the recovery vault for the app\",\"return\":\"Recovery vault address for the app\"},\"grantPermission(address,address,bytes32)\":{\"details\":\"Grants permission if allowed. This requires `msg.sender` to be the permission manager\",\"params\":{\"_app\":\"Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)\",\"_entity\":\"Address of the whitelisted entity that will be able to perform the role\",\"_role\":\"Identifier for the group of actions in app given access to perform\"}},\"grantPermissionP(address,address,bytes32,uint256[])\":{\"details\":\"Grants a permission with parameters if allowed. This requires `msg.sender` to be the permission manager\",\"params\":{\"_app\":\"Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)\",\"_entity\":\"Address of the whitelisted entity that will be able to perform the role\",\"_params\":\"Permission parameters\",\"_role\":\"Identifier for the group of actions in app given access to perform\"}},\"hasInitialized()\":{\"return\":\"Whether the contract has been initialized by the time of the current block\"},\"hasPermission(address,address,bytes32,bytes)\":{\"details\":\"Function called by apps to check ACL on kernel or to check permission statu\",\"params\":{\"_how\":\"Permission parameters\",\"_where\":\"Identifier for a group of actions in app\",\"_who\":\"Sender of the original call\"},\"return\":\"boolean indicating whether the ACL allows the role or not\"},\"initialize(address)\":{\"details\":\"Initialize can only be called once. It saves the block number in which it was initialized.\",\"params\":{\"_permissionsCreator\":\"Entity that will be given permission over createPermission\"}},\"removePermissionManager(address,bytes32)\":{\"params\":{\"_app\":\"Address of the app in which the permission is being unmanaged\",\"_role\":\"Identifier for the group of actions being unmanaged\"}},\"revokePermission(address,address,bytes32)\":{\"details\":\"Revokes permission if allowed. This requires `msg.sender` to be the the permission manager\",\"params\":{\"_app\":\"Address of the app in which the role will be revoked\",\"_entity\":\"Address of the whitelisted entity to revoke access from\",\"_role\":\"Identifier for the group of actions in app being revoked\"}},\"setPermissionManager(address,address,bytes32)\":{\"params\":{\"_app\":\"Address of the app in which the permission management is being transferred\",\"_newManager\":\"Address for the new manager\",\"_role\":\"Identifier for the group of actions being transferred\"}},\"transferToVault(address)\":{\"params\":{\"_token\":\"Token balance to be sent to recovery vault.\"}}}},\"userdoc\":{\"methods\":{\"burnPermissionManager(address,bytes32)\":{\"notice\":\"Burn `_role` in `_app`, so no modification can be made to it (grant, revoke, permission manager)\"},\"createBurnedPermission(address,bytes32)\":{\"notice\":\"Burn non-existent `_role` in `_app`, so no modification can be made to it (grant, revoke, permission manager)\"},\"createPermission(address,address,bytes32,address)\":{\"notice\":\"Create a new permission granting `_entity` the ability to perform actions requiring `_role` on `_app`, setting `_manager` as the permission's manager\"},\"getPermissionParam(address,address,bytes32,uint256)\":{\"notice\":\"Get parameter for permission\"},\"getPermissionParamsLength(address,address,bytes32)\":{\"notice\":\"Get parameters for permission array length\"},\"grantPermission(address,address,bytes32)\":{\"notice\":\"Grant `_entity` the ability to perform actions requiring `_role` on `_app`\"},\"grantPermissionP(address,address,bytes32,uint256[])\":{\"notice\":\"Grant `_entity` the ability to perform actions requiring `_role` on `_app`\"},\"initialize(address)\":{\"notice\":\"Initialize an ACL instance and set `_permissionsCreator` as the entity that can create other permissions\"},\"removePermissionManager(address,bytes32)\":{\"notice\":\"Remove the manager of `_role` in `_app`\"},\"revokePermission(address,address,bytes32)\":{\"notice\":\"Revoke from `_entity` the ability to perform actions requiring `_role` on `_app`\"},\"setPermissionManager(address,address,bytes32)\":{\"notice\":\"Set `_newManager` as the manager of `_role` in `_app`\"},\"transferToVault(address)\":{\"notice\":\"Send funds to recovery Vault. This contract should never receive funds,        but in case it does, this function allows one to recover them.\"}}}},\"settings\":{\"compilationTarget\":{\"@aragon/os/contracts/acl/ACL.sol\":\"ACL\"},\"evmVersion\":\"byzantium\",\"libraries\":{\"__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@aragon/os/contracts/acl/ACL.sol\":{\"content\":\"pragma solidity 0.4.24;\\n\\nimport \\\"../apps/AragonApp.sol\\\";\\nimport \\\"../common/ConversionHelpers.sol\\\";\\nimport \\\"../common/TimeHelpers.sol\\\";\\nimport \\\"./ACLSyntaxSugar.sol\\\";\\nimport \\\"./IACL.sol\\\";\\nimport \\\"./IACLOracle.sol\\\";\\n\\n\\n/* solium-disable function-order */\\n// Allow public initialize() to be first\\ncontract ACL is IACL, TimeHelpers, AragonApp, ACLHelpers {\\n    /* Hardcoded constants to save gas\\n    bytes32 public constant CREATE_PERMISSIONS_ROLE = keccak256(\\\"CREATE_PERMISSIONS_ROLE\\\");\\n    */\\n    bytes32 public constant CREATE_PERMISSIONS_ROLE = 0x0b719b33c83b8e5d300c521cb8b54ae9bd933996a14bef8c2f4e0285d2d2400a;\\n\\n    enum Op { NONE, EQ, NEQ, GT, LT, GTE, LTE, RET, NOT, AND, OR, XOR, IF_ELSE } // op types\\n\\n    struct Param {\\n        uint8 id;\\n        uint8 op;\\n        uint240 value; // even though value is an uint240 it can store addresses\\n        // in the case of 32 byte hashes losing 2 bytes precision isn't a huge deal\\n        // op and id take less than 1 byte each so it can be kept in 1 sstore\\n    }\\n\\n    uint8 internal constant BLOCK_NUMBER_PARAM_ID = 200;\\n    uint8 internal constant TIMESTAMP_PARAM_ID    = 201;\\n    // 202 is unused\\n    uint8 internal constant ORACLE_PARAM_ID       = 203;\\n    uint8 internal constant LOGIC_OP_PARAM_ID     = 204;\\n    uint8 internal constant PARAM_VALUE_PARAM_ID  = 205;\\n    // TODO: Add execution times param type?\\n\\n    /* Hardcoded constant to save gas\\n    bytes32 public constant EMPTY_PARAM_HASH = keccak256(uint256(0));\\n    */\\n    bytes32 public constant EMPTY_PARAM_HASH = 0x290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e563;\\n    bytes32 public constant NO_PERMISSION = bytes32(0);\\n    address public constant ANY_ENTITY = address(-1);\\n    address public constant BURN_ENTITY = address(1); // address(0) is already used as \\\"no permission manager\\\"\\n\\n    uint256 internal constant ORACLE_CHECK_GAS = 30000;\\n\\n    string private constant ERROR_AUTH_INIT_KERNEL = \\\"ACL_AUTH_INIT_KERNEL\\\";\\n    string private constant ERROR_AUTH_NO_MANAGER = \\\"ACL_AUTH_NO_MANAGER\\\";\\n    string private constant ERROR_EXISTENT_MANAGER = \\\"ACL_EXISTENT_MANAGER\\\";\\n\\n    // Whether someone has a permission\\n    mapping (bytes32 => bytes32) internal permissions; // permissions hash => params hash\\n    mapping (bytes32 => Param[]) internal permissionParams; // params hash => params\\n\\n    // Who is the manager of a permission\\n    mapping (bytes32 => address) internal permissionManager;\\n\\n    event SetPermission(address indexed entity, address indexed app, bytes32 indexed role, bool allowed);\\n    event SetPermissionParams(address indexed entity, address indexed app, bytes32 indexed role, bytes32 paramsHash);\\n    event ChangePermissionManager(address indexed app, bytes32 indexed role, address indexed manager);\\n\\n    modifier onlyPermissionManager(address _app, bytes32 _role) {\\n        require(msg.sender == getPermissionManager(_app, _role), ERROR_AUTH_NO_MANAGER);\\n        _;\\n    }\\n\\n    modifier noPermissionManager(address _app, bytes32 _role) {\\n        // only allow permission creation (or re-creation) when there is no manager\\n        require(getPermissionManager(_app, _role) == address(0), ERROR_EXISTENT_MANAGER);\\n        _;\\n    }\\n\\n    /**\\n    * @dev Initialize can only be called once. It saves the block number in which it was initialized.\\n    * @notice Initialize an ACL instance and set `_permissionsCreator` as the entity that can create other permissions\\n    * @param _permissionsCreator Entity that will be given permission over createPermission\\n    */\\n    function initialize(address _permissionsCreator) public onlyInit {\\n        initialized();\\n        require(msg.sender == address(kernel()), ERROR_AUTH_INIT_KERNEL);\\n\\n        _createPermission(_permissionsCreator, this, CREATE_PERMISSIONS_ROLE, _permissionsCreator);\\n    }\\n\\n    /**\\n    * @dev Creates a permission that wasn't previously set and managed.\\n    *      If a created permission is removed it is possible to reset it with createPermission.\\n    *      This is the **ONLY** way to create permissions and set managers to permissions that don't\\n    *      have a manager.\\n    *      In terms of the ACL being initialized, this function implicitly protects all the other\\n    *      state-changing external functions, as they all require the sender to be a manager.\\n    * @notice Create a new permission granting `_entity` the ability to perform actions requiring `_role` on `_app`, setting `_manager` as the permission's manager\\n    * @param _entity Address of the whitelisted entity that will be able to perform the role\\n    * @param _app Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)\\n    * @param _role Identifier for the group of actions in app given access to perform\\n    * @param _manager Address of the entity that will be able to grant and revoke the permission further.\\n    */\\n    function createPermission(address _entity, address _app, bytes32 _role, address _manager)\\n        external\\n        auth(CREATE_PERMISSIONS_ROLE)\\n        noPermissionManager(_app, _role)\\n    {\\n        _createPermission(_entity, _app, _role, _manager);\\n    }\\n\\n    /**\\n    * @dev Grants permission if allowed. This requires `msg.sender` to be the permission manager\\n    * @notice Grant `_entity` the ability to perform actions requiring `_role` on `_app`\\n    * @param _entity Address of the whitelisted entity that will be able to perform the role\\n    * @param _app Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)\\n    * @param _role Identifier for the group of actions in app given access to perform\\n    */\\n    function grantPermission(address _entity, address _app, bytes32 _role)\\n        external\\n    {\\n        grantPermissionP(_entity, _app, _role, new uint256[](0));\\n    }\\n\\n    /**\\n    * @dev Grants a permission with parameters if allowed. This requires `msg.sender` to be the permission manager\\n    * @notice Grant `_entity` the ability to perform actions requiring `_role` on `_app`\\n    * @param _entity Address of the whitelisted entity that will be able to perform the role\\n    * @param _app Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)\\n    * @param _role Identifier for the group of actions in app given access to perform\\n    * @param _params Permission parameters\\n    */\\n    function grantPermissionP(address _entity, address _app, bytes32 _role, uint256[] _params)\\n        public\\n        onlyPermissionManager(_app, _role)\\n    {\\n        bytes32 paramsHash = _params.length > 0 ? _saveParams(_params) : EMPTY_PARAM_HASH;\\n        _setPermission(_entity, _app, _role, paramsHash);\\n    }\\n\\n    /**\\n    * @dev Revokes permission if allowed. This requires `msg.sender` to be the the permission manager\\n    * @notice Revoke from `_entity` the ability to perform actions requiring `_role` on `_app`\\n    * @param _entity Address of the whitelisted entity to revoke access from\\n    * @param _app Address of the app in which the role will be revoked\\n    * @param _role Identifier for the group of actions in app being revoked\\n    */\\n    function revokePermission(address _entity, address _app, bytes32 _role)\\n        external\\n        onlyPermissionManager(_app, _role)\\n    {\\n        _setPermission(_entity, _app, _role, NO_PERMISSION);\\n    }\\n\\n    /**\\n    * @notice Set `_newManager` as the manager of `_role` in `_app`\\n    * @param _newManager Address for the new manager\\n    * @param _app Address of the app in which the permission management is being transferred\\n    * @param _role Identifier for the group of actions being transferred\\n    */\\n    function setPermissionManager(address _newManager, address _app, bytes32 _role)\\n        external\\n        onlyPermissionManager(_app, _role)\\n    {\\n        _setPermissionManager(_newManager, _app, _role);\\n    }\\n\\n    /**\\n    * @notice Remove the manager of `_role` in `_app`\\n    * @param _app Address of the app in which the permission is being unmanaged\\n    * @param _role Identifier for the group of actions being unmanaged\\n    */\\n    function removePermissionManager(address _app, bytes32 _role)\\n        external\\n        onlyPermissionManager(_app, _role)\\n    {\\n        _setPermissionManager(address(0), _app, _role);\\n    }\\n\\n    /**\\n    * @notice Burn non-existent `_role` in `_app`, so no modification can be made to it (grant, revoke, permission manager)\\n    * @param _app Address of the app in which the permission is being burned\\n    * @param _role Identifier for the group of actions being burned\\n    */\\n    function createBurnedPermission(address _app, bytes32 _role)\\n        external\\n        auth(CREATE_PERMISSIONS_ROLE)\\n        noPermissionManager(_app, _role)\\n    {\\n        _setPermissionManager(BURN_ENTITY, _app, _role);\\n    }\\n\\n    /**\\n    * @notice Burn `_role` in `_app`, so no modification can be made to it (grant, revoke, permission manager)\\n    * @param _app Address of the app in which the permission is being burned\\n    * @param _role Identifier for the group of actions being burned\\n    */\\n    function burnPermissionManager(address _app, bytes32 _role)\\n        external\\n        onlyPermissionManager(_app, _role)\\n    {\\n        _setPermissionManager(BURN_ENTITY, _app, _role);\\n    }\\n\\n    /**\\n     * @notice Get parameters for permission array length\\n     * @param _entity Address of the whitelisted entity that will be able to perform the role\\n     * @param _app Address of the app\\n     * @param _role Identifier for a group of actions in app\\n     * @return Length of the array\\n     */\\n    function getPermissionParamsLength(address _entity, address _app, bytes32 _role) external view returns (uint) {\\n        return permissionParams[permissions[permissionHash(_entity, _app, _role)]].length;\\n    }\\n\\n    /**\\n    * @notice Get parameter for permission\\n    * @param _entity Address of the whitelisted entity that will be able to perform the role\\n    * @param _app Address of the app\\n    * @param _role Identifier for a group of actions in app\\n    * @param _index Index of parameter in the array\\n    * @return Parameter (id, op, value)\\n    */\\n    function getPermissionParam(address _entity, address _app, bytes32 _role, uint _index)\\n        external\\n        view\\n        returns (uint8, uint8, uint240)\\n    {\\n        Param storage param = permissionParams[permissions[permissionHash(_entity, _app, _role)]][_index];\\n        return (param.id, param.op, param.value);\\n    }\\n\\n    /**\\n    * @dev Get manager for permission\\n    * @param _app Address of the app\\n    * @param _role Identifier for a group of actions in app\\n    * @return address of the manager for the permission\\n    */\\n    function getPermissionManager(address _app, bytes32 _role) public view returns (address) {\\n        return permissionManager[roleHash(_app, _role)];\\n    }\\n\\n    /**\\n    * @dev Function called by apps to check ACL on kernel or to check permission statu\\n    * @param _who Sender of the original call\\n    * @param _where Address of the app\\n    * @param _where Identifier for a group of actions in app\\n    * @param _how Permission parameters\\n    * @return boolean indicating whether the ACL allows the role or not\\n    */\\n    function hasPermission(address _who, address _where, bytes32 _what, bytes memory _how) public view returns (bool) {\\n        return hasPermission(_who, _where, _what, ConversionHelpers.dangerouslyCastBytesToUintArray(_how));\\n    }\\n\\n    function hasPermission(address _who, address _where, bytes32 _what, uint256[] memory _how) public view returns (bool) {\\n        bytes32 whoParams = permissions[permissionHash(_who, _where, _what)];\\n        if (whoParams != NO_PERMISSION && evalParams(whoParams, _who, _where, _what, _how)) {\\n            return true;\\n        }\\n\\n        bytes32 anyParams = permissions[permissionHash(ANY_ENTITY, _where, _what)];\\n        if (anyParams != NO_PERMISSION && evalParams(anyParams, ANY_ENTITY, _where, _what, _how)) {\\n            return true;\\n        }\\n\\n        return false;\\n    }\\n\\n    function hasPermission(address _who, address _where, bytes32 _what) public view returns (bool) {\\n        uint256[] memory empty = new uint256[](0);\\n        return hasPermission(_who, _where, _what, empty);\\n    }\\n\\n    function evalParams(\\n        bytes32 _paramsHash,\\n        address _who,\\n        address _where,\\n        bytes32 _what,\\n        uint256[] _how\\n    ) public view returns (bool)\\n    {\\n        if (_paramsHash == EMPTY_PARAM_HASH) {\\n            return true;\\n        }\\n\\n        return _evalParam(_paramsHash, 0, _who, _where, _what, _how);\\n    }\\n\\n    /**\\n    * @dev Internal createPermission for access inside the kernel (on instantiation)\\n    */\\n    function _createPermission(address _entity, address _app, bytes32 _role, address _manager) internal {\\n        _setPermission(_entity, _app, _role, EMPTY_PARAM_HASH);\\n        _setPermissionManager(_manager, _app, _role);\\n    }\\n\\n    /**\\n    * @dev Internal function called to actually save the permission\\n    */\\n    function _setPermission(address _entity, address _app, bytes32 _role, bytes32 _paramsHash) internal {\\n        permissions[permissionHash(_entity, _app, _role)] = _paramsHash;\\n        bool entityHasPermission = _paramsHash != NO_PERMISSION;\\n        bool permissionHasParams = entityHasPermission && _paramsHash != EMPTY_PARAM_HASH;\\n\\n        emit SetPermission(_entity, _app, _role, entityHasPermission);\\n        if (permissionHasParams) {\\n            emit SetPermissionParams(_entity, _app, _role, _paramsHash);\\n        }\\n    }\\n\\n    function _saveParams(uint256[] _encodedParams) internal returns (bytes32) {\\n        bytes32 paramHash = keccak256(abi.encodePacked(_encodedParams));\\n        Param[] storage params = permissionParams[paramHash];\\n\\n        if (params.length == 0) { // params not saved before\\n            for (uint256 i = 0; i < _encodedParams.length; i++) {\\n                uint256 encodedParam = _encodedParams[i];\\n                Param memory param = Param(decodeParamId(encodedParam), decodeParamOp(encodedParam), uint240(encodedParam));\\n                params.push(param);\\n            }\\n        }\\n\\n        return paramHash;\\n    }\\n\\n    function _evalParam(\\n        bytes32 _paramsHash,\\n        uint32 _paramId,\\n        address _who,\\n        address _where,\\n        bytes32 _what,\\n        uint256[] _how\\n    ) internal view returns (bool)\\n    {\\n        if (_paramId >= permissionParams[_paramsHash].length) {\\n            return false; // out of bounds\\n        }\\n\\n        Param memory param = permissionParams[_paramsHash][_paramId];\\n\\n        if (param.id == LOGIC_OP_PARAM_ID) {\\n            return _evalLogic(param, _paramsHash, _who, _where, _what, _how);\\n        }\\n\\n        uint256 value;\\n        uint256 comparedTo = uint256(param.value);\\n\\n        // get value\\n        if (param.id == ORACLE_PARAM_ID) {\\n            value = checkOracle(IACLOracle(param.value), _who, _where, _what, _how) ? 1 : 0;\\n            comparedTo = 1;\\n        } else if (param.id == BLOCK_NUMBER_PARAM_ID) {\\n            value = getBlockNumber();\\n        } else if (param.id == TIMESTAMP_PARAM_ID) {\\n            value = getTimestamp();\\n        } else if (param.id == PARAM_VALUE_PARAM_ID) {\\n            value = uint256(param.value);\\n        } else {\\n            if (param.id >= _how.length) {\\n                return false;\\n            }\\n            value = uint256(uint240(_how[param.id])); // force lost precision\\n        }\\n\\n        if (Op(param.op) == Op.RET) {\\n            return uint256(value) > 0;\\n        }\\n\\n        return compare(value, Op(param.op), comparedTo);\\n    }\\n\\n    function _evalLogic(Param _param, bytes32 _paramsHash, address _who, address _where, bytes32 _what, uint256[] _how)\\n        internal\\n        view\\n        returns (bool)\\n    {\\n        if (Op(_param.op) == Op.IF_ELSE) {\\n            uint32 conditionParam;\\n            uint32 successParam;\\n            uint32 failureParam;\\n\\n            (conditionParam, successParam, failureParam) = decodeParamsList(uint256(_param.value));\\n            bool result = _evalParam(_paramsHash, conditionParam, _who, _where, _what, _how);\\n\\n            return _evalParam(_paramsHash, result ? successParam : failureParam, _who, _where, _what, _how);\\n        }\\n\\n        uint32 param1;\\n        uint32 param2;\\n\\n        (param1, param2,) = decodeParamsList(uint256(_param.value));\\n        bool r1 = _evalParam(_paramsHash, param1, _who, _where, _what, _how);\\n\\n        if (Op(_param.op) == Op.NOT) {\\n            return !r1;\\n        }\\n\\n        if (r1 && Op(_param.op) == Op.OR) {\\n            return true;\\n        }\\n\\n        if (!r1 && Op(_param.op) == Op.AND) {\\n            return false;\\n        }\\n\\n        bool r2 = _evalParam(_paramsHash, param2, _who, _where, _what, _how);\\n\\n        if (Op(_param.op) == Op.XOR) {\\n            return r1 != r2;\\n        }\\n\\n        return r2; // both or and and depend on result of r2 after checks\\n    }\\n\\n    function compare(uint256 _a, Op _op, uint256 _b) internal pure returns (bool) {\\n        if (_op == Op.EQ)  return _a == _b;                              // solium-disable-line lbrace\\n        if (_op == Op.NEQ) return _a != _b;                              // solium-disable-line lbrace\\n        if (_op == Op.GT)  return _a > _b;                               // solium-disable-line lbrace\\n        if (_op == Op.LT)  return _a < _b;                               // solium-disable-line lbrace\\n        if (_op == Op.GTE) return _a >= _b;                              // solium-disable-line lbrace\\n        if (_op == Op.LTE) return _a <= _b;                              // solium-disable-line lbrace\\n        return false;\\n    }\\n\\n    function checkOracle(IACLOracle _oracleAddr, address _who, address _where, bytes32 _what, uint256[] _how) internal view returns (bool) {\\n        bytes4 sig = _oracleAddr.canPerform.selector;\\n\\n        // a raw call is required so we can return false if the call reverts, rather than reverting\\n        bytes memory checkCalldata = abi.encodeWithSelector(sig, _who, _where, _what, _how);\\n        uint256 oracleCheckGas = ORACLE_CHECK_GAS;\\n\\n        bool ok;\\n        assembly {\\n            ok := staticcall(oracleCheckGas, _oracleAddr, add(checkCalldata, 0x20), mload(checkCalldata), 0, 0)\\n        }\\n\\n        if (!ok) {\\n            return false;\\n        }\\n\\n        uint256 size;\\n        assembly { size := returndatasize }\\n        if (size != 32) {\\n            return false;\\n        }\\n\\n        bool result;\\n        assembly {\\n            let ptr := mload(0x40)       // get next free memory ptr\\n            returndatacopy(ptr, 0, size) // copy return from above `staticcall`\\n            result := mload(ptr)         // read data at ptr and set it to result\\n            mstore(ptr, 0)               // set pointer memory to 0 so it still is the next free ptr\\n        }\\n\\n        return result;\\n    }\\n\\n    /**\\n    * @dev Internal function that sets management\\n    */\\n    function _setPermissionManager(address _newManager, address _app, bytes32 _role) internal {\\n        permissionManager[roleHash(_app, _role)] = _newManager;\\n        emit ChangePermissionManager(_app, _role, _newManager);\\n    }\\n\\n    function roleHash(address _where, bytes32 _what) internal pure returns (bytes32) {\\n        return keccak256(abi.encodePacked(\\\"ROLE\\\", _where, _what));\\n    }\\n\\n    function permissionHash(address _who, address _where, bytes32 _what) internal pure returns (bytes32) {\\n        return keccak256(abi.encodePacked(\\\"PERMISSION\\\", _who, _where, _what));\\n    }\\n}\\n\",\"keccak256\":\"0xcb2488421b22af099bafe210916d33c9b7c3a06c4290583ff74733a825860754\"},\"@aragon/os/contracts/acl/ACLSyntaxSugar.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\ncontract ACLSyntaxSugar {\\n    function arr() internal pure returns (uint256[]) {\\n        return new uint256[](0);\\n    }\\n\\n    function arr(bytes32 _a) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a));\\n    }\\n\\n    function arr(bytes32 _a, bytes32 _b) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a), uint256(_b));\\n    }\\n\\n    function arr(address _a) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a));\\n    }\\n\\n    function arr(address _a, address _b) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a), uint256(_b));\\n    }\\n\\n    function arr(address _a, uint256 _b, uint256 _c) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a), _b, _c);\\n    }\\n\\n    function arr(address _a, uint256 _b, uint256 _c, uint256 _d) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a), _b, _c, _d);\\n    }\\n\\n    function arr(address _a, uint256 _b) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a), uint256(_b));\\n    }\\n\\n    function arr(address _a, address _b, uint256 _c, uint256 _d, uint256 _e) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a), uint256(_b), _c, _d, _e);\\n    }\\n\\n    function arr(address _a, address _b, address _c) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a), uint256(_b), uint256(_c));\\n    }\\n\\n    function arr(address _a, address _b, uint256 _c) internal pure returns (uint256[] r) {\\n        return arr(uint256(_a), uint256(_b), uint256(_c));\\n    }\\n\\n    function arr(uint256 _a) internal pure returns (uint256[] r) {\\n        r = new uint256[](1);\\n        r[0] = _a;\\n    }\\n\\n    function arr(uint256 _a, uint256 _b) internal pure returns (uint256[] r) {\\n        r = new uint256[](2);\\n        r[0] = _a;\\n        r[1] = _b;\\n    }\\n\\n    function arr(uint256 _a, uint256 _b, uint256 _c) internal pure returns (uint256[] r) {\\n        r = new uint256[](3);\\n        r[0] = _a;\\n        r[1] = _b;\\n        r[2] = _c;\\n    }\\n\\n    function arr(uint256 _a, uint256 _b, uint256 _c, uint256 _d) internal pure returns (uint256[] r) {\\n        r = new uint256[](4);\\n        r[0] = _a;\\n        r[1] = _b;\\n        r[2] = _c;\\n        r[3] = _d;\\n    }\\n\\n    function arr(uint256 _a, uint256 _b, uint256 _c, uint256 _d, uint256 _e) internal pure returns (uint256[] r) {\\n        r = new uint256[](5);\\n        r[0] = _a;\\n        r[1] = _b;\\n        r[2] = _c;\\n        r[3] = _d;\\n        r[4] = _e;\\n    }\\n}\\n\\n\\ncontract ACLHelpers {\\n    function decodeParamOp(uint256 _x) internal pure returns (uint8 b) {\\n        return uint8(_x >> (8 * 30));\\n    }\\n\\n    function decodeParamId(uint256 _x) internal pure returns (uint8 b) {\\n        return uint8(_x >> (8 * 31));\\n    }\\n\\n    function decodeParamsList(uint256 _x) internal pure returns (uint32 a, uint32 b, uint32 c) {\\n        a = uint32(_x);\\n        b = uint32(_x >> (8 * 4));\\n        c = uint32(_x >> (8 * 8));\\n    }\\n}\\n\",\"keccak256\":\"0x519915c14576b679b5ed5767d6b21b44a13aa7ae2fe7b33664ca364fafc33e00\"},\"@aragon/os/contracts/acl/IACL.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\ninterface IACL {\\n    function initialize(address permissionsCreator) external;\\n\\n    // TODO: this should be external\\n    // See https://github.com/ethereum/solidity/issues/4832\\n    function hasPermission(address who, address where, bytes32 what, bytes how) public view returns (bool);\\n}\\n\",\"keccak256\":\"0xe3492bc29d2482e65d2e39c96487b5388f6181f6bcdc6fe6329b8206b84c0cf1\"},\"@aragon/os/contracts/acl/IACLOracle.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\ninterface IACLOracle {\\n    function canPerform(address who, address where, bytes32 what, uint256[] how) external view returns (bool);\\n}\\n\",\"keccak256\":\"0xada5651af900192b440c9a7802d531846d9d4ce12338b53f3091257b4c2e9f28\"},\"@aragon/os/contracts/apps/AppStorage.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"../common/UnstructuredStorage.sol\\\";\\nimport \\\"../kernel/IKernel.sol\\\";\\n\\n\\ncontract AppStorage {\\n    using UnstructuredStorage for bytes32;\\n\\n    /* Hardcoded constants to save gas\\n    bytes32 internal constant KERNEL_POSITION = keccak256(\\\"aragonOS.appStorage.kernel\\\");\\n    bytes32 internal constant APP_ID_POSITION = keccak256(\\\"aragonOS.appStorage.appId\\\");\\n    */\\n    bytes32 internal constant KERNEL_POSITION = 0x4172f0f7d2289153072b0a6ca36959e0cbe2efc3afe50fc81636caa96338137b;\\n    bytes32 internal constant APP_ID_POSITION = 0xd625496217aa6a3453eecb9c3489dc5a53e6c67b444329ea2b2cbc9ff547639b;\\n\\n    function kernel() public view returns (IKernel) {\\n        return IKernel(KERNEL_POSITION.getStorageAddress());\\n    }\\n\\n    function appId() public view returns (bytes32) {\\n        return APP_ID_POSITION.getStorageBytes32();\\n    }\\n\\n    function setKernel(IKernel _kernel) internal {\\n        KERNEL_POSITION.setStorageAddress(address(_kernel));\\n    }\\n\\n    function setAppId(bytes32 _appId) internal {\\n        APP_ID_POSITION.setStorageBytes32(_appId);\\n    }\\n}\\n\",\"keccak256\":\"0xb1c8eb71d1bdfe1241cc1714b280b46bbfc5bcb1e8499d42c24d3f5f5e8130f1\"},\"@aragon/os/contracts/apps/AragonApp.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"./AppStorage.sol\\\";\\nimport \\\"../acl/ACLSyntaxSugar.sol\\\";\\nimport \\\"../common/Autopetrified.sol\\\";\\nimport \\\"../common/ConversionHelpers.sol\\\";\\nimport \\\"../common/ReentrancyGuard.sol\\\";\\nimport \\\"../common/VaultRecoverable.sol\\\";\\nimport \\\"../evmscript/EVMScriptRunner.sol\\\";\\n\\n\\n// Contracts inheriting from AragonApp are, by default, immediately petrified upon deployment so\\n// that they can never be initialized.\\n// Unless overriden, this behaviour enforces those contracts to be usable only behind an AppProxy.\\n// ReentrancyGuard, EVMScriptRunner, and ACLSyntaxSugar are not directly used by this contract, but\\n// are included so that they are automatically usable by subclassing contracts\\ncontract AragonApp is AppStorage, Autopetrified, VaultRecoverable, ReentrancyGuard, EVMScriptRunner, ACLSyntaxSugar {\\n    string private constant ERROR_AUTH_FAILED = \\\"APP_AUTH_FAILED\\\";\\n\\n    modifier auth(bytes32 _role) {\\n        require(canPerform(msg.sender, _role, new uint256[](0)), ERROR_AUTH_FAILED);\\n        _;\\n    }\\n\\n    modifier authP(bytes32 _role, uint256[] _params) {\\n        require(canPerform(msg.sender, _role, _params), ERROR_AUTH_FAILED);\\n        _;\\n    }\\n\\n    /**\\n    * @dev Check whether an action can be performed by a sender for a particular role on this app\\n    * @param _sender Sender of the call\\n    * @param _role Role on this app\\n    * @param _params Permission params for the role\\n    * @return Boolean indicating whether the sender has the permissions to perform the action.\\n    *         Always returns false if the app hasn't been initialized yet.\\n    */\\n    function canPerform(address _sender, bytes32 _role, uint256[] _params) public view returns (bool) {\\n        if (!hasInitialized()) {\\n            return false;\\n        }\\n\\n        IKernel linkedKernel = kernel();\\n        if (address(linkedKernel) == address(0)) {\\n            return false;\\n        }\\n\\n        return linkedKernel.hasPermission(\\n            _sender,\\n            address(this),\\n            _role,\\n            ConversionHelpers.dangerouslyCastUintArrayToBytes(_params)\\n        );\\n    }\\n\\n    /**\\n    * @dev Get the recovery vault for the app\\n    * @return Recovery vault address for the app\\n    */\\n    function getRecoveryVault() public view returns (address) {\\n        // Funds recovery via a vault is only available when used with a kernel\\n        return kernel().getRecoveryVault(); // if kernel is not set, it will revert\\n    }\\n}\\n\",\"keccak256\":\"0xba456000d65bea8d9d82e9f1789086c3777df68fe364f8f397973b6d579f3a2a\"},\"@aragon/os/contracts/common/Autopetrified.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"./Petrifiable.sol\\\";\\n\\n\\ncontract Autopetrified is Petrifiable {\\n    constructor() public {\\n        // Immediately petrify base (non-proxy) instances of inherited contracts on deploy.\\n        // This renders them uninitializable (and unusable without a proxy).\\n        petrify();\\n    }\\n}\\n\",\"keccak256\":\"0x216e6ecbdcf45d90e8846ab2773072bd82180558a7dcf0c5425ed13b0188c5f3\"},\"@aragon/os/contracts/common/ConversionHelpers.sol\":{\"content\":\"pragma solidity ^0.4.24;\\n\\n\\nlibrary ConversionHelpers {\\n    string private constant ERROR_IMPROPER_LENGTH = \\\"CONVERSION_IMPROPER_LENGTH\\\";\\n\\n    function dangerouslyCastUintArrayToBytes(uint256[] memory _input) internal pure returns (bytes memory output) {\\n        // Force cast the uint256[] into a bytes array, by overwriting its length\\n        // Note that the bytes array doesn't need to be initialized as we immediately overwrite it\\n        // with the input and a new length. The input becomes invalid from this point forward.\\n        uint256 byteLength = _input.length * 32;\\n        assembly {\\n            output := _input\\n            mstore(output, byteLength)\\n        }\\n    }\\n\\n    function dangerouslyCastBytesToUintArray(bytes memory _input) internal pure returns (uint256[] memory output) {\\n        // Force cast the bytes array into a uint256[], by overwriting its length\\n        // Note that the uint256[] doesn't need to be initialized as we immediately overwrite it\\n        // with the input and a new length. The input becomes invalid from this point forward.\\n        uint256 intsLength = _input.length / 32;\\n        require(_input.length == intsLength * 32, ERROR_IMPROPER_LENGTH);\\n\\n        assembly {\\n            output := _input\\n            mstore(output, intsLength)\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x9872383d458352f5c68fa5afd1fc84ab6b172cbee33359cfa57655b8eda92416\"},\"@aragon/os/contracts/common/EtherTokenConstant.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\n// aragonOS and aragon-apps rely on address(0) to denote native ETH, in\\n// contracts where both tokens and ETH are accepted\\ncontract EtherTokenConstant {\\n    address internal constant ETH = address(0);\\n}\\n\",\"keccak256\":\"0xb18d16ad5127519251d9759349bf0ce1e5cfc861a776c5297b91a625c84d0363\"},\"@aragon/os/contracts/common/IVaultRecoverable.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\ninterface IVaultRecoverable {\\n    event RecoverToVault(address indexed vault, address indexed token, uint256 amount);\\n\\n    function transferToVault(address token) external;\\n\\n    function allowRecoverability(address token) external view returns (bool);\\n    function getRecoveryVault() external view returns (address);\\n}\\n\",\"keccak256\":\"0xd7cb66ee5d01be69a6abab04583cc86755bf63c2f1fd03b519a876162f52b323\"},\"@aragon/os/contracts/common/Initializable.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"./TimeHelpers.sol\\\";\\nimport \\\"./UnstructuredStorage.sol\\\";\\n\\n\\ncontract Initializable is TimeHelpers {\\n    using UnstructuredStorage for bytes32;\\n\\n    // keccak256(\\\"aragonOS.initializable.initializationBlock\\\")\\n    bytes32 internal constant INITIALIZATION_BLOCK_POSITION = 0xebb05b386a8d34882b8711d156f463690983dc47815980fb82aeeff1aa43579e;\\n\\n    string private constant ERROR_ALREADY_INITIALIZED = \\\"INIT_ALREADY_INITIALIZED\\\";\\n    string private constant ERROR_NOT_INITIALIZED = \\\"INIT_NOT_INITIALIZED\\\";\\n\\n    modifier onlyInit {\\n        require(getInitializationBlock() == 0, ERROR_ALREADY_INITIALIZED);\\n        _;\\n    }\\n\\n    modifier isInitialized {\\n        require(hasInitialized(), ERROR_NOT_INITIALIZED);\\n        _;\\n    }\\n\\n    /**\\n    * @return Block number in which the contract was initialized\\n    */\\n    function getInitializationBlock() public view returns (uint256) {\\n        return INITIALIZATION_BLOCK_POSITION.getStorageUint256();\\n    }\\n\\n    /**\\n    * @return Whether the contract has been initialized by the time of the current block\\n    */\\n    function hasInitialized() public view returns (bool) {\\n        uint256 initializationBlock = getInitializationBlock();\\n        return initializationBlock != 0 && getBlockNumber() >= initializationBlock;\\n    }\\n\\n    /**\\n    * @dev Function to be called by top level contract after initialization has finished.\\n    */\\n    function initialized() internal onlyInit {\\n        INITIALIZATION_BLOCK_POSITION.setStorageUint256(getBlockNumber());\\n    }\\n\\n    /**\\n    * @dev Function to be called by top level contract after initialization to enable the contract\\n    *      at a future block number rather than immediately.\\n    */\\n    function initializedAt(uint256 _blockNumber) internal onlyInit {\\n        INITIALIZATION_BLOCK_POSITION.setStorageUint256(_blockNumber);\\n    }\\n}\\n\",\"keccak256\":\"0xc559fdbee1c0ee18b6f2f866c28ed6eb96859b2c88f75867ca11f25ebd00b090\"},\"@aragon/os/contracts/common/IsContract.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\ncontract IsContract {\\n    /*\\n    * NOTE: this should NEVER be used for authentication\\n    * (see pitfalls: https://github.com/fergarrui/ethereum-security/tree/master/contracts/extcodesize).\\n    *\\n    * This is only intended to be used as a sanity check that an address is actually a contract,\\n    * RATHER THAN an address not being a contract.\\n    */\\n    function isContract(address _target) internal view returns (bool) {\\n        if (_target == address(0)) {\\n            return false;\\n        }\\n\\n        uint256 size;\\n        assembly { size := extcodesize(_target) }\\n        return size > 0;\\n    }\\n}\\n\",\"keccak256\":\"0xb76e263e3532883fe32dfe4b1447eb487a570e121c5cce01cee604dd9e44a075\"},\"@aragon/os/contracts/common/Petrifiable.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"./Initializable.sol\\\";\\n\\n\\ncontract Petrifiable is Initializable {\\n    // Use block UINT256_MAX (which should be never) as the initializable date\\n    uint256 internal constant PETRIFIED_BLOCK = uint256(-1);\\n\\n    function isPetrified() public view returns (bool) {\\n        return getInitializationBlock() == PETRIFIED_BLOCK;\\n    }\\n\\n    /**\\n    * @dev Function to be called by top level contract to prevent being initialized.\\n    *      Useful for freezing base contracts when they're used behind proxies.\\n    */\\n    function petrify() internal onlyInit {\\n        initializedAt(PETRIFIED_BLOCK);\\n    }\\n}\\n\",\"keccak256\":\"0xb69f9d6de8ff6f2a084aca2e0228c9008a8776482a70bcab16f46a693ec77be6\"},\"@aragon/os/contracts/common/ReentrancyGuard.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"../common/UnstructuredStorage.sol\\\";\\n\\n\\ncontract ReentrancyGuard {\\n    using UnstructuredStorage for bytes32;\\n\\n    /* Hardcoded constants to save gas\\n    bytes32 internal constant REENTRANCY_MUTEX_POSITION = keccak256(\\\"aragonOS.reentrancyGuard.mutex\\\");\\n    */\\n    bytes32 private constant REENTRANCY_MUTEX_POSITION = 0xe855346402235fdd185c890e68d2c4ecad599b88587635ee285bce2fda58dacb;\\n\\n    string private constant ERROR_REENTRANT = \\\"REENTRANCY_REENTRANT_CALL\\\";\\n\\n    modifier nonReentrant() {\\n        // Ensure mutex is unlocked\\n        require(!REENTRANCY_MUTEX_POSITION.getStorageBool(), ERROR_REENTRANT);\\n\\n        // Lock mutex before function call\\n        REENTRANCY_MUTEX_POSITION.setStorageBool(true);\\n\\n        // Perform function call\\n        _;\\n\\n        // Unlock mutex after function call\\n        REENTRANCY_MUTEX_POSITION.setStorageBool(false);\\n    }\\n}\\n\",\"keccak256\":\"0x2b2014de57620aedded6365e742e17b9a23492d754e48dfeefa56f7e5bcf5645\"},\"@aragon/os/contracts/common/SafeERC20.sol\":{\"content\":\"// Inspired by AdEx (https://github.com/AdExNetwork/adex-protocol-eth/blob/b9df617829661a7518ee10f4cb6c4108659dd6d5/contracts/libs/SafeERC20.sol)\\n// and 0x (https://github.com/0xProject/0x-monorepo/blob/737d1dc54d72872e24abce5a1dbe1b66d35fa21a/contracts/protocol/contracts/protocol/AssetProxy/ERC20Proxy.sol#L143)\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"../lib/token/ERC20.sol\\\";\\n\\n\\nlibrary SafeERC20 {\\n    // Before 0.5, solidity has a mismatch between `address.transfer()` and `token.transfer()`:\\n    // https://github.com/ethereum/solidity/issues/3544\\n    bytes4 private constant TRANSFER_SELECTOR = 0xa9059cbb;\\n\\n    string private constant ERROR_TOKEN_BALANCE_REVERTED = \\\"SAFE_ERC_20_BALANCE_REVERTED\\\";\\n    string private constant ERROR_TOKEN_ALLOWANCE_REVERTED = \\\"SAFE_ERC_20_ALLOWANCE_REVERTED\\\";\\n\\n    function invokeAndCheckSuccess(address _addr, bytes memory _calldata)\\n        private\\n        returns (bool)\\n    {\\n        bool ret;\\n        assembly {\\n            let ptr := mload(0x40)    // free memory pointer\\n\\n            let success := call(\\n                gas,                  // forward all gas\\n                _addr,                // address\\n                0,                    // no value\\n                add(_calldata, 0x20), // calldata start\\n                mload(_calldata),     // calldata length\\n                ptr,                  // write output over free memory\\n                0x20                  // uint256 return\\n            )\\n\\n            if gt(success, 0) {\\n                // Check number of bytes returned from last function call\\n                switch returndatasize\\n\\n                // No bytes returned: assume success\\n                case 0 {\\n                    ret := 1\\n                }\\n\\n                // 32 bytes returned: check if non-zero\\n                case 0x20 {\\n                    // Only return success if returned data was true\\n                    // Already have output in ptr\\n                    ret := eq(mload(ptr), 1)\\n                }\\n\\n                // Not sure what was returned: don't mark as success\\n                default { }\\n            }\\n        }\\n        return ret;\\n    }\\n\\n    function staticInvoke(address _addr, bytes memory _calldata)\\n        private\\n        view\\n        returns (bool, uint256)\\n    {\\n        bool success;\\n        uint256 ret;\\n        assembly {\\n            let ptr := mload(0x40)    // free memory pointer\\n\\n            success := staticcall(\\n                gas,                  // forward all gas\\n                _addr,                // address\\n                add(_calldata, 0x20), // calldata start\\n                mload(_calldata),     // calldata length\\n                ptr,                  // write output over free memory\\n                0x20                  // uint256 return\\n            )\\n\\n            if gt(success, 0) {\\n                ret := mload(ptr)\\n            }\\n        }\\n        return (success, ret);\\n    }\\n\\n    /**\\n    * @dev Same as a standards-compliant ERC20.transfer() that never reverts (returns false).\\n    *      Note that this makes an external call to the token.\\n    */\\n    function safeTransfer(ERC20 _token, address _to, uint256 _amount) internal returns (bool) {\\n        bytes memory transferCallData = abi.encodeWithSelector(\\n            TRANSFER_SELECTOR,\\n            _to,\\n            _amount\\n        );\\n        return invokeAndCheckSuccess(_token, transferCallData);\\n    }\\n\\n    /**\\n    * @dev Same as a standards-compliant ERC20.transferFrom() that never reverts (returns false).\\n    *      Note that this makes an external call to the token.\\n    */\\n    function safeTransferFrom(ERC20 _token, address _from, address _to, uint256 _amount) internal returns (bool) {\\n        bytes memory transferFromCallData = abi.encodeWithSelector(\\n            _token.transferFrom.selector,\\n            _from,\\n            _to,\\n            _amount\\n        );\\n        return invokeAndCheckSuccess(_token, transferFromCallData);\\n    }\\n\\n    /**\\n    * @dev Same as a standards-compliant ERC20.approve() that never reverts (returns false).\\n    *      Note that this makes an external call to the token.\\n    */\\n    function safeApprove(ERC20 _token, address _spender, uint256 _amount) internal returns (bool) {\\n        bytes memory approveCallData = abi.encodeWithSelector(\\n            _token.approve.selector,\\n            _spender,\\n            _amount\\n        );\\n        return invokeAndCheckSuccess(_token, approveCallData);\\n    }\\n\\n    /**\\n    * @dev Static call into ERC20.balanceOf().\\n    * Reverts if the call fails for some reason (should never fail).\\n    */\\n    function staticBalanceOf(ERC20 _token, address _owner) internal view returns (uint256) {\\n        bytes memory balanceOfCallData = abi.encodeWithSelector(\\n            _token.balanceOf.selector,\\n            _owner\\n        );\\n\\n        (bool success, uint256 tokenBalance) = staticInvoke(_token, balanceOfCallData);\\n        require(success, ERROR_TOKEN_BALANCE_REVERTED);\\n\\n        return tokenBalance;\\n    }\\n\\n    /**\\n    * @dev Static call into ERC20.allowance().\\n    * Reverts if the call fails for some reason (should never fail).\\n    */\\n    function staticAllowance(ERC20 _token, address _owner, address _spender) internal view returns (uint256) {\\n        bytes memory allowanceCallData = abi.encodeWithSelector(\\n            _token.allowance.selector,\\n            _owner,\\n            _spender\\n        );\\n\\n        (bool success, uint256 allowance) = staticInvoke(_token, allowanceCallData);\\n        require(success, ERROR_TOKEN_ALLOWANCE_REVERTED);\\n\\n        return allowance;\\n    }\\n}\\n\",\"keccak256\":\"0xc0cb682f6cd36e8414a9e6b3b0aca7280f500e2acbeeaa19282d69b7f3fd7a1c\"},\"@aragon/os/contracts/common/TimeHelpers.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"./Uint256Helpers.sol\\\";\\n\\n\\ncontract TimeHelpers {\\n    using Uint256Helpers for uint256;\\n\\n    /**\\n    * @dev Returns the current block number.\\n    *      Using a function rather than `block.number` allows us to easily mock the block number in\\n    *      tests.\\n    */\\n    function getBlockNumber() internal view returns (uint256) {\\n        return block.number;\\n    }\\n\\n    /**\\n    * @dev Returns the current block number, converted to uint64.\\n    *      Using a function rather than `block.number` allows us to easily mock the block number in\\n    *      tests.\\n    */\\n    function getBlockNumber64() internal view returns (uint64) {\\n        return getBlockNumber().toUint64();\\n    }\\n\\n    /**\\n    * @dev Returns the current timestamp.\\n    *      Using a function rather than `block.timestamp` allows us to easily mock it in\\n    *      tests.\\n    */\\n    function getTimestamp() internal view returns (uint256) {\\n        return block.timestamp; // solium-disable-line security/no-block-members\\n    }\\n\\n    /**\\n    * @dev Returns the current timestamp, converted to uint64.\\n    *      Using a function rather than `block.timestamp` allows us to easily mock it in\\n    *      tests.\\n    */\\n    function getTimestamp64() internal view returns (uint64) {\\n        return getTimestamp().toUint64();\\n    }\\n}\\n\",\"keccak256\":\"0x95b785dc4319f6ce5255c9adf5e68a469a0f837f7b02e01b6bc974b4921d4024\"},\"@aragon/os/contracts/common/Uint256Helpers.sol\":{\"content\":\"pragma solidity ^0.4.24;\\n\\n\\nlibrary Uint256Helpers {\\n    uint256 private constant MAX_UINT64 = uint64(-1);\\n\\n    string private constant ERROR_NUMBER_TOO_BIG = \\\"UINT64_NUMBER_TOO_BIG\\\";\\n\\n    function toUint64(uint256 a) internal pure returns (uint64) {\\n        require(a <= MAX_UINT64, ERROR_NUMBER_TOO_BIG);\\n        return uint64(a);\\n    }\\n}\\n\",\"keccak256\":\"0x83033025a3f4402be3b7bcc9a23ce96ae4fadc7f251da8f139d73a13a3400b0c\"},\"@aragon/os/contracts/common/UnstructuredStorage.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\nlibrary UnstructuredStorage {\\n    function getStorageBool(bytes32 position) internal view returns (bool data) {\\n        assembly { data := sload(position) }\\n    }\\n\\n    function getStorageAddress(bytes32 position) internal view returns (address data) {\\n        assembly { data := sload(position) }\\n    }\\n\\n    function getStorageBytes32(bytes32 position) internal view returns (bytes32 data) {\\n        assembly { data := sload(position) }\\n    }\\n\\n    function getStorageUint256(bytes32 position) internal view returns (uint256 data) {\\n        assembly { data := sload(position) }\\n    }\\n\\n    function setStorageBool(bytes32 position, bool data) internal {\\n        assembly { sstore(position, data) }\\n    }\\n\\n    function setStorageAddress(bytes32 position, address data) internal {\\n        assembly { sstore(position, data) }\\n    }\\n\\n    function setStorageBytes32(bytes32 position, bytes32 data) internal {\\n        assembly { sstore(position, data) }\\n    }\\n\\n    function setStorageUint256(bytes32 position, uint256 data) internal {\\n        assembly { sstore(position, data) }\\n    }\\n}\\n\",\"keccak256\":\"0xe0d627fc7a7716409389f34cfe49366ba7871309d3a73262ec9608ef73e47591\"},\"@aragon/os/contracts/common/VaultRecoverable.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"../lib/token/ERC20.sol\\\";\\nimport \\\"./EtherTokenConstant.sol\\\";\\nimport \\\"./IsContract.sol\\\";\\nimport \\\"./IVaultRecoverable.sol\\\";\\nimport \\\"./SafeERC20.sol\\\";\\n\\n\\ncontract VaultRecoverable is IVaultRecoverable, EtherTokenConstant, IsContract {\\n    using SafeERC20 for ERC20;\\n\\n    string private constant ERROR_DISALLOWED = \\\"RECOVER_DISALLOWED\\\";\\n    string private constant ERROR_VAULT_NOT_CONTRACT = \\\"RECOVER_VAULT_NOT_CONTRACT\\\";\\n    string private constant ERROR_TOKEN_TRANSFER_FAILED = \\\"RECOVER_TOKEN_TRANSFER_FAILED\\\";\\n\\n    /**\\n     * @notice Send funds to recovery Vault. This contract should never receive funds,\\n     *         but in case it does, this function allows one to recover them.\\n     * @param _token Token balance to be sent to recovery vault.\\n     */\\n    function transferToVault(address _token) external {\\n        require(allowRecoverability(_token), ERROR_DISALLOWED);\\n        address vault = getRecoveryVault();\\n        require(isContract(vault), ERROR_VAULT_NOT_CONTRACT);\\n\\n        uint256 balance;\\n        if (_token == ETH) {\\n            balance = address(this).balance;\\n            vault.transfer(balance);\\n        } else {\\n            ERC20 token = ERC20(_token);\\n            balance = token.staticBalanceOf(this);\\n            require(token.safeTransfer(vault, balance), ERROR_TOKEN_TRANSFER_FAILED);\\n        }\\n\\n        emit RecoverToVault(vault, _token, balance);\\n    }\\n\\n    /**\\n    * @dev By default deriving from AragonApp makes it recoverable\\n    * @param token Token address that would be recovered\\n    * @return bool whether the app allows the recovery\\n    */\\n    function allowRecoverability(address token) public view returns (bool) {\\n        return true;\\n    }\\n\\n    // Cast non-implemented interface to be public so we can use it internally\\n    function getRecoveryVault() public view returns (address);\\n}\\n\",\"keccak256\":\"0x4f4de2c27ea7df731ad7d9babc37965a805282fed16b422f46a35d9d2ef931a1\"},\"@aragon/os/contracts/evmscript/EVMScriptRunner.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"./IEVMScriptExecutor.sol\\\";\\nimport \\\"./IEVMScriptRegistry.sol\\\";\\n\\nimport \\\"../apps/AppStorage.sol\\\";\\nimport \\\"../kernel/KernelConstants.sol\\\";\\nimport \\\"../common/Initializable.sol\\\";\\n\\n\\ncontract EVMScriptRunner is AppStorage, Initializable, EVMScriptRegistryConstants, KernelNamespaceConstants {\\n    string private constant ERROR_EXECUTOR_UNAVAILABLE = \\\"EVMRUN_EXECUTOR_UNAVAILABLE\\\";\\n    string private constant ERROR_PROTECTED_STATE_MODIFIED = \\\"EVMRUN_PROTECTED_STATE_MODIFIED\\\";\\n\\n    /* This is manually crafted in assembly\\n    string private constant ERROR_EXECUTOR_INVALID_RETURN = \\\"EVMRUN_EXECUTOR_INVALID_RETURN\\\";\\n    */\\n\\n    event ScriptResult(address indexed executor, bytes script, bytes input, bytes returnData);\\n\\n    function getEVMScriptExecutor(bytes _script) public view returns (IEVMScriptExecutor) {\\n        return IEVMScriptExecutor(getEVMScriptRegistry().getScriptExecutor(_script));\\n    }\\n\\n    function getEVMScriptRegistry() public view returns (IEVMScriptRegistry) {\\n        address registryAddr = kernel().getApp(KERNEL_APP_ADDR_NAMESPACE, EVMSCRIPT_REGISTRY_APP_ID);\\n        return IEVMScriptRegistry(registryAddr);\\n    }\\n\\n    function runScript(bytes _script, bytes _input, address[] _blacklist)\\n        internal\\n        isInitialized\\n        protectState\\n        returns (bytes)\\n    {\\n        IEVMScriptExecutor executor = getEVMScriptExecutor(_script);\\n        require(address(executor) != address(0), ERROR_EXECUTOR_UNAVAILABLE);\\n\\n        bytes4 sig = executor.execScript.selector;\\n        bytes memory data = abi.encodeWithSelector(sig, _script, _input, _blacklist);\\n\\n        bytes memory output;\\n        assembly {\\n            let success := delegatecall(\\n                gas,                // forward all gas\\n                executor,           // address\\n                add(data, 0x20),    // calldata start\\n                mload(data),        // calldata length\\n                0,                  // don't write output (we'll handle this ourselves)\\n                0                   // don't write output\\n            )\\n\\n            output := mload(0x40) // free mem ptr get\\n\\n            switch success\\n            case 0 {\\n                // If the call errored, forward its full error data\\n                returndatacopy(output, 0, returndatasize)\\n                revert(output, returndatasize)\\n            }\\n            default {\\n                switch gt(returndatasize, 0x3f)\\n                case 0 {\\n                    // Need at least 0x40 bytes returned for properly ABI-encoded bytes values,\\n                    // revert with \\\"EVMRUN_EXECUTOR_INVALID_RETURN\\\"\\n                    // See remix: doing a `revert(\\\"EVMRUN_EXECUTOR_INVALID_RETURN\\\")` always results in\\n                    // this memory layout\\n                    mstore(output, 0x08c379a000000000000000000000000000000000000000000000000000000000)         // error identifier\\n                    mstore(add(output, 0x04), 0x0000000000000000000000000000000000000000000000000000000000000020) // starting offset\\n                    mstore(add(output, 0x24), 0x000000000000000000000000000000000000000000000000000000000000001e) // reason length\\n                    mstore(add(output, 0x44), 0x45564d52554e5f4558454355544f525f494e56414c49445f52455455524e0000) // reason\\n\\n                    revert(output, 100) // 100 = 4 + 3 * 32 (error identifier + 3 words for the ABI encoded error)\\n                }\\n                default {\\n                    // Copy result\\n                    //\\n                    // Needs to perform an ABI decode for the expected `bytes` return type of\\n                    // `executor.execScript()` as solidity will automatically ABI encode the returned bytes as:\\n                    //    [ position of the first dynamic length return value = 0x20 (32 bytes) ]\\n                    //    [ output length (32 bytes) ]\\n                    //    [ output content (N bytes) ]\\n                    //\\n                    // Perform the ABI decode by ignoring the first 32 bytes of the return data\\n                    let copysize := sub(returndatasize, 0x20)\\n                    returndatacopy(output, 0x20, copysize)\\n\\n                    mstore(0x40, add(output, copysize)) // free mem ptr set\\n                }\\n            }\\n        }\\n\\n        emit ScriptResult(address(executor), _script, _input, output);\\n\\n        return output;\\n    }\\n\\n    modifier protectState {\\n        address preKernel = address(kernel());\\n        bytes32 preAppId = appId();\\n        _; // exec\\n        require(address(kernel()) == preKernel, ERROR_PROTECTED_STATE_MODIFIED);\\n        require(appId() == preAppId, ERROR_PROTECTED_STATE_MODIFIED);\\n    }\\n}\\n\",\"keccak256\":\"0xcb6b5f7d2610321882cdc86819f1a51341c33b510fff7c60936ac7d7a015d7be\"},\"@aragon/os/contracts/evmscript/IEVMScriptExecutor.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\ninterface IEVMScriptExecutor {\\n    function execScript(bytes script, bytes input, address[] blacklist) external returns (bytes);\\n    function executorType() external pure returns (bytes32);\\n}\\n\",\"keccak256\":\"0x9cab64cd2f10148d4e20433ecd11679e69be1fbde112892c48db94f92e48c571\"},\"@aragon/os/contracts/evmscript/IEVMScriptRegistry.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"./IEVMScriptExecutor.sol\\\";\\n\\n\\ncontract EVMScriptRegistryConstants {\\n    /* Hardcoded constants to save gas\\n    bytes32 internal constant EVMSCRIPT_REGISTRY_APP_ID = apmNamehash(\\\"evmreg\\\");\\n    */\\n    bytes32 internal constant EVMSCRIPT_REGISTRY_APP_ID = 0xddbcfd564f642ab5627cf68b9b7d374fb4f8a36e941a75d89c87998cef03bd61;\\n}\\n\\n\\ninterface IEVMScriptRegistry {\\n    function addScriptExecutor(IEVMScriptExecutor executor) external returns (uint id);\\n    function disableScriptExecutor(uint256 executorId) external;\\n\\n    // TODO: this should be external\\n    // See https://github.com/ethereum/solidity/issues/4832\\n    function getScriptExecutor(bytes script) public view returns (IEVMScriptExecutor);\\n}\\n\",\"keccak256\":\"0x00d98507ec160cb7cc814cc9bdebd01a414353636d6045720fe6d1592277694b\"},\"@aragon/os/contracts/kernel/IKernel.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\nimport \\\"../acl/IACL.sol\\\";\\nimport \\\"../common/IVaultRecoverable.sol\\\";\\n\\n\\ninterface IKernelEvents {\\n    event SetApp(bytes32 indexed namespace, bytes32 indexed appId, address app);\\n}\\n\\n\\n// This should be an interface, but interfaces can't inherit yet :(\\ncontract IKernel is IKernelEvents, IVaultRecoverable {\\n    function acl() public view returns (IACL);\\n    function hasPermission(address who, address where, bytes32 what, bytes how) public view returns (bool);\\n\\n    function setApp(bytes32 namespace, bytes32 appId, address app) public;\\n    function getApp(bytes32 namespace, bytes32 appId) public view returns (address);\\n}\\n\",\"keccak256\":\"0xd02b98282ccd271b0caa86f2c249986f1619dcf41811f5dadce520b32610b68e\"},\"@aragon/os/contracts/kernel/KernelConstants.sol\":{\"content\":\"/*\\n * SPDX-License-Identitifer:    MIT\\n */\\n\\npragma solidity ^0.4.24;\\n\\n\\ncontract KernelAppIds {\\n    /* Hardcoded constants to save gas\\n    bytes32 internal constant KERNEL_CORE_APP_ID = apmNamehash(\\\"kernel\\\");\\n    bytes32 internal constant KERNEL_DEFAULT_ACL_APP_ID = apmNamehash(\\\"acl\\\");\\n    bytes32 internal constant KERNEL_DEFAULT_VAULT_APP_ID = apmNamehash(\\\"vault\\\");\\n    */\\n    bytes32 internal constant KERNEL_CORE_APP_ID = 0x3b4bf6bf3ad5000ecf0f989d5befde585c6860fea3e574a4fab4c49d1c177d9c;\\n    bytes32 internal constant KERNEL_DEFAULT_ACL_APP_ID = 0xe3262375f45a6e2026b7e7b18c2b807434f2508fe1a2a3dfb493c7df8f4aad6a;\\n    bytes32 internal constant KERNEL_DEFAULT_VAULT_APP_ID = 0x7e852e0fcfce6551c13800f1e7476f982525c2b5277ba14b24339c68416336d1;\\n}\\n\\n\\ncontract KernelNamespaceConstants {\\n    /* Hardcoded constants to save gas\\n    bytes32 internal constant KERNEL_CORE_NAMESPACE = keccak256(\\\"core\\\");\\n    bytes32 internal constant KERNEL_APP_BASES_NAMESPACE = keccak256(\\\"base\\\");\\n    bytes32 internal constant KERNEL_APP_ADDR_NAMESPACE = keccak256(\\\"app\\\");\\n    */\\n    bytes32 internal constant KERNEL_CORE_NAMESPACE = 0xc681a85306374a5ab27f0bbc385296a54bcd314a1948b6cf61c4ea1bc44bb9f8;\\n    bytes32 internal constant KERNEL_APP_BASES_NAMESPACE = 0xf1f3eb40f5bc1ad1344716ced8b8a0431d840b5783aea1fd01786bc26f35ac0f;\\n    bytes32 internal constant KERNEL_APP_ADDR_NAMESPACE = 0xd6f028ca0e8edb4a8c9757ca4fdccab25fa1e0317da1188108f7d2dee14902fb;\\n}\\n\",\"keccak256\":\"0x95e46be2becfb4c8952880909cd32adf5dcfa8c2e0fdf4ae054bbf83ef7f53cd\"},\"@aragon/os/contracts/lib/token/ERC20.sol\":{\"content\":\"// See https://github.com/OpenZeppelin/openzeppelin-solidity/blob/a9f910d34f0ab33a1ae5e714f69f9596a02b4d91/contracts/token/ERC20/ERC20.sol\\n\\npragma solidity ^0.4.24;\\n\\n\\n/**\\n * @title ERC20 interface\\n * @dev see https://github.com/ethereum/EIPs/issues/20\\n */\\ncontract ERC20 {\\n    function totalSupply() public view returns (uint256);\\n\\n    function balanceOf(address _who) public view returns (uint256);\\n\\n    function allowance(address _owner, address _spender)\\n        public view returns (uint256);\\n\\n    function transfer(address _to, uint256 _value) public returns (bool);\\n\\n    function approve(address _spender, uint256 _value)\\n        public returns (bool);\\n\\n    function transferFrom(address _from, address _to, uint256 _value)\\n        public returns (bool);\\n\\n    event Transfer(\\n        address indexed from,\\n        address indexed to,\\n        uint256 value\\n    );\\n\\n    event Approval(\\n        address indexed owner,\\n        address indexed spender,\\n        uint256 value\\n    );\\n}\\n\",\"keccak256\":\"0xa2e319fde92f9e70912f09bf6e99bbf8b9b798961d54ffcba59d347d37bde1b7\"}},\"version\":1}",
+  "bytecode": "0x6080604052620000176401000000006200001d810204565b6200023b565b6200003064010000000062000125810204565b60408051808201909152601881527f494e49545f414c52454144595f494e495449414c495a45440000000000000000602082015290156200010c576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004018080602001828103825283818151815260200191508051906020019080838360005b83811015620000d0578181015183820152602001620000b6565b50505050905090810190601f168015620000fe5780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b506200012360001964010000000062000154810204565b565b60006200014f600080516020620029a183398151915264010000000062001e156200023382021704565b905090565b6200016764010000000062000125810204565b60408051808201909152601881527f494e49545f414c52454144595f494e495449414c495a454400000000000000006020820152901562000206576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040180806020018281038252838181518152602001915080519060200190808383600083811015620000d0578181015183820152602001620000b6565b5062000230600080516020620029a1833981519152826401000000006200268d6200023782021704565b50565b5490565b9055565b612756806200024b6000396000f30060806040526004361061017c5763ffffffff60e060020a6000350416630803fac081146101815780630808343e146101aa57806309699ff5146101d05780630a8ed3db146101f457806315949ed71461021e5780631b5e75be1461025a5780631d63ff2b146102cf5780632914b9bd146102e457806332f0a3b5146103595780633d6ab68f1461036e5780636815c992146103835780636d6712d8146103f75780637e7db6e11461042157806380afdea8146104425780638b3dd749146104575780639d0effdb1461046c5780639d4941d814610496578063a03c5832146104b7578063a1658fad14610511578063a479e50814610578578063a5ed8bf81461058d578063a885508a146105a2578063afd925df146105c6578063b1905727146105f0578063be03847814610614578063c4d66de814610645578063c513f66e14610666578063d4aae0c41461067b578063de4796ed14610690578063f516bc0e146106a5578063f520b58d146106ba578063fdef91061461072e575b600080fd5b34801561018d57600080fd5b5061019661079d565b604080519115158252519081900360200190f35b3480156101b657600080fd5b506101ce600160a060020a03600435166024356107c6565b005b3480156101dc57600080fd5b506101ce600160a060020a036004351660243561096d565b34801561020057600080fd5b506101ce600160a060020a0360043581169060243516604435610a09565b34801561022a57600080fd5b50610248600160a060020a0360043581169060243516604435610a45565b60408051918252519081900360200190f35b34801561026657600080fd5b5060408051602060046084358181013583810280860185019096528085526101969583359560248035600160a060020a039081169760443590911696606435963696919560a495949091019282919085019084908082843750949750610a879650505050505050565b3480156102db57600080fd5b50610248610ac2565b3480156102f057600080fd5b506040805160206004803580820135601f810184900484028501840190955284845261033d943694929360249392840191908190840183828082843750949750610ac79650505050505050565b60408051600160a060020a039092168252519081900360200190f35b34801561036557600080fd5b5061033d610bad565b34801561037a57600080fd5b50610248610c25565b34801561038f57600080fd5b5060408051606435600481810135602081810285810182019096528185526101ce95600160a060020a0384358116966024803590921696604435963696909560849593949290920192909182919085019084908082843750949750610c379650505050505050565b34801561040357600080fd5b50610196600160a060020a0360043581169060243516604435610d00565b34801561042d57600080fd5b50610196600160a060020a0360043516610d27565b34801561044e57600080fd5b50610248610d2d565b34801561046357600080fd5b50610248610d5d565b34801561047857600080fd5b506101ce600160a060020a0360043581169060243516604435610d88565b3480156104a257600080fd5b506101ce600160a060020a0360043516610e1f565b3480156104c357600080fd5b506104e4600160a060020a03600435811690602435166044356064356110ae565b6040805160ff9485168152929093166020830152600160f060020a03168183015290519081900360600190f35b34801561051d57600080fd5b506040805160206004604435818101358381028086018501909652808552610196958335600160a060020a031695602480359636969560649593949201929182918501908490808284375094975061112c9650505050505050565b34801561058457600080fd5b5061033d61127a565b34801561059957600080fd5b5061033d61132f565b3480156105ae57600080fd5b506101ce600160a060020a0360043516602435611335565b3480156105d257600080fd5b506101ce600160a060020a03600435811690602435166044356113cb565b3480156105fc57600080fd5b5061033d600160a060020a0360043516602435611460565b34801561062057600080fd5b506101ce600160a060020a036004358116906024358116906044359060643516611491565b34801561065157600080fd5b506101ce600160a060020a03600435166115f3565b34801561067257600080fd5b5061024861173e565b34801561068757600080fd5b5061033d611750565b34801561069c57600080fd5b5061019661177b565b3480156106b157600080fd5b5061033d61178e565b3480156106c657600080fd5b50604080516064356004818101356020818102858101820190965281855261019695600160a060020a03843581169660248035909216966044359636969095608495939492909201929091829190850190849080828437509497506117939650505050505050565b34801561073a57600080fd5b50604080516020601f60643560048181013592830184900484028501840190955281845261019694600160a060020a0381358116956024803590921695604435953695608494019181908401838280828437509497506118379650505050505050565b6000806107a8610d5d565b905080158015906107c05750806107bd61184d565b10155b91505090565b604080516000808252602082019092526000805160206126eb833981519152916107f69133918491905b5061112c565b60408051808201909152600f81527f4150505f415554485f4641494c4544000000000000000000000000000000000060208201529015156108b85760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360005b8381101561087d578181015183820152602001610865565b50505050905090810190601f1680156108aa5780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b50828260006108c78383611460565b600160a060020a0316146040805190810160405280601481526020017f41434c5f4558495354454e545f4d414e414745520000000000000000000000008152509015156109595760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5061096660018686611851565b5050505050565b81816109798282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a031633146109f65760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610a0360018585611851565b50505050565b610a408383836000604051908082528060200260200182016040528015610a3a578160200160208202803883390190505b50610c37565b505050565b600060016000806000610a598888886118d0565b81526020808201929092526040908101600090812054845291830193909352910190205490505b9392505050565b60006000805160206126cb833981519152861415610aa757506001610ab9565b610ab6866000878787876119a4565b90505b95945050505050565b600081565b6000610ad161127a565b600160a060020a03166304bf2a7f836040518263ffffffff1660e060020a0281526004018080602001828103825283818151815260200191508051906020019080838360005b83811015610b2f578181015183820152602001610b17565b50505050905090810190601f168015610b5c5780820380516001836020036101000a031916815260200191505b5092505050602060405180830381600087803b158015610b7b57600080fd5b505af1158015610b8f573d6000803e3d6000fd5b505050506040513d6020811015610ba557600080fd5b505192915050565b6000610bb7611750565b600160a060020a03166332f0a3b56040518163ffffffff1660e060020a028152600401602060405180830381600087803b158015610bf457600080fd5b505af1158015610c08573d6000803e3d6000fd5b505050506040513d6020811015610c1e57600080fd5b5051905090565b6000805160206126eb83398151915281565b60008383610c458282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a03163314610cc25760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b506000845111610ce0576000805160206126cb833981519152610ce9565b610ce984611b91565b9250610cf787878786611d33565b50505050505050565b60408051600080825260208201909252610d1c85858584611793565b91505b509392505050565b50600190565b6000610d587fd625496217aa6a3453eecb9c3489dc5a53e6c67b444329ea2b2cbc9ff547639b611e15565b905090565b6000610d587febb05b386a8d34882b8711d156f463690983dc47815980fb82aeeff1aa43579e611e15565b8181610d948282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a03163314610e115760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b506109668585856000611d33565b6000806000610e2d84610d27565b60408051808201909152601281527f5245434f5645525f444953414c4c4f57454400000000000000000000000000006020820152901515610eb35760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610ebc610bad565b9250610ec783611e1d565b60408051808201909152601a81527f5245434f5645525f5641554c545f4e4f545f434f4e54524143540000000000006020820152901515610f4d5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50600160a060020a0384161515610f9e5760405130319250600160a060020a0384169083156108fc029084906000818181858888f19350505050158015610f98573d6000803e3d6000fd5b5061105d565b5082610fb9600160a060020a0382163063ffffffff611e4a16565b9150610fd5600160a060020a038216848463ffffffff611f4a16565b60408051808201909152601d81527f5245434f5645525f544f4b454e5f5452414e534645525f4641494c4544000000602082015290151561105b5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b505b83600160a060020a031683600160a060020a03167f596caf56044b55fb8c4ca640089bbc2b63cae3e978b851f5745cbb7c5b288e02846040518082815260200191505060405180910390a350505050565b600080600080600160008060006110c68c8c8c6118d0565b81526020808201929092526040908101600090812054845291830193909352910190208054869081106110f557fe5b60009182526020909120015460ff8082169a6101008304909116995062010000909104600160f060020a0316975095505050505050565b60008061113761079d565b15156111465760009150610d1f565b61114e611750565b9050600160a060020a03811615156111695760009150610d1f565b80600160a060020a031663fdef910686308761118488611fb7565b60405160e060020a63ffffffff8716028152600160a060020a03808616600483019081529085166024830152604482018490526080606483019081528351608484015283519192909160a490910190602085019080838360005b838110156111f65781810151838201526020016111de565b50505050905090810190601f1680156112235780820380516001836020036101000a031916815260200191505b5095505050505050602060405180830381600087803b15801561124557600080fd5b505af1158015611259573d6000803e3d6000fd5b505050506040513d602081101561126f57600080fd5b505195945050505050565b600080611285611750565b604080517fbe00bbd80000000000000000000000000000000000000000000000000000000081527fd6f028ca0e8edb4a8c9757ca4fdccab25fa1e0317da1188108f7d2dee14902fb60048201527fddbcfd564f642ab5627cf68b9b7d374fb4f8a36e941a75d89c87998cef03bd6160248201529051600160a060020a03929092169163be00bbd8916044808201926020929091908290030181600087803b158015610b7b57600080fd5b60001981565b81816113418282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a031633146113be5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610a0360008585611851565b81816113d78282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a031633146114545760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610966858585611851565b6000600260006114708585611fc1565b8152602081019190915260400160002054600160a060020a03169392505050565b604080516000808252602082019092526000805160206126eb833981519152916114bf9133918491906107f0565b60408051808201909152600f81527f4150505f415554485f4641494c4544000000000000000000000000000000000060208201529015156115455760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50838360006115548383611460565b600160a060020a0316146040805190810160405280601481526020017f41434c5f4558495354454e545f4d414e414745520000000000000000000000008152509015156115e65760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610cf78787878761208a565b6115fb610d5d565b60408051808201909152601881527f494e49545f414c52454144595f494e495449414c495a45440000000000000000602082015290156116805760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b506116896120af565b611691611750565b60408051808201909152601481527f41434c5f415554485f494e49545f4b45524e454c000000000000000000000000602082015290600160a060020a031633146117205760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5061173b81306000805160206126eb8339815191528261208a565b50565b6000805160206126cb83398151915281565b6000610d587f4172f0f7d2289153072b0a6ca36959e0cbe2efc3afe50fc81636caa96338137b611e15565b6000600019611788610d5d565b14905090565b600181565b60008060008060006117a68989896118d0565b8152602081019190915260400160002054915081158015906117d057506117d08288888888610a87565b156117de576001925061182d565b6000806117ee60001989896118d0565b81526020810191909152604001600020549050801580159061181a575061181a81600019888888610a87565b15611828576001925061182d565b600092505b5050949350505050565b6000610ab985858561184886612177565b611793565b4390565b82600260006118608585611fc1565b8152602081019190915260409081016000908120805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a039485161790559051858316928492908616917ff3addc8b8e25ee11528a61b0e65092cae0666ef0ec0c64cb303993c88d689b4d9190a4505050565b604080517f5045524d495353494f4e000000000000000000000000000000000000000000006020808301919091526c01000000000000000000000000600160a060020a038088168202602a850152861602603e8301526052808301859052835180840390910181526072909201928390528151600093918291908401908083835b602083106119705780518252601f199092019160209182019101611951565b5181516020939093036101000a60001901801990911692169190911790526040519201829003909120979650505050505050565b60006119ae6126aa565b600088815260016020526040812054819063ffffffff8a16106119d45760009350611b84565b60008a8152600160205260409020805463ffffffff8b169081106119f457fe5b600091825260209182902060408051606081018252929091015460ff808216808552610100830490911694840194909452620100009004600160f060020a031690820152935060cc1415611a5757611a50838b8a8a8a8a612221565b9350611b84565b5060408201518251600160f060020a039091169060ff1660cb1415611aa357611a878360400151898989896123c6565b611a92576000611a95565b60015b60ff16915060019050611b33565b825160ff1660c81415611abf57611ab861184d565b9150611b33565b825160ff1660c91415611ad457611ab8612502565b825160ff1660cd1415611af6578260400151600160f060020a03169150611b33565b8451835160ff1610611b0b5760009350611b84565b82518551869160ff16908110611b1d57fe5b90602001906020020151600160f060020a031691505b6007836020015160ff16600c811115611b4857fe5b600c811115611b5357fe5b1415611b6457600082119350611b84565b611b8182846020015160ff16600c811115611b7b57fe5b83612506565b93505b5050509695505050505050565b6000806000806000611ba16126aa565b8660405160200180828051906020019060200280838360005b83811015611bd2578181015183820152602001611bba565b505050509050019150506040516020818303038152906040526040518082805190602001908083835b60208310611c1a5780518252601f199092019160209182019101611bfb565b51815160209384036101000a6000190180199092169116179052604080519290940182900390912060008181526001909252929020805492995097505015159150611d28905057600092505b8651831015611d28578683815181101515611c7d57fe5b906020019060200201519150606060405190810160405280611c9e846125c3565b60ff168152602001611caf846125e9565b60ff9081168252600160f060020a03858116602093840152875460018082018a5560008a815285902086519201805495870151604088015160ff199097169386169390931761ff00191661010093909516929092029390931761ffff166201000094909216939093021790915593909301929050611c66565b509295945050505050565b60008082600080611d458989896118d0565b81526020810191909152604001600020558215801592508290611d7657506000805160206126cb8339815191528314155b60408051841515815290519192508591600160a060020a0380891692908a16917f759b9a74d5354b5801710a0c1b283cc9f0d32b607ac8ced10c83ac8e75c77d529181900360200190a48015611e0d576040805184815290518591600160a060020a0380891692908a16917f8dfee25d92d73b8c9b868f9fa3e215cc1981033f426e53803e3da4f09a2cfc30919081900360200190a45b505050505050565b5490565b5490565b600080600160a060020a0383161515611e395760009150611e44565b823b90506000811191505b50919050565b60408051600160a060020a038316602480830191909152825180830390910181526044909101909152602081018051600160e060020a03167f70a08231000000000000000000000000000000000000000000000000000000001790526000908180611eb5868461260e565b60408051808201909152601c81527f534146455f4552435f32305f42414c414e43455f52455645525445440000000060208201529193509150821515611f405760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5095945050505050565b60408051600160a060020a03841660248201526044808201849052825180830390910181526064909101909152602081018051600160e060020a03167fa9059cbb00000000000000000000000000000000000000000000000000000000179052600090610d1c858261263f565b8051602002815290565b604080517f524f4c45000000000000000000000000000000000000000000000000000000006020808301919091526c01000000000000000000000000600160a060020a0386160260248301526038808301859052835180840390910181526058909201928390528151600093918291908401908083835b602083106120575780518252601f199092019160209182019101612038565b5181516020939093036101000a600019018019909116921691909117905260405192018290039091209695505050505050565b6120a48484846000805160206126cb833981519152611d33565b610a03818484611851565b6120b7610d5d565b60408051808201909152601881527f494e49545f414c52454144595f494e495449414c495a454400000000000000006020820152901561213c5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5061217561214861184d565b7febb05b386a8d34882b8711d156f463690983dc47815980fb82aeeff1aa43579e9063ffffffff61268d16565b565b606060006020835181151561218857fe5b049050806020028351146040805190810160405280601a81526020017f434f4e56455253494f4e5f494d50524f5045525f4c454e47544800000000000081525090151561221a5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5082525090565b60008080808080808080600c8f6020015160ff16600c81111561224057fe5b600c81111561224b57fe5b141561229f576122678f60400151600160f060020a0316612691565b9199509750955061227c8e898f8f8f8f6119a4565b94506122988e8661228d578761228f565b885b8f8f8f8f6119a4565b98506123b4565b6122b58f60400151600160f060020a0316612691565b5090945092506122c98e858f8f8f8f6119a4565b915060088f6020015160ff16600c8111156122e057fe5b600c8111156122eb57fe5b14156122fa57811598506123b4565b8180156123245750600a8f6020015160ff16600c81111561231757fe5b600c81111561232257fe5b145b1561233257600198506123b4565b8115801561235d575060098f6020015160ff16600c81111561235057fe5b600c81111561235b57fe5b145b1561236b57600098506123b4565b6123798e848f8f8f8f6119a4565b9050600b8f6020015160ff16600c81111561239057fe5b600c81111561239b57fe5b14156123b057801515821515141598506123b4565b8098505b50505050505050509695505050505050565b604051600160a060020a0385811660248301908152908516604483015260648201849052608060848301908152835160a484015283516000937f2a1510900000000000000000000000000000000000000000000000000000000093606093869384938493849389938f938f938f938f939192909160c490910190602080860191028083838d5b8381101561246457818101518382015260200161244c565b505050509050019550505050505060405160208183030381529060405290600160e060020a031916602082018051600160e060020a038381831617835250505050945061753093506000808651602088018f88fa92508215156124ca57600096506124f3565b3d9150602082146124de57600096506124f3565b604051826000823e8051915060008152508096505b50505050505095945050505050565b4290565b6000600183600c81111561251657fe5b14156125255750828114610a80565b600283600c81111561253357fe5b1415612543575082811415610a80565b600383600c81111561255157fe5b14156125605750808311610a80565b600483600c81111561256e57fe5b141561257d5750808310610a80565b600583600c81111561258b57fe5b141561259b575080831015610a80565b600683600c8111156125a957fe5b14156125b9575080831115610a80565b5060009392505050565b7f0100000000000000000000000000000000000000000000000000000000000000900490565b7e01000000000000000000000000000000000000000000000000000000000000900490565b6000806000806040516020818751602089018a5afa9250600083111561263357805191505b50909590945092505050565b6000806040516020818551602087016000895af16000811115612683573d8015612670576020811461267957612681565b60019350612681565b600183511493505b505b5090949350505050565b9055565b9064010000000082049068010000000000000000830490565b6040805160608101825260008082526020820181905291810191909152905600290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e5630b719b33c83b8e5d300c521cb8b54ae9bd933996a14bef8c2f4e0285d2d2400a41434c5f415554485f4e4f5f4d414e4147455200000000000000000000000000a165627a7a7230582002425afe38086e51aba893cf2fa56d8bd725a857bfcf32c885232da9312160380029ebb05b386a8d34882b8711d156f463690983dc47815980fb82aeeff1aa43579e",
+  "deployedBytecode": "0x60806040526004361061017c5763ffffffff60e060020a6000350416630803fac081146101815780630808343e146101aa57806309699ff5146101d05780630a8ed3db146101f457806315949ed71461021e5780631b5e75be1461025a5780631d63ff2b146102cf5780632914b9bd146102e457806332f0a3b5146103595780633d6ab68f1461036e5780636815c992146103835780636d6712d8146103f75780637e7db6e11461042157806380afdea8146104425780638b3dd749146104575780639d0effdb1461046c5780639d4941d814610496578063a03c5832146104b7578063a1658fad14610511578063a479e50814610578578063a5ed8bf81461058d578063a885508a146105a2578063afd925df146105c6578063b1905727146105f0578063be03847814610614578063c4d66de814610645578063c513f66e14610666578063d4aae0c41461067b578063de4796ed14610690578063f516bc0e146106a5578063f520b58d146106ba578063fdef91061461072e575b600080fd5b34801561018d57600080fd5b5061019661079d565b604080519115158252519081900360200190f35b3480156101b657600080fd5b506101ce600160a060020a03600435166024356107c6565b005b3480156101dc57600080fd5b506101ce600160a060020a036004351660243561096d565b34801561020057600080fd5b506101ce600160a060020a0360043581169060243516604435610a09565b34801561022a57600080fd5b50610248600160a060020a0360043581169060243516604435610a45565b60408051918252519081900360200190f35b34801561026657600080fd5b5060408051602060046084358181013583810280860185019096528085526101969583359560248035600160a060020a039081169760443590911696606435963696919560a495949091019282919085019084908082843750949750610a879650505050505050565b3480156102db57600080fd5b50610248610ac2565b3480156102f057600080fd5b506040805160206004803580820135601f810184900484028501840190955284845261033d943694929360249392840191908190840183828082843750949750610ac79650505050505050565b60408051600160a060020a039092168252519081900360200190f35b34801561036557600080fd5b5061033d610bad565b34801561037a57600080fd5b50610248610c25565b34801561038f57600080fd5b5060408051606435600481810135602081810285810182019096528185526101ce95600160a060020a0384358116966024803590921696604435963696909560849593949290920192909182919085019084908082843750949750610c379650505050505050565b34801561040357600080fd5b50610196600160a060020a0360043581169060243516604435610d00565b34801561042d57600080fd5b50610196600160a060020a0360043516610d27565b34801561044e57600080fd5b50610248610d2d565b34801561046357600080fd5b50610248610d5d565b34801561047857600080fd5b506101ce600160a060020a0360043581169060243516604435610d88565b3480156104a257600080fd5b506101ce600160a060020a0360043516610e1f565b3480156104c357600080fd5b506104e4600160a060020a03600435811690602435166044356064356110ae565b6040805160ff9485168152929093166020830152600160f060020a03168183015290519081900360600190f35b34801561051d57600080fd5b506040805160206004604435818101358381028086018501909652808552610196958335600160a060020a031695602480359636969560649593949201929182918501908490808284375094975061112c9650505050505050565b34801561058457600080fd5b5061033d61127a565b34801561059957600080fd5b5061033d61132f565b3480156105ae57600080fd5b506101ce600160a060020a0360043516602435611335565b3480156105d257600080fd5b506101ce600160a060020a03600435811690602435166044356113cb565b3480156105fc57600080fd5b5061033d600160a060020a0360043516602435611460565b34801561062057600080fd5b506101ce600160a060020a036004358116906024358116906044359060643516611491565b34801561065157600080fd5b506101ce600160a060020a03600435166115f3565b34801561067257600080fd5b5061024861173e565b34801561068757600080fd5b5061033d611750565b34801561069c57600080fd5b5061019661177b565b3480156106b157600080fd5b5061033d61178e565b3480156106c657600080fd5b50604080516064356004818101356020818102858101820190965281855261019695600160a060020a03843581169660248035909216966044359636969095608495939492909201929091829190850190849080828437509497506117939650505050505050565b34801561073a57600080fd5b50604080516020601f60643560048181013592830184900484028501840190955281845261019694600160a060020a0381358116956024803590921695604435953695608494019181908401838280828437509497506118379650505050505050565b6000806107a8610d5d565b905080158015906107c05750806107bd61184d565b10155b91505090565b604080516000808252602082019092526000805160206126eb833981519152916107f69133918491905b5061112c565b60408051808201909152600f81527f4150505f415554485f4641494c4544000000000000000000000000000000000060208201529015156108b85760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360005b8381101561087d578181015183820152602001610865565b50505050905090810190601f1680156108aa5780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b50828260006108c78383611460565b600160a060020a0316146040805190810160405280601481526020017f41434c5f4558495354454e545f4d414e414745520000000000000000000000008152509015156109595760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5061096660018686611851565b5050505050565b81816109798282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a031633146109f65760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610a0360018585611851565b50505050565b610a408383836000604051908082528060200260200182016040528015610a3a578160200160208202803883390190505b50610c37565b505050565b600060016000806000610a598888886118d0565b81526020808201929092526040908101600090812054845291830193909352910190205490505b9392505050565b60006000805160206126cb833981519152861415610aa757506001610ab9565b610ab6866000878787876119a4565b90505b95945050505050565b600081565b6000610ad161127a565b600160a060020a03166304bf2a7f836040518263ffffffff1660e060020a0281526004018080602001828103825283818151815260200191508051906020019080838360005b83811015610b2f578181015183820152602001610b17565b50505050905090810190601f168015610b5c5780820380516001836020036101000a031916815260200191505b5092505050602060405180830381600087803b158015610b7b57600080fd5b505af1158015610b8f573d6000803e3d6000fd5b505050506040513d6020811015610ba557600080fd5b505192915050565b6000610bb7611750565b600160a060020a03166332f0a3b56040518163ffffffff1660e060020a028152600401602060405180830381600087803b158015610bf457600080fd5b505af1158015610c08573d6000803e3d6000fd5b505050506040513d6020811015610c1e57600080fd5b5051905090565b6000805160206126eb83398151915281565b60008383610c458282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a03163314610cc25760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b506000845111610ce0576000805160206126cb833981519152610ce9565b610ce984611b91565b9250610cf787878786611d33565b50505050505050565b60408051600080825260208201909252610d1c85858584611793565b91505b509392505050565b50600190565b6000610d587fd625496217aa6a3453eecb9c3489dc5a53e6c67b444329ea2b2cbc9ff547639b611e15565b905090565b6000610d587febb05b386a8d34882b8711d156f463690983dc47815980fb82aeeff1aa43579e611e15565b8181610d948282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a03163314610e115760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b506109668585856000611d33565b6000806000610e2d84610d27565b60408051808201909152601281527f5245434f5645525f444953414c4c4f57454400000000000000000000000000006020820152901515610eb35760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610ebc610bad565b9250610ec783611e1d565b60408051808201909152601a81527f5245434f5645525f5641554c545f4e4f545f434f4e54524143540000000000006020820152901515610f4d5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50600160a060020a0384161515610f9e5760405130319250600160a060020a0384169083156108fc029084906000818181858888f19350505050158015610f98573d6000803e3d6000fd5b5061105d565b5082610fb9600160a060020a0382163063ffffffff611e4a16565b9150610fd5600160a060020a038216848463ffffffff611f4a16565b60408051808201909152601d81527f5245434f5645525f544f4b454e5f5452414e534645525f4641494c4544000000602082015290151561105b5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b505b83600160a060020a031683600160a060020a03167f596caf56044b55fb8c4ca640089bbc2b63cae3e978b851f5745cbb7c5b288e02846040518082815260200191505060405180910390a350505050565b600080600080600160008060006110c68c8c8c6118d0565b81526020808201929092526040908101600090812054845291830193909352910190208054869081106110f557fe5b60009182526020909120015460ff8082169a6101008304909116995062010000909104600160f060020a0316975095505050505050565b60008061113761079d565b15156111465760009150610d1f565b61114e611750565b9050600160a060020a03811615156111695760009150610d1f565b80600160a060020a031663fdef910686308761118488611fb7565b60405160e060020a63ffffffff8716028152600160a060020a03808616600483019081529085166024830152604482018490526080606483019081528351608484015283519192909160a490910190602085019080838360005b838110156111f65781810151838201526020016111de565b50505050905090810190601f1680156112235780820380516001836020036101000a031916815260200191505b5095505050505050602060405180830381600087803b15801561124557600080fd5b505af1158015611259573d6000803e3d6000fd5b505050506040513d602081101561126f57600080fd5b505195945050505050565b600080611285611750565b604080517fbe00bbd80000000000000000000000000000000000000000000000000000000081527fd6f028ca0e8edb4a8c9757ca4fdccab25fa1e0317da1188108f7d2dee14902fb60048201527fddbcfd564f642ab5627cf68b9b7d374fb4f8a36e941a75d89c87998cef03bd6160248201529051600160a060020a03929092169163be00bbd8916044808201926020929091908290030181600087803b158015610b7b57600080fd5b60001981565b81816113418282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a031633146113be5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610a0360008585611851565b81816113d78282611460565b604080518082019091526013815260008051602061270b833981519152602082015290600160a060020a031633146114545760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610966858585611851565b6000600260006114708585611fc1565b8152602081019190915260400160002054600160a060020a03169392505050565b604080516000808252602082019092526000805160206126eb833981519152916114bf9133918491906107f0565b60408051808201909152600f81527f4150505f415554485f4641494c4544000000000000000000000000000000000060208201529015156115455760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50838360006115548383611460565b600160a060020a0316146040805190810160405280601481526020017f41434c5f4558495354454e545f4d414e414745520000000000000000000000008152509015156115e65760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b50610cf78787878761208a565b6115fb610d5d565b60408051808201909152601881527f494e49545f414c52454144595f494e495449414c495a45440000000000000000602082015290156116805760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b506116896120af565b611691611750565b60408051808201909152601481527f41434c5f415554485f494e49545f4b45524e454c000000000000000000000000602082015290600160a060020a031633146117205760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5061173b81306000805160206126eb8339815191528261208a565b50565b6000805160206126cb83398151915281565b6000610d587f4172f0f7d2289153072b0a6ca36959e0cbe2efc3afe50fc81636caa96338137b611e15565b6000600019611788610d5d565b14905090565b600181565b60008060008060006117a68989896118d0565b8152602081019190915260400160002054915081158015906117d057506117d08288888888610a87565b156117de576001925061182d565b6000806117ee60001989896118d0565b81526020810191909152604001600020549050801580159061181a575061181a81600019888888610a87565b15611828576001925061182d565b600092505b5050949350505050565b6000610ab985858561184886612177565b611793565b4390565b82600260006118608585611fc1565b8152602081019190915260409081016000908120805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a039485161790559051858316928492908616917ff3addc8b8e25ee11528a61b0e65092cae0666ef0ec0c64cb303993c88d689b4d9190a4505050565b604080517f5045524d495353494f4e000000000000000000000000000000000000000000006020808301919091526c01000000000000000000000000600160a060020a038088168202602a850152861602603e8301526052808301859052835180840390910181526072909201928390528151600093918291908401908083835b602083106119705780518252601f199092019160209182019101611951565b5181516020939093036101000a60001901801990911692169190911790526040519201829003909120979650505050505050565b60006119ae6126aa565b600088815260016020526040812054819063ffffffff8a16106119d45760009350611b84565b60008a8152600160205260409020805463ffffffff8b169081106119f457fe5b600091825260209182902060408051606081018252929091015460ff808216808552610100830490911694840194909452620100009004600160f060020a031690820152935060cc1415611a5757611a50838b8a8a8a8a612221565b9350611b84565b5060408201518251600160f060020a039091169060ff1660cb1415611aa357611a878360400151898989896123c6565b611a92576000611a95565b60015b60ff16915060019050611b33565b825160ff1660c81415611abf57611ab861184d565b9150611b33565b825160ff1660c91415611ad457611ab8612502565b825160ff1660cd1415611af6578260400151600160f060020a03169150611b33565b8451835160ff1610611b0b5760009350611b84565b82518551869160ff16908110611b1d57fe5b90602001906020020151600160f060020a031691505b6007836020015160ff16600c811115611b4857fe5b600c811115611b5357fe5b1415611b6457600082119350611b84565b611b8182846020015160ff16600c811115611b7b57fe5b83612506565b93505b5050509695505050505050565b6000806000806000611ba16126aa565b8660405160200180828051906020019060200280838360005b83811015611bd2578181015183820152602001611bba565b505050509050019150506040516020818303038152906040526040518082805190602001908083835b60208310611c1a5780518252601f199092019160209182019101611bfb565b51815160209384036101000a6000190180199092169116179052604080519290940182900390912060008181526001909252929020805492995097505015159150611d28905057600092505b8651831015611d28578683815181101515611c7d57fe5b906020019060200201519150606060405190810160405280611c9e846125c3565b60ff168152602001611caf846125e9565b60ff9081168252600160f060020a03858116602093840152875460018082018a5560008a815285902086519201805495870151604088015160ff199097169386169390931761ff00191661010093909516929092029390931761ffff166201000094909216939093021790915593909301929050611c66565b509295945050505050565b60008082600080611d458989896118d0565b81526020810191909152604001600020558215801592508290611d7657506000805160206126cb8339815191528314155b60408051841515815290519192508591600160a060020a0380891692908a16917f759b9a74d5354b5801710a0c1b283cc9f0d32b607ac8ced10c83ac8e75c77d529181900360200190a48015611e0d576040805184815290518591600160a060020a0380891692908a16917f8dfee25d92d73b8c9b868f9fa3e215cc1981033f426e53803e3da4f09a2cfc30919081900360200190a45b505050505050565b5490565b5490565b600080600160a060020a0383161515611e395760009150611e44565b823b90506000811191505b50919050565b60408051600160a060020a038316602480830191909152825180830390910181526044909101909152602081018051600160e060020a03167f70a08231000000000000000000000000000000000000000000000000000000001790526000908180611eb5868461260e565b60408051808201909152601c81527f534146455f4552435f32305f42414c414e43455f52455645525445440000000060208201529193509150821515611f405760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5095945050505050565b60408051600160a060020a03841660248201526044808201849052825180830390910181526064909101909152602081018051600160e060020a03167fa9059cbb00000000000000000000000000000000000000000000000000000000179052600090610d1c858261263f565b8051602002815290565b604080517f524f4c45000000000000000000000000000000000000000000000000000000006020808301919091526c01000000000000000000000000600160a060020a0386160260248301526038808301859052835180840390910181526058909201928390528151600093918291908401908083835b602083106120575780518252601f199092019160209182019101612038565b5181516020939093036101000a600019018019909116921691909117905260405192018290039091209695505050505050565b6120a48484846000805160206126cb833981519152611d33565b610a03818484611851565b6120b7610d5d565b60408051808201909152601881527f494e49545f414c52454144595f494e495449414c495a454400000000000000006020820152901561213c5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5061217561214861184d565b7febb05b386a8d34882b8711d156f463690983dc47815980fb82aeeff1aa43579e9063ffffffff61268d16565b565b606060006020835181151561218857fe5b049050806020028351146040805190810160405280601a81526020017f434f4e56455253494f4e5f494d50524f5045525f4c454e47544800000000000081525090151561221a5760405160e560020a62461bcd0281526004018080602001828103825283818151815260200191508051906020019080838360008381101561087d578181015183820152602001610865565b5082525090565b60008080808080808080600c8f6020015160ff16600c81111561224057fe5b600c81111561224b57fe5b141561229f576122678f60400151600160f060020a0316612691565b9199509750955061227c8e898f8f8f8f6119a4565b94506122988e8661228d578761228f565b885b8f8f8f8f6119a4565b98506123b4565b6122b58f60400151600160f060020a0316612691565b5090945092506122c98e858f8f8f8f6119a4565b915060088f6020015160ff16600c8111156122e057fe5b600c8111156122eb57fe5b14156122fa57811598506123b4565b8180156123245750600a8f6020015160ff16600c81111561231757fe5b600c81111561232257fe5b145b1561233257600198506123b4565b8115801561235d575060098f6020015160ff16600c81111561235057fe5b600c81111561235b57fe5b145b1561236b57600098506123b4565b6123798e848f8f8f8f6119a4565b9050600b8f6020015160ff16600c81111561239057fe5b600c81111561239b57fe5b14156123b057801515821515141598506123b4565b8098505b50505050505050509695505050505050565b604051600160a060020a0385811660248301908152908516604483015260648201849052608060848301908152835160a484015283516000937f2a1510900000000000000000000000000000000000000000000000000000000093606093869384938493849389938f938f938f938f939192909160c490910190602080860191028083838d5b8381101561246457818101518382015260200161244c565b505050509050019550505050505060405160208183030381529060405290600160e060020a031916602082018051600160e060020a038381831617835250505050945061753093506000808651602088018f88fa92508215156124ca57600096506124f3565b3d9150602082146124de57600096506124f3565b604051826000823e8051915060008152508096505b50505050505095945050505050565b4290565b6000600183600c81111561251657fe5b14156125255750828114610a80565b600283600c81111561253357fe5b1415612543575082811415610a80565b600383600c81111561255157fe5b14156125605750808311610a80565b600483600c81111561256e57fe5b141561257d5750808310610a80565b600583600c81111561258b57fe5b141561259b575080831015610a80565b600683600c8111156125a957fe5b14156125b9575080831115610a80565b5060009392505050565b7f0100000000000000000000000000000000000000000000000000000000000000900490565b7e01000000000000000000000000000000000000000000000000000000000000900490565b6000806000806040516020818751602089018a5afa9250600083111561263357805191505b50909590945092505050565b6000806040516020818551602087016000895af16000811115612683573d8015612670576020811461267957612681565b60019350612681565b600183511493505b505b5090949350505050565b9055565b9064010000000082049068010000000000000000830490565b6040805160608101825260008082526020820181905291810191909152905600290decd9548b62a8d60345a988386fc84ba6bc95484008f6362f93160ef3e5630b719b33c83b8e5d300c521cb8b54ae9bd933996a14bef8c2f4e0285d2d2400a41434c5f415554485f4e4f5f4d414e4147455200000000000000000000000000a165627a7a7230582002425afe38086e51aba893cf2fa56d8bd725a857bfcf32c885232da9312160380029",
+  "devdoc": {
+    "methods": {
+      "allowRecoverability(address)": {
+        "details": "By default deriving from AragonApp makes it recoverable",
+        "params": {
+          "token": "Token address that would be recovered"
+        },
+        "return": "bool whether the app allows the recovery"
+      },
+      "burnPermissionManager(address,bytes32)": {
+        "params": {
+          "_app": "Address of the app in which the permission is being burned",
+          "_role": "Identifier for the group of actions being burned"
+        }
+      },
+      "canPerform(address,bytes32,uint256[])": {
+        "details": "Check whether an action can be performed by a sender for a particular role on this app",
+        "params": {
+          "_params": "Permission params for the role",
+          "_role": "Role on this app",
+          "_sender": "Sender of the call"
+        },
+        "return": "Boolean indicating whether the sender has the permissions to perform the action.        Always returns false if the app hasn't been initialized yet."
+      },
+      "createBurnedPermission(address,bytes32)": {
+        "params": {
+          "_app": "Address of the app in which the permission is being burned",
+          "_role": "Identifier for the group of actions being burned"
+        }
+      },
+      "createPermission(address,address,bytes32,address)": {
+        "details": "Creates a permission that wasn't previously set and managed.     If a created permission is removed it is possible to reset it with createPermission.     This is the **ONLY** way to create permissions and set managers to permissions that don't     have a manager.     In terms of the ACL being initialized, this function implicitly protects all the other     state-changing external functions, as they all require the sender to be a manager.",
+        "params": {
+          "_app": "Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)",
+          "_entity": "Address of the whitelisted entity that will be able to perform the role",
+          "_manager": "Address of the entity that will be able to grant and revoke the permission further.",
+          "_role": "Identifier for the group of actions in app given access to perform"
+        }
+      },
+      "getInitializationBlock()": {
+        "return": "Block number in which the contract was initialized"
+      },
+      "getPermissionManager(address,bytes32)": {
+        "details": "Get manager for permission",
+        "params": {
+          "_app": "Address of the app",
+          "_role": "Identifier for a group of actions in app"
+        },
+        "return": "address of the manager for the permission"
+      },
+      "getPermissionParam(address,address,bytes32,uint256)": {
+        "params": {
+          "_app": "Address of the app",
+          "_entity": "Address of the whitelisted entity that will be able to perform the role",
+          "_index": "Index of parameter in the array",
+          "_role": "Identifier for a group of actions in app"
+        },
+        "return": "Parameter (id, op, value)"
+      },
+      "getPermissionParamsLength(address,address,bytes32)": {
+        "params": {
+          "_app": "Address of the app",
+          "_entity": "Address of the whitelisted entity that will be able to perform the role",
+          "_role": "Identifier for a group of actions in app"
+        },
+        "return": "Length of the array"
+      },
+      "getRecoveryVault()": {
+        "details": "Get the recovery vault for the app",
+        "return": "Recovery vault address for the app"
+      },
+      "grantPermission(address,address,bytes32)": {
+        "details": "Grants permission if allowed. This requires `msg.sender` to be the permission manager",
+        "params": {
+          "_app": "Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)",
+          "_entity": "Address of the whitelisted entity that will be able to perform the role",
+          "_role": "Identifier for the group of actions in app given access to perform"
+        }
+      },
+      "grantPermissionP(address,address,bytes32,uint256[])": {
+        "details": "Grants a permission with parameters if allowed. This requires `msg.sender` to be the permission manager",
+        "params": {
+          "_app": "Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)",
+          "_entity": "Address of the whitelisted entity that will be able to perform the role",
+          "_params": "Permission parameters",
+          "_role": "Identifier for the group of actions in app given access to perform"
+        }
+      },
+      "hasInitialized()": {
+        "return": "Whether the contract has been initialized by the time of the current block"
+      },
+      "hasPermission(address,address,bytes32,bytes)": {
+        "details": "Function called by apps to check ACL on kernel or to check permission statu",
+        "params": {
+          "_how": "Permission parameters",
+          "_where": "Identifier for a group of actions in app",
+          "_who": "Sender of the original call"
+        },
+        "return": "boolean indicating whether the ACL allows the role or not"
+      },
+      "initialize(address)": {
+        "details": "Initialize can only be called once. It saves the block number in which it was initialized.",
+        "params": {
+          "_permissionsCreator": "Entity that will be given permission over createPermission"
+        }
+      },
+      "removePermissionManager(address,bytes32)": {
+        "params": {
+          "_app": "Address of the app in which the permission is being unmanaged",
+          "_role": "Identifier for the group of actions being unmanaged"
+        }
+      },
+      "revokePermission(address,address,bytes32)": {
+        "details": "Revokes permission if allowed. This requires `msg.sender` to be the the permission manager",
+        "params": {
+          "_app": "Address of the app in which the role will be revoked",
+          "_entity": "Address of the whitelisted entity to revoke access from",
+          "_role": "Identifier for the group of actions in app being revoked"
+        }
+      },
+      "setPermissionManager(address,address,bytes32)": {
+        "params": {
+          "_app": "Address of the app in which the permission management is being transferred",
+          "_newManager": "Address for the new manager",
+          "_role": "Identifier for the group of actions being transferred"
+        }
+      },
+      "transferToVault(address)": {
+        "params": {
+          "_token": "Token balance to be sent to recovery vault."
+        }
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {
+      "burnPermissionManager(address,bytes32)": {
+        "notice": "Burn `_role` in `_app`, so no modification can be made to it (grant, revoke, permission manager)"
+      },
+      "createBurnedPermission(address,bytes32)": {
+        "notice": "Burn non-existent `_role` in `_app`, so no modification can be made to it (grant, revoke, permission manager)"
+      },
+      "createPermission(address,address,bytes32,address)": {
+        "notice": "Create a new permission granting `_entity` the ability to perform actions requiring `_role` on `_app`, setting `_manager` as the permission's manager"
+      },
+      "getPermissionParam(address,address,bytes32,uint256)": {
+        "notice": "Get parameter for permission"
+      },
+      "getPermissionParamsLength(address,address,bytes32)": {
+        "notice": "Get parameters for permission array length"
+      },
+      "grantPermission(address,address,bytes32)": {
+        "notice": "Grant `_entity` the ability to perform actions requiring `_role` on `_app`"
+      },
+      "grantPermissionP(address,address,bytes32,uint256[])": {
+        "notice": "Grant `_entity` the ability to perform actions requiring `_role` on `_app`"
+      },
+      "initialize(address)": {
+        "notice": "Initialize an ACL instance and set `_permissionsCreator` as the entity that can create other permissions"
+      },
+      "removePermissionManager(address,bytes32)": {
+        "notice": "Remove the manager of `_role` in `_app`"
+      },
+      "revokePermission(address,address,bytes32)": {
+        "notice": "Revoke from `_entity` the ability to perform actions requiring `_role` on `_app`"
+      },
+      "setPermissionManager(address,address,bytes32)": {
+        "notice": "Set `_newManager` as the manager of `_role` in `_app`"
+      },
+      "transferToVault(address)": {
+        "notice": "Send funds to recovery Vault. This contract should never receive funds,        but in case it does, this function allows one to recover them."
+      }
+    }
+  }
+}

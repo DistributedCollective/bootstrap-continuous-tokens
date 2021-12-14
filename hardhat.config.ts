@@ -226,6 +226,27 @@ const config: HardhatUserConfig = {
       chainId: chainIds.rskMainnet,
       timeout: 20000 * 100
     },
+    zeroRSKTestnet: {
+      mockPresale: true, // first dry-run will use a mocked presale
+      parameters: {
+        startDate: startInAnHourFromNow(),
+        mintingBeneficiaryPCT: PPM.mul(BigNumber.from("3000")).div(100).div(100),
+        presalePeriod: 10 * DAYS,
+        presaleEchangeRate: PPM.mul(10000).div(100),
+        reserveRatio: PPM.mul(40).div(100),
+        batchBlock: 10,
+        slippage: PCT_BASE.mul(3).div(100),
+        buyFee: BigNumber.from(0),
+        selFee: PCT_BASE.mul(3).div(1000),
+        collateralTokenAddress: "0x6a9A07972D07e58F0daf5122d11E069288A375fb",
+        bondedTokenAddress: "0xf9263c0C4949bd32E5Bb67a314bf8B6f72251355",
+        beneficiaryAddress: "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
+        governanceAddress: "0x4D1A9fD1E1e67E83Ffe72Bdd769088d689993E4B",
+      },
+      url: "https://testnet.sovryn.app/rpc",
+      accounts: getPrivateKey(),
+      chainId: chainIds.rskTestnetMocked,
+    }
   },
   paths: {
     artifacts: "./artifacts",

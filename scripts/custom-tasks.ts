@@ -124,8 +124,8 @@ task("contribute", "buys (during the presale period) some bonded tokens and send
     const BondedToken = await getBondedToken(hre, deployments, signer);
     const Presale = await getPresale(deployments, signer, hre);
 
-    console.log("Generating tokens");
-    await waitForTxConfirmation(CollateralToken.mint(signerAddress, taskArgs.amount));
+    // console.log("Generating tokens");
+    // await waitForTxConfirmation(CollateralToken.mint(signerAddress, taskArgs.amount));
     console.log("Approving transactions");
     await waitForTxConfirmation(CollateralToken.approve(Presale.address, 0));
     await waitForTxConfirmation(CollateralToken.approve(Presale.address, taskArgs.amount));
