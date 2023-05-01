@@ -55,6 +55,7 @@ export type { IContinuousToken } from "./IContinuousToken";
 export type { IMarketMaker } from "./IMarketMaker";
 export type { MarketMaker } from "./MarketMaker";
 export type { Reserve } from "./Reserve";
+export type { StaticPriceFormula } from "./StaticPriceFormula";
 export type { TapDisabled } from "./TapDisabled";
 export type { MockedBalancedRedirectPresale } from "./MockedBalancedRedirectPresale";
 export type { MockedContinuousToken } from "./MockedContinuousToken";
@@ -114,6 +115,7 @@ export { IContinuousToken__factory } from "./factories/IContinuousToken__factory
 export { IMarketMaker__factory } from "./factories/IMarketMaker__factory";
 export { MarketMaker__factory } from "./factories/MarketMaker__factory";
 export { Reserve__factory } from "./factories/Reserve__factory";
+export { StaticPriceFormula__factory } from "./factories/StaticPriceFormula__factory";
 export { TapDisabled__factory } from "./factories/TapDisabled__factory";
 export { MockedBalancedRedirectPresale__factory } from "./factories/MockedBalancedRedirectPresale__factory";
 export { MockedContinuousToken__factory } from "./factories/MockedContinuousToken__factory";

@@ -229,6 +229,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Reserve__factory>;
     getContractFactory(
+      name: "StaticPriceFormula",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.StaticPriceFormula__factory>;
+    getContractFactory(
       name: "TapDisabled",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TapDisabled__factory>;
