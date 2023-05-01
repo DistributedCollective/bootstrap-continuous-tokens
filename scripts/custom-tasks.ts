@@ -245,14 +245,9 @@ task("emergency-remove-from-reserve", "Recovers the funds from the reserve").set
   console.log("Governance balance before emergency stop: ", governanceBalanceBefore.toString());
 
   await waitForTxConfirmation(
-    ACL.grantPermission(
-      governanceAddress,
-      Reserve.address,
-      await Reserve.TRANSFER_ROLE(),
-      {
-        gasLimit: 3400000,
-      },
-    ),
+    ACL.grantPermission(governanceAddress, Reserve.address, await Reserve.TRANSFER_ROLE(), {
+      gasLimit: 3400000,
+    }),
   );
 
   console.log("Permission granted");

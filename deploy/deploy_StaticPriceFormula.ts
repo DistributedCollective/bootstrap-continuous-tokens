@@ -1,16 +1,15 @@
-import {HardhatRuntimeEnvironment} from 'hardhat/types';
-import {DeployFunction} from 'hardhat-deploy/types';
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { DeployFunction } from "hardhat-deploy/types";
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-    const { deployments, getNamedAccounts } = hre;
-    const { deployer } = await getNamedAccounts();
-    const { deploy } = deployments;
-    const deployed = await deploy('StaticPriceFormula', {
-        from: deployer,
-      });
-      if(deployed.newlyDeployed){
-          console.log(`StaticPriceFormula deployed at ${deployed.address}`);
-      }
-      
-  };
-  export default deployFunc;
-  deployFunc.tags = ['StaticPriceFormula'];
+  const { deployments, getNamedAccounts } = hre;
+  const { deployer } = await getNamedAccounts();
+  const { deploy } = deployments;
+  const deployed = await deploy("StaticPriceFormula", {
+    from: deployer,
+  });
+  if (deployed.newlyDeployed) {
+    console.log(`StaticPriceFormula deployed at ${deployed.address}`);
+  }
+};
+export default deployFunc;
+deployFunc.tags = ["StaticPriceFormula"];

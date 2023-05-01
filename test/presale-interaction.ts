@@ -384,7 +384,7 @@ describe("Bonding Curve", () => {
       const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
       const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary));
       expect(await ZEROToken.balanceOf(beneficiary)).to.eq(
-        zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary)
+        zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary),
         // zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary.mul(presaleEchangeRate).div(PPM)),
       );
 
@@ -514,8 +514,20 @@ describe("Bonding Curve", () => {
       await openAndClosePresale(Controller, contributionAmount);
       const amount = BigNumber.from(100);
       //check permissions previously
-      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(true);
-      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(true);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          deployer,
+          Controller.address,
+          await Controller.OPEN_BUY_ORDER_ROLE(),
+        ),
+      ).eq(true);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.OPEN_BUY_ORDER_ROLE(),
+        ),
+      ).eq(true);
 
       //revoke buy order permissions
       await ACL.connect(governance).revokePermission(
@@ -524,18 +536,44 @@ describe("Bonding Curve", () => {
         await Controller.OPEN_BUY_ORDER_ROLE(),
       );
 
-      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(false);
-      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(false);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          deployer,
+          Controller.address,
+          await Controller.OPEN_BUY_ORDER_ROLE(),
+        ),
+      ).eq(false);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.OPEN_BUY_ORDER_ROLE(),
+        ),
+      ).eq(false);
 
-      await expect(Controller.openBuyOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");;
-      await expect(Controller.connect(account1).openBuyOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(Controller.openBuyOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(Controller.connect(account1).openBuyOrder(SOVToken.address, amount)).to.be.revertedWith(
+        "APP_AUTH_FAILED",
+      );
     });
     it("Should fail trying to open a sell order after revoke permissions", async () => {
       await openAndClosePresale(Controller, contributionAmount);
       const amount = BigNumber.from(100);
       //check permissions previously
-      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(true);
-      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(true);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          deployer,
+          Controller.address,
+          await Controller.OPEN_SELL_ORDER_ROLE(),
+        ),
+      ).eq(true);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.OPEN_SELL_ORDER_ROLE(),
+        ),
+      ).eq(true);
 
       //revoke sell order permissions
       await ACL.connect(governance).revokePermission(
@@ -544,16 +582,32 @@ describe("Bonding Curve", () => {
         await Controller.OPEN_SELL_ORDER_ROLE(),
       );
 
-      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(false);
-      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(false);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          deployer,
+          Controller.address,
+          await Controller.OPEN_SELL_ORDER_ROLE(),
+        ),
+      ).eq(false);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.OPEN_SELL_ORDER_ROLE(),
+        ),
+      ).eq(false);
 
       await expect(Controller.openSellOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
-      await expect(Controller.connect(account1).openSellOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(Controller.connect(account1).openSellOrder(SOVToken.address, amount)).to.be.revertedWith(
+        "APP_AUTH_FAILED",
+      );
     });
     it("Should fail trying deployer to transfer reserve fund", async () => {
       await openAndClosePresale(Controller, contributionAmount);
       const reserveBalanceBefore = await SOVToken.balanceOf(Reserve.address);
-      await expect(Reserve.transfer(SOVToken.address, await governance.getAddress(), reserveBalanceBefore)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(
+        Reserve.transfer(SOVToken.address, await governance.getAddress(), reserveBalanceBefore),
+      ).to.be.revertedWith("APP_AUTH_FAILED");
     });
     it("Should allow to governance to transfer reserve funds", async () => {
       await openAndClosePresale(Controller, contributionAmount);
@@ -563,10 +617,10 @@ describe("Bonding Curve", () => {
         await Reserve.TRANSFER_ROLE(),
       );
       const reserveBalanceBefore = await SOVToken.balanceOf(Reserve.address);
-      const governanceBalanceBefore =  await SOVToken.balanceOf(await governance.getAddress());
+      const governanceBalanceBefore = await SOVToken.balanceOf(await governance.getAddress());
       await Reserve.connect(governance).transfer(SOVToken.address, await governance.getAddress(), reserveBalanceBefore);
       const reserveBalanceAfter = await SOVToken.balanceOf(Reserve.address);
-      const governanceBalanceAfter =  await SOVToken.balanceOf(await governance.getAddress());
+      const governanceBalanceAfter = await SOVToken.balanceOf(await governance.getAddress());
       expect(reserveBalanceAfter).equal(BigNumber.from(0));
       expect(governanceBalanceAfter).equal(governanceBalanceBefore.add(reserveBalanceBefore));
     });

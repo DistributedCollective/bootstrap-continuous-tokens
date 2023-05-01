@@ -1,8 +1,5 @@
 import { deployments, ethers } from "hardhat";
-import {
-  Controller, MarketMaker
-} from "../typechain";
-
+import { Controller, MarketMaker } from "../typechain";
 
 type FundrasingApps = {
   //reserve: Reserve;

@@ -1,10 +1,15 @@
-import { deployments, ethers, getNamedAccounts } from "hardhat";
+import { deployments, ethers } from "hardhat";
 import hre from "hardhat";
 import { expect } from "chai";
-import { BigNumber, Signer } from "ethers";
+import { BigNumber } from "ethers";
 import { initialize } from "../deploy/initialize";
 import { getProperConfig } from "../deploy/utils";
-import { MockedContinuousToken, MockedContinuousToken__factory, StaticPriceFormula, StaticPriceFormula__factory } from "../typechain";
+import {
+  MockedContinuousToken,
+  MockedContinuousToken__factory,
+  StaticPriceFormula,
+  StaticPriceFormula__factory,
+} from "../typechain";
 
 const setupTest = deployments.createFixture(async ({ deployments }) => {
   await deployments.fixture("everything"); // ensure you start from a fresh deployments
@@ -13,22 +18,20 @@ const setupTest = deployments.createFixture(async ({ deployments }) => {
 });
 
 describe("Static Formula Price", () => {
-  let deployer: string;
-  let account1: Signer;
   let StaticPriceFormula: StaticPriceFormula;
   let ZEROToken: MockedContinuousToken;
   let STATIC_PRICE: BigNumber;
   let PRECISION: BigNumber;
-  const MYNT_SUPPLY = "49057867925919878933673404"
+  const MYNT_SUPPLY = "49057867925919878933673404";
 
   beforeEach(async () => {
     await setupTest();
 
-    ({ deployer } = await getNamedAccounts());
-    [, account1] = await ethers.getSigners();
-
     const staticPriceFormula = await deployments.get("StaticPriceFormula");
-    StaticPriceFormula = await StaticPriceFormula__factory.connect(staticPriceFormula.address, ethers.provider.getSigner());
+    StaticPriceFormula = await StaticPriceFormula__factory.connect(
+      staticPriceFormula.address,
+      ethers.provider.getSigner(),
+    );
 
     const zeroToken = await deployments.get("BondedToken");
     ZEROToken = MockedContinuousToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
@@ -37,8 +40,8 @@ describe("Static Formula Price", () => {
     PRECISION = await StaticPriceFormula.PRECISION();
 
     expect(STATIC_PRICE).to.eq(BigNumber.from(MYNT_SUPPLY));
-    expect(PRECISION).to.eq(BigNumber.from(1e18.toString()));
-  })
+    expect(PRECISION).to.eq(BigNumber.from((1e18).toString()));
+  });
 
   it("calculatePurchaseReturn should return 0 value", async () => {
     const { parameters } = getProperConfig(hre);
@@ -50,9 +53,9 @@ describe("Static Formula Price", () => {
       connectorWeight,
       parameters.reserveRatio,
       amount,
-    )
+    );
 
-    expect(purchasePrice.toString()).to.eq('0');
+    expect(purchasePrice.toString()).to.eq("0");
   });
 
   it("calculateSaleReturn should return correct value", async () => {
@@ -65,8 +68,8 @@ describe("Static Formula Price", () => {
       connectorWeight,
       parameters.reserveRatio,
       amount,
-    )
+    );
 
     expect(saleReturn.toString()).to.eq(amount.mul(STATIC_PRICE).div(PRECISION).toString());
   });
-})
+});

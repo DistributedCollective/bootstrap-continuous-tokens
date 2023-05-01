@@ -224,7 +224,7 @@ const config: HardhatUserConfig = {
       url: "https://mainnet.sovryn.app/rpc",
       accounts: getPrivateKey(),
       chainId: chainIds.rskMainnet,
-      timeout: 20000 * 100
+      timeout: 20000 * 100,
     },
   },
   paths: {

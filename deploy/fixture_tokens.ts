@@ -47,8 +47,8 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   // @ts-ignore
   await hre.timeAndMine.increaseTime("10 weeks");
 
-  console.log(`The recipient ${recipient} owns ${tokensAmount} ${bondedToken.address}`)
-  console.log(`The recipient ${recipient} owns ${toBuy} ${collateralToken.address}`)
+  console.log(`The recipient ${recipient} owns ${tokensAmount} ${bondedToken.address}`);
+  console.log(`The recipient ${recipient} owns ${toBuy} ${collateralToken.address}`);
 
   await Controller.closePresale();
 
@@ -56,6 +56,6 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 };
 
 export default deployFunc;
-deployFunc.tags = ['fixture'];
+deployFunc.tags = ["fixture"];
 deployFunc.id = "fixture_Tokens"; // id required to prevent reexecution
 deployFunc.runAtTheEnd = true;

@@ -7,7 +7,7 @@ export const waitForTxConfirmation = async (
   tx: Promise<ContractTransaction>,
   confirmations: number = 1,
 ): Promise<ContractReceipt> => {
-  console.log(`Waiting for ${(await tx).hash}`)
+  console.log(`Waiting for ${(await tx).hash}`);
   return (await tx).wait(confirmations);
 };
 

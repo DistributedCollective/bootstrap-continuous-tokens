@@ -24,7 +24,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     "ACL",
     "EVMScriptRegistryFactory",
     "DAOFactory",
-    "ACLConfigurator"
+    "ACLConfigurator",
   ];
 
   if (!parameters.collateralTokenAddress) {
