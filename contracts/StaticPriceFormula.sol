@@ -1,8 +1,11 @@
 pragma solidity 0.8.19;
 
 contract StaticPriceFormula {
-    uint256 public constant PRECISION = 1e18;
-    uint256 public constant STATIC_PRICE = 49057867925919878933673404;
+    // SOV_BALANCE_SNAPSHOT is the bonding curve reserve's SOV balance
+    uint256 public constant SOV_BALANCE_SNAPSHOT = 231727313599607376661098;
+
+    // MYNT_SUPPLY_SNAPSHOT is the total supply of mynt token
+    uint256 public constant MYNT_SUPPLY_SNAPSHOT = 49057867925919878933673404;
 
     /**
      * Calculate purchase return amount that always return 0 value.
@@ -34,8 +37,7 @@ contract StaticPriceFormula {
      * @param _connectorWeight     connector weight, represented in ppm, 1-1000000
      * @param _sellAmount       sell amount, in the token itself
      *
-     * @return formula = _sellAmount * STATIC_PRICE / PRECISION
-     * STATIC_PRICE = current total supply of MYNT, and PRECISION is decimal of MYNT.
+     * @return formula = _sellAmount * SOV_BALANCE_SNAPSHOT / MYNT_SUPPLY_SNAPSHOT
      */
     function calculateSaleReturn(
         uint256 _supply,
@@ -43,6 +45,6 @@ contract StaticPriceFormula {
         uint32 _connectorWeight,
         uint256 _sellAmount
     ) public pure returns (uint256) {
-        return (_sellAmount * STATIC_PRICE) / PRECISION;
+        return (_sellAmount * SOV_BALANCE_SNAPSHOT) / MYNT_SUPPLY_SNAPSHOT;
     }
 }

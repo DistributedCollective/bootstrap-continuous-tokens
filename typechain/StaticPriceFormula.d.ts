@@ -20,15 +20,18 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface StaticPriceFormulaInterface extends ethers.utils.Interface {
   functions: {
-    "PRECISION()": FunctionFragment;
-    "STATIC_PRICE()": FunctionFragment;
+    "MYNT_SUPPLY_SNAPSHOT()": FunctionFragment;
+    "SOV_BALANCE_SNAPSHOT()": FunctionFragment;
     "calculatePurchaseReturn(uint256,uint256,uint32,uint256)": FunctionFragment;
     "calculateSaleReturn(uint256,uint256,uint32,uint256)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "PRECISION", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "STATIC_PRICE",
+    functionFragment: "MYNT_SUPPLY_SNAPSHOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SOV_BALANCE_SNAPSHOT",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -40,9 +43,12 @@ interface StaticPriceFormulaInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
 
-  decodeFunctionResult(functionFragment: "PRECISION", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "STATIC_PRICE",
+    functionFragment: "MYNT_SUPPLY_SNAPSHOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SOV_BALANCE_SNAPSHOT",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -101,9 +107,9 @@ export class StaticPriceFormula extends BaseContract {
   interface: StaticPriceFormulaInterface;
 
   functions: {
-    PRECISION(overrides?: CallOverrides): Promise<[BigNumber]>;
+    MYNT_SUPPLY_SNAPSHOT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    STATIC_PRICE(overrides?: CallOverrides): Promise<[BigNumber]>;
+    SOV_BALANCE_SNAPSHOT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     calculatePurchaseReturn(
       _supply: BigNumberish,
@@ -122,9 +128,9 @@ export class StaticPriceFormula extends BaseContract {
     ): Promise<[BigNumber]>;
   };
 
-  PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+  MYNT_SUPPLY_SNAPSHOT(overrides?: CallOverrides): Promise<BigNumber>;
 
-  STATIC_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+  SOV_BALANCE_SNAPSHOT(overrides?: CallOverrides): Promise<BigNumber>;
 
   calculatePurchaseReturn(
     _supply: BigNumberish,
@@ -143,9 +149,9 @@ export class StaticPriceFormula extends BaseContract {
   ): Promise<BigNumber>;
 
   callStatic: {
-    PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+    MYNT_SUPPLY_SNAPSHOT(overrides?: CallOverrides): Promise<BigNumber>;
 
-    STATIC_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+    SOV_BALANCE_SNAPSHOT(overrides?: CallOverrides): Promise<BigNumber>;
 
     calculatePurchaseReturn(
       _supply: BigNumberish,
@@ -167,9 +173,9 @@ export class StaticPriceFormula extends BaseContract {
   filters: {};
 
   estimateGas: {
-    PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+    MYNT_SUPPLY_SNAPSHOT(overrides?: CallOverrides): Promise<BigNumber>;
 
-    STATIC_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+    SOV_BALANCE_SNAPSHOT(overrides?: CallOverrides): Promise<BigNumber>;
 
     calculatePurchaseReturn(
       _supply: BigNumberish,
@@ -189,9 +195,13 @@ export class StaticPriceFormula extends BaseContract {
   };
 
   populateTransaction: {
-    PRECISION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    MYNT_SUPPLY_SNAPSHOT(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    STATIC_PRICE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    SOV_BALANCE_SNAPSHOT(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     calculatePurchaseReturn(
       _supply: BigNumberish,

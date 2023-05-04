@@ -20,8 +20,9 @@ const setupTest = deployments.createFixture(async ({ deployments }) => {
 describe("Static Formula Price", () => {
   let StaticPriceFormula: StaticPriceFormula;
   let ZEROToken: MockedContinuousToken;
-  let STATIC_PRICE: BigNumber;
-  let PRECISION: BigNumber;
+  let SOV_BALANCE_SNAPSHOT: BigNumber;
+  let MYNT_SUPPLY_SNAPSHOT: BigNumber;
+  const SOV_BALANCE = "231727313599607376661098";
   const MYNT_SUPPLY = "49057867925919878933673404";
 
   beforeEach(async () => {
@@ -36,11 +37,11 @@ describe("Static Formula Price", () => {
     const zeroToken = await deployments.get("BondedToken");
     ZEROToken = MockedContinuousToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
 
-    STATIC_PRICE = await StaticPriceFormula.STATIC_PRICE();
-    PRECISION = await StaticPriceFormula.PRECISION();
+    SOV_BALANCE_SNAPSHOT = await StaticPriceFormula.SOV_BALANCE_SNAPSHOT();
+    MYNT_SUPPLY_SNAPSHOT = await StaticPriceFormula.MYNT_SUPPLY_SNAPSHOT();
 
-    expect(STATIC_PRICE).to.eq(BigNumber.from(MYNT_SUPPLY));
-    expect(PRECISION).to.eq(BigNumber.from((1e18).toString()));
+    expect(MYNT_SUPPLY_SNAPSHOT).to.eq(BigNumber.from(MYNT_SUPPLY));
+    expect(SOV_BALANCE_SNAPSHOT).to.eq(BigNumber.from(SOV_BALANCE));
   });
 
   it("calculatePurchaseReturn should return 0 value", async () => {
@@ -70,6 +71,6 @@ describe("Static Formula Price", () => {
       amount,
     );
 
-    expect(saleReturn.toString()).to.eq(amount.mul(STATIC_PRICE).div(PRECISION).toString());
+    expect(saleReturn.toString()).to.eq(amount.mul(SOV_BALANCE_SNAPSHOT).div(MYNT_SUPPLY_SNAPSHOT).toString());
   });
 });
