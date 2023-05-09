@@ -564,6 +564,7 @@ describe("Bonding Curve", () => {
 
       const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
       expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
     });
 
     it("Should open a sell order only, and collateralsToBeClaimed should follow the static price formula", async () => {
@@ -607,6 +608,7 @@ describe("Bonding Curve", () => {
 
       const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
       expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
     });
 
     it("Should open a sell order, and collateralsToBeClaimed should follow the static price formula (with multiple sell orders only in same batch)", async () => {
@@ -661,6 +663,7 @@ describe("Bonding Curve", () => {
 
       const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
       expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
     });
 
     it("Should open a sell order, and collateralsToBeClaimed should follow the static price formula (with multiple sell & buy orders in same batch)", async () => {
@@ -720,6 +723,7 @@ describe("Bonding Curve", () => {
 
       const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
       expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
     });
   });
 
