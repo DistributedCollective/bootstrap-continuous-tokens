@@ -1,4 +1,4 @@
-pragma solidity 0.8.19;
+pragma solidity 0.8.17;
 
 contract StaticPriceFormula {
     // SOV_BALANCE_SNAPSHOT is the bonding curve reserve's SOV balance
