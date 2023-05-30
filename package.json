@@ -66,13 +66,14 @@
   "types": "types/index.d.ts",
   "files": [
     "/.env.example",
-    "/.git",
     "/contracts",
+    "/deploy",
     "/deployments",
     "/hardhat.config.ts",
     "/scripts",
     "/test",
-    "/tsconfig.json"
+    "/tsconfig.json",
+    "/typechain"
   ],
   "keywords": [
     "blockchain",
