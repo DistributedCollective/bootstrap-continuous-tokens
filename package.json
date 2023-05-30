@@ -65,9 +65,10 @@
   },
   "types": "types/index.d.ts",
   "files": [
+    "/.env.example",
+    "/.git",
     "/contracts",
     "/deployments",
-    "/.env.example",
     "/hardhat.config.ts",
     "/scripts",
     "/test",
