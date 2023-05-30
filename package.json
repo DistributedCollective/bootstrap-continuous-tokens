@@ -65,8 +65,12 @@
   },
   "types": "types/index.d.ts",
   "files": [
+    "/.env.example",
     "/contracts",
-    "/deployments"
+    "/deployments",
+    "/hardhat.config.ts",
+    "/scripts",
+    "/tests"
   ],
   "keywords": [
     "blockchain",
@@ -77,6 +81,7 @@
   ],
   "scripts": {
     "prepare": "husky install",
+    "postinstall": "cp -n .env.example .env && yarn compile",
     "clean": "hardhat clean",
     "compile": "hardhat compile",
     "coverage": "hardhat coverage --solcoverjs ./.solcover.js --temp artifacts --testfiles \"./test/**/*.ts\"",
