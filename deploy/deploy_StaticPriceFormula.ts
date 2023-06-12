@@ -4,12 +4,12 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts } = hre;
   const { deployer } = await getNamedAccounts();
   const { deploy } = deployments;
-  const deployed = await deploy("BalanceRedirectPresale", {
+  const deployed = await deploy("StaticPriceFormula", {
     from: deployer,
   });
   if (deployed.newlyDeployed) {
-    console.log(`BalanceRedirectPresale deployed at ${deployed.address}`);
+    console.log(`StaticPriceFormula deployed at ${deployed.address}`);
   }
 };
 export default deployFunc;
-deployFunc.tags = ["BalanceRedirectPresale"];
+deployFunc.tags = ["StaticPriceFormula"];

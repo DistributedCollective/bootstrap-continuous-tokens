@@ -14,6 +14,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const presaleToDeploy = mockPresale ? "MockedBalancedRedirectPresale" : "BalanceRedirectPresale";
   const contractsToDeploy = [
     "BancorFormula",
+    "StaticPriceFormula",
     presaleToDeploy,
     "MarketMaker",
     "Reserve",
@@ -23,7 +24,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     "ACL",
     "EVMScriptRegistryFactory",
     "DAOFactory",
-    "ACLConfigurator"
+    "ACLConfigurator",
   ];
 
   if (!parameters.collateralTokenAddress) {

@@ -224,7 +224,7 @@ const config: HardhatUserConfig = {
       url: "https://mainnet.sovryn.app/rpc",
       accounts: getPrivateKey(),
       chainId: chainIds.rskMainnet,
-      timeout: 20000 * 100
+      timeout: 20000 * 100,
     },
   },
   paths: {
@@ -234,14 +234,27 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   solidity: {
-    version: "0.4.24",
-    settings: {
-      // https://hardhat.org/hardhat-network/#solidity-optimizer-support
-      optimizer: {
-        enabled: true,
-        runs: 200,
+    compilers: [
+      {
+        version: "0.4.24",
+        settings: {
+          // https://hardhat.org/hardhat-network/#solidity-optimizer-support
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
       },
-    },
+      {
+        version: "0.8.17",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
   typechain: {
     outDir: "typechain",

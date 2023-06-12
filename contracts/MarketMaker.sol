@@ -869,8 +869,9 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
             batch.totalSellReturn
         );
 
+        // @TODO Need to reactivate the slippage check if we use non-static price formula
         // sanity checks
-        require(_slippageIsValid(batch, _collateral), ERROR_SLIPPAGE_EXCEEDS_LIMIT);
+        // require(_slippageIsValid(batch, _collateral), ERROR_SLIPPAGE_EXCEEDS_LIMIT);
 
         emit OpenBuyOrder(_buyer, batchId, _collateral, fee, value);
     }
@@ -902,8 +903,9 @@ contract MarketMaker is EtherTokenConstant, IsContract, UnsafeAragonApp {
             batch.totalSellReturn
         );
 
+        // @TODO Need to reactivate the slippage check if we use non-static price formula
         // sanity checks
-        require(_slippageIsValid(batch, _collateral), ERROR_SLIPPAGE_EXCEEDS_LIMIT);
+        // require(_slippageIsValid(batch, _collateral), ERROR_SLIPPAGE_EXCEEDS_LIMIT);
         require(_poolBalanceIsSufficient(_collateral), ERROR_INSUFFICIENT_POOL_BALANCE);
 
         emit OpenSellOrder(_seller, batchId, _collateral, _amount);

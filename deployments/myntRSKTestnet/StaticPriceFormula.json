@@ -1,0 +1,164 @@
+{
+  "address": "0x2aDDF2815FF6990498a41E78081D5554F59920d8",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "MYNT_SUPPLY_SNAPSHOT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SOV_BALANCE_SNAPSHOT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_supply",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_connectorBalance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_connectorWeight",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_depositAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculatePurchaseReturn",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_supply",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_connectorBalance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_connectorWeight",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_sellAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateSaleReturn",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xf5f6d35b7a917e6bdeb0c1c511de10ad53c89806ce99ec56e4c19a4218799523",
+  "receipt": {
+    "to": null,
+    "from": "0xCF311E7375083b9513566a47B9f3e93F1FcdCfBF",
+    "contractAddress": "0x2aDDF2815FF6990498a41E78081D5554F59920d8",
+    "transactionIndex": 1,
+    "gasUsed": "168859",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x1b5407a0f69ab2ed0881f763254e1313f0937d49ebff548a086121ac850946de",
+    "transactionHash": "0xf5f6d35b7a917e6bdeb0c1c511de10ad53c89806ce99ec56e4c19a4218799523",
+    "logs": [],
+    "blockNumber": 3851561,
+    "cumulativeGasUsed": "266603",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "1edba9ed8afa5b39d958b012fec79759",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"MYNT_SUPPLY_SNAPSHOT\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SOV_BALANCE_SNAPSHOT\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_supply\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_connectorBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint32\",\"name\":\"_connectorWeight\",\"type\":\"uint32\"},{\"internalType\":\"uint256\",\"name\":\"_depositAmount\",\"type\":\"uint256\"}],\"name\":\"calculatePurchaseReturn\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_supply\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_connectorBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint32\",\"name\":\"_connectorWeight\",\"type\":\"uint32\"},{\"internalType\":\"uint256\",\"name\":\"_sellAmount\",\"type\":\"uint256\"}],\"name\":\"calculateSaleReturn\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"calculatePurchaseReturn(uint256,uint256,uint32,uint256)\":{\"params\":{\"_connectorBalance\":\"total connector balance\",\"_connectorWeight\":\"connector weight, represented in ppm, 1-1000000\",\"_depositAmount\":\"deposit amount, in connector token\",\"_supply\":\"token total supply\"},\"returns\":{\"_0\":\"static 0 value.\"}},\"calculateSaleReturn(uint256,uint256,uint32,uint256)\":{\"params\":{\"_connectorBalance\":\"total connector balance\",\"_connectorWeight\":\"connector weight, represented in ppm, 1-1000000\",\"_sellAmount\":\"sell amount, in the token itself\",\"_supply\":\"token total supply\"},\"returns\":{\"_0\":\"formula = _sellAmount * SOV_BALANCE_SNAPSHOT / MYNT_SUPPLY_SNAPSHOT\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"calculatePurchaseReturn(uint256,uint256,uint32,uint256)\":{\"notice\":\"Calculate purchase return amount that always return 0 value. Will accept 4 parameters to support backward compatibility with bancor formula. https://github.com/AragonBlack/fundraising/blob/master/apps/bancor-formula/contracts/BancorFormula.sol\"},\"calculateSaleReturn(uint256,uint256,uint32,uint256)\":{\"notice\":\"Calculate sale return amount based on the Current MYNT supply. Will accept 4 parameters to support backward compatibility with bancor formula. https://github.com/AragonBlack/fundraising/blob/master/apps/bancor-formula/contracts/BancorFormula.sol\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/StaticPriceFormula.sol\":\"StaticPriceFormula\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/StaticPriceFormula.sol\":{\"content\":\"pragma solidity 0.8.17;\\n\\ncontract StaticPriceFormula {\\n    // SOV_BALANCE_SNAPSHOT is the bonding curve reserve's SOV balance\\n    uint256 public constant SOV_BALANCE_SNAPSHOT = 231727313599607376661098;\\n\\n    // MYNT_SUPPLY_SNAPSHOT is the total supply of mynt token\\n    uint256 public constant MYNT_SUPPLY_SNAPSHOT = 49057867925919878933673404;\\n\\n    /**\\n     * Calculate purchase return amount that always return 0 value.\\n     * Will accept 4 parameters to support backward compatibility with bancor formula.\\n     * https://github.com/AragonBlack/fundraising/blob/master/apps/bancor-formula/contracts/BancorFormula.sol\\n     * @param _supply              token total supply\\n     * @param _connectorBalance    total connector balance\\n     * @param _connectorWeight     connector weight, represented in ppm, 1-1000000\\n     * @param _depositAmount       deposit amount, in connector token\\n     *\\n     * @return static 0 value.\\n     */\\n    function calculatePurchaseReturn(\\n        uint256 _supply,\\n        uint256 _connectorBalance,\\n        uint32 _connectorWeight,\\n        uint256 _depositAmount\\n    ) public pure returns (uint256) {\\n        return 0;\\n    }\\n\\n    /**\\n     * Calculate sale return amount based on the Current MYNT supply.\\n     * Will accept 4 parameters to support backward compatibility with bancor formula.\\n     *\\n     * https://github.com/AragonBlack/fundraising/blob/master/apps/bancor-formula/contracts/BancorFormula.sol\\n     * @param _supply              token total supply\\n     * @param _connectorBalance    total connector balance\\n     * @param _connectorWeight     connector weight, represented in ppm, 1-1000000\\n     * @param _sellAmount       sell amount, in the token itself\\n     *\\n     * @return formula = _sellAmount * SOV_BALANCE_SNAPSHOT / MYNT_SUPPLY_SNAPSHOT\\n     */\\n    function calculateSaleReturn(\\n        uint256 _supply,\\n        uint256 _connectorBalance,\\n        uint32 _connectorWeight,\\n        uint256 _sellAmount\\n    ) public pure returns (uint256) {\\n        return (_sellAmount * SOV_BALANCE_SNAPSHOT) / MYNT_SUPPLY_SNAPSHOT;\\n    }\\n}\\n\",\"keccak256\":\"0xc3164670c0c06ef1b89c63ecc7a313b6e1916c7002d5af73f342e2f78651820b\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506101b1806100206000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c806329a00e7c1461005157806349f9b0f71461007b578063729158c01461008e578063e11a7c13146100a0575b600080fd5b61006961005f3660046100e6565b6000949350505050565b60405190815260200160405180910390f35b6100696100893660046100e6565b6100b1565b6100696a28946859613433ac9c75bc81565b610069693111f67cc6eaaebf4a6a81565b60006a28946859613433ac9c75bc6100d3693111f67cc6eaaebf4a6a8461012e565b6100dd9190610159565b95945050505050565b600080600080608085870312156100fc57600080fd5b8435935060208501359250604085013563ffffffff8116811461011e57600080fd5b9396929550929360600135925050565b808202811582820484141761015357634e487b7160e01b600052601160045260246000fd5b92915050565b60008261017657634e487b7160e01b600052601260045260246000fd5b50049056fea26469706673582212208c38054dab432229e0e5dcc00d7507c13cc9e6c139d7c3481f3b6e6b29a9584d64736f6c63430008110033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c806329a00e7c1461005157806349f9b0f71461007b578063729158c01461008e578063e11a7c13146100a0575b600080fd5b61006961005f3660046100e6565b6000949350505050565b60405190815260200160405180910390f35b6100696100893660046100e6565b6100b1565b6100696a28946859613433ac9c75bc81565b610069693111f67cc6eaaebf4a6a81565b60006a28946859613433ac9c75bc6100d3693111f67cc6eaaebf4a6a8461012e565b6100dd9190610159565b95945050505050565b600080600080608085870312156100fc57600080fd5b8435935060208501359250604085013563ffffffff8116811461011e57600080fd5b9396929550929360600135925050565b808202811582820484141761015357634e487b7160e01b600052601160045260246000fd5b92915050565b60008261017657634e487b7160e01b600052601260045260246000fd5b50049056fea26469706673582212208c38054dab432229e0e5dcc00d7507c13cc9e6c139d7c3481f3b6e6b29a9584d64736f6c63430008110033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "calculatePurchaseReturn(uint256,uint256,uint32,uint256)": {
+        "params": {
+          "_connectorBalance": "total connector balance",
+          "_connectorWeight": "connector weight, represented in ppm, 1-1000000",
+          "_depositAmount": "deposit amount, in connector token",
+          "_supply": "token total supply"
+        },
+        "returns": {
+          "_0": "static 0 value."
+        }
+      },
+      "calculateSaleReturn(uint256,uint256,uint32,uint256)": {
+        "params": {
+          "_connectorBalance": "total connector balance",
+          "_connectorWeight": "connector weight, represented in ppm, 1-1000000",
+          "_sellAmount": "sell amount, in the token itself",
+          "_supply": "token total supply"
+        },
+        "returns": {
+          "_0": "formula = _sellAmount * SOV_BALANCE_SNAPSHOT / MYNT_SUPPLY_SNAPSHOT"
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "calculatePurchaseReturn(uint256,uint256,uint32,uint256)": {
+        "notice": "Calculate purchase return amount that always return 0 value. Will accept 4 parameters to support backward compatibility with bancor formula. https://github.com/AragonBlack/fundraising/blob/master/apps/bancor-formula/contracts/BancorFormula.sol"
+      },
+      "calculateSaleReturn(uint256,uint256,uint32,uint256)": {
+        "notice": "Calculate sale return amount based on the Current MYNT supply. Will accept 4 parameters to support backward compatibility with bancor formula. https://github.com/AragonBlack/fundraising/blob/master/apps/bancor-formula/contracts/BancorFormula.sol"
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

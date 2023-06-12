@@ -2,6 +2,7 @@ import { deployments, ethers, getNamedAccounts } from "hardhat";
 import hre from "hardhat";
 import { expect } from "chai";
 import { BigNumber, Signer } from "ethers";
+import { safeDiv } from "./lib"
 import {
   BalanceRedirectPresale__factory,
   Controller__factory,
@@ -19,6 +20,8 @@ import {
   BancorFormula,
   MarketMaker,
   Reserve,
+  StaticPriceFormula,
+  StaticPriceFormula__factory,
 } from "../typechain";
 
 import { initialize } from "../deploy/initialize";
@@ -53,8 +56,9 @@ describe("Bonding Curve", () => {
   let ZEROToken: MockedContinuousToken;
   let SOVToken: MockedContinuousToken;
   let BancorFormula: BancorFormula;
-  const tokens = BigNumber.from(1000000);
-  const contributionAmount = BigNumber.from(100000);
+  let StaticPriceFormula: StaticPriceFormula;
+  const tokens = BigNumber.from((1e19).toString());
+  const contributionAmount = BigNumber.from((1e18).toString());
   let deployer: string;
   let beneficiary: string;
   let batchBlock: number;
@@ -62,6 +66,9 @@ describe("Bonding Curve", () => {
   let buyFeePCT: BigNumber;
   let sellFeePCT: BigNumber;
   let account1: Signer;
+  let SOV_BALANCE_SNAPSHOT: BigNumber;
+  let MYNT_SUPPLY_SNAPSHOT: BigNumber;
+  let THRESHOLD: BigNumber;
 
   beforeEach(async () => {
     await setupTest();
@@ -112,6 +119,16 @@ describe("Bonding Curve", () => {
 
     const bancorFormula = await deployments.get("BancorFormula");
     BancorFormula = await BancorFormula__factory.connect(bancorFormula.address, ethers.provider.getSigner());
+
+    const staticPriceFormula = await deployments.get("StaticPriceFormula");
+    StaticPriceFormula = await StaticPriceFormula__factory.connect(
+      staticPriceFormula.address,
+      ethers.provider.getSigner(),
+    );
+
+    SOV_BALANCE_SNAPSHOT = await StaticPriceFormula.SOV_BALANCE_SNAPSHOT();
+    MYNT_SUPPLY_SNAPSHOT = await StaticPriceFormula.MYNT_SUPPLY_SNAPSHOT();
+    THRESHOLD = safeDiv(MYNT_SUPPLY_SNAPSHOT, SOV_BALANCE_SNAPSHOT);
 
     const zeroToken = await deployments.get("BondedToken");
     ZEROToken = MockedContinuousToken__factory.connect(zeroToken.address, ethers.provider.getSigner());
@@ -384,7 +401,7 @@ describe("Bonding Curve", () => {
       const mintingForBeneficiary = await Presale.mintingForBeneficiaryPct();
       const zeroTokensForBeneficiary = totalSold.mul(mintingForBeneficiary).div(PPM.sub(mintingForBeneficiary));
       expect(await ZEROToken.balanceOf(beneficiary)).to.eq(
-        zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary)
+        zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary),
         // zeroBalanceBeforeClosing.add(zeroTokensForBeneficiary.mul(presaleEchangeRate).div(PPM)),
       );
 
@@ -508,14 +525,326 @@ describe("Bonding Curve", () => {
 
       expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed));
     });
+
+    it("Should open sell & buy order, and collateralsToBeClaimed should follow the static price formula", async () => {
+      // Set permission to update formula
+      await ACL.connect(governance).createPermission(
+        await governance.getAddress(),
+        MarketMaker.address,
+        await MarketMaker.UPDATE_FORMULA_ROLE(),
+        await governance.getAddress(),
+      );
+
+      await MarketMaker.connect(governance).updateFormula(StaticPriceFormula.address);
+      const amount = BigNumber.from((1e18).toString());
+      await openAndClosePresale(Controller, contributionAmount);
+
+      await Controller.openBuyOrder(SOVToken.address, amount);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await hre.timeAndMine.mine(batchBlock);
+
+      const zeroSupplyBefore = await ZEROToken.totalSupply();
+      const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
+      const sovBalanceBefore = await SOVToken.balanceOf(deployer);
+
+      const tx1 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+      const newBatch1 = tx1.logs
+        .map((log: any) => {
+          if (log.address === MarketMaker.address) {
+            const parsed = MarketMaker.interface.parseLog(log);
+            return parsed;
+          }
+        })
+        .find((event: any) => event?.name === "NewBatch");
+
+      expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount));
+      expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount));
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await hre.timeAndMine.mine(batchBlock);
+
+      const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
+      const saleReturn = await StaticPriceFormula.calculateSaleReturn(0, 0, 0, amount);
+
+      await Controller.claimSellOrder(deployer, newBatch1?.args.id, SOVToken.address);
+
+      const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
+      expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
+    });
+
+    it("Should open a sell order only (below the threshold), and collateralsToBeClaimed should follow the static price formula", async () => {
+      // Set permission to update formula
+      await ACL.connect(governance).createPermission(
+        await governance.getAddress(),
+        MarketMaker.address,
+        await MarketMaker.UPDATE_FORMULA_ROLE(),
+        await governance.getAddress(),
+      );
+
+      await MarketMaker.connect(governance).updateFormula(StaticPriceFormula.address);
+      const amount = BigNumber.from((THRESHOLD.sub(1)).toString());
+      await openAndClosePresale(Controller, contributionAmount);
+
+      const zeroSupplyBefore = await ZEROToken.totalSupply();
+      const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
+      const sovBalanceBefore = await SOVToken.balanceOf(deployer);
+
+      const tx1 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+      const newBatch1 = tx1.logs
+        .map((log: any) => {
+          if (log.address === MarketMaker.address) {
+            const parsed = MarketMaker.interface.parseLog(log);
+            return parsed;
+          }
+        })
+        .find((event: any) => event?.name === "NewBatch");
+
+      expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount));
+      expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount));
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await hre.timeAndMine.mine(batchBlock);
+
+      const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
+      const saleReturn = await StaticPriceFormula.calculateSaleReturn(0, 0, 0, amount);
+      expect(saleReturn.toString()).to.eq("0");
+
+      await Controller.claimSellOrder(deployer, newBatch1?.args.id, SOVToken.address);
+
+      const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
+      expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
+    });
+
+    it("Should open a sell order only (same as threshold), and collateralsToBeClaimed should follow the static price formula", async () => {
+      // Set permission to update formula
+      await ACL.connect(governance).createPermission(
+        await governance.getAddress(),
+        MarketMaker.address,
+        await MarketMaker.UPDATE_FORMULA_ROLE(),
+        await governance.getAddress(),
+      );
+
+      await MarketMaker.connect(governance).updateFormula(StaticPriceFormula.address);
+      const amount = BigNumber.from((THRESHOLD).toString());
+      await openAndClosePresale(Controller, contributionAmount);
+
+      const zeroSupplyBefore = await ZEROToken.totalSupply();
+      const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
+      const sovBalanceBefore = await SOVToken.balanceOf(deployer);
+
+      const tx1 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+      const newBatch1 = tx1.logs
+        .map((log: any) => {
+          if (log.address === MarketMaker.address) {
+            const parsed = MarketMaker.interface.parseLog(log);
+            return parsed;
+          }
+        })
+        .find((event: any) => event?.name === "NewBatch");
+
+      expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount));
+      expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount));
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await hre.timeAndMine.mine(batchBlock);
+
+      const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
+      const saleReturn = await StaticPriceFormula.calculateSaleReturn(0, 0, 0, amount);
+      expect(saleReturn.toString()).to.eq("1");
+
+      await Controller.claimSellOrder(deployer, newBatch1?.args.id, SOVToken.address);
+
+      const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
+      expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
+    });
+
+    it("Should open a sell order only (above the threshold), and collateralsToBeClaimed should follow the static price formula", async () => {
+      // Set permission to update formula
+      await ACL.connect(governance).createPermission(
+        await governance.getAddress(),
+        MarketMaker.address,
+        await MarketMaker.UPDATE_FORMULA_ROLE(),
+        await governance.getAddress(),
+      );
+
+      await MarketMaker.connect(governance).updateFormula(StaticPriceFormula.address);
+      const amount = BigNumber.from((1e18).toString());
+      await openAndClosePresale(Controller, contributionAmount);
+
+      const zeroSupplyBefore = await ZEROToken.totalSupply();
+      const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
+      const sovBalanceBefore = await SOVToken.balanceOf(deployer);
+
+      const tx1 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+      const newBatch1 = tx1.logs
+        .map((log: any) => {
+          if (log.address === MarketMaker.address) {
+            const parsed = MarketMaker.interface.parseLog(log);
+            return parsed;
+          }
+        })
+        .find((event: any) => event?.name === "NewBatch");
+
+      expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount));
+      expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount));
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await hre.timeAndMine.mine(batchBlock);
+
+      const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
+      const saleReturn = await StaticPriceFormula.calculateSaleReturn(0, 0, 0, amount);
+      expect(saleReturn.gt(BigNumber.from("1"))).to.eq(true);
+
+      await Controller.claimSellOrder(deployer, newBatch1?.args.id, SOVToken.address);
+
+      const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
+      expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
+    });
+
+    it("Should open a sell order, and collateralsToBeClaimed should follow the static price formula (with multiple sell orders only in same batch)", async () => {
+      // Set permission to update formula
+      await ACL.connect(governance).createPermission(
+        await governance.getAddress(),
+        MarketMaker.address,
+        await MarketMaker.UPDATE_FORMULA_ROLE(),
+        await governance.getAddress(),
+      );
+
+      await MarketMaker.connect(governance).updateFormula(StaticPriceFormula.address);
+      const amount = BigNumber.from((5e17).toString());
+      await openAndClosePresale(Controller, contributionAmount);
+
+      const zeroSupplyBefore = await ZEROToken.totalSupply();
+      const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
+      const sovBalanceBefore = await SOVToken.balanceOf(deployer);
+
+      const tx1 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+      const newBatch1 = tx1.logs
+        .map((log: any) => {
+          if (log.address === MarketMaker.address) {
+            const parsed = MarketMaker.interface.parseLog(log);
+            return parsed;
+          }
+        })
+        .find((event: any) => event?.name === "NewBatch");
+
+      expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount));
+      expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount));
+
+      const tx2 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+      const newBatch2 = tx2.logs
+        .map((log: any) => {
+          if (log.address === MarketMaker.address) {
+            const parsed = MarketMaker.interface.parseLog(log);
+            return parsed;
+          }
+        })
+        .find((event: any) => event?.name === "NewBatch");
+      expect(newBatch2).equal(undefined);
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await hre.timeAndMine.mine(batchBlock);
+
+      const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
+      const saleReturn = await StaticPriceFormula.calculateSaleReturn(0, 0, 0, amount.mul(BigNumber.from(2)));
+
+      await Controller.claimSellOrder(deployer, newBatch1?.args.id, SOVToken.address);
+
+      const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
+      expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
+    });
+
+    it("Should open a sell order, and collateralsToBeClaimed should follow the static price formula (with multiple sell & buy orders in same batch)", async () => {
+      // Set permission to update formula
+      await ACL.connect(governance).createPermission(
+        await governance.getAddress(),
+        MarketMaker.address,
+        await MarketMaker.UPDATE_FORMULA_ROLE(),
+        await governance.getAddress(),
+      );
+
+      await MarketMaker.connect(governance).updateFormula(StaticPriceFormula.address);
+      const amount = BigNumber.from((5e17).toString());
+      await openAndClosePresale(Controller, contributionAmount);
+
+      await Controller.openBuyOrder(SOVToken.address, amount);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await hre.timeAndMine.mine(batchBlock + 1); // +1 so the next 2 sellOrder will be in the same batch
+
+      const zeroSupplyBefore = await ZEROToken.totalSupply();
+      const zeroBalanceBefore = await ZEROToken.balanceOf(deployer);
+      const sovBalanceBefore = await SOVToken.balanceOf(deployer);
+
+      const tx1 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+      const newBatch1 = tx1.logs
+        .map((log: any) => {
+          if (log.address === MarketMaker.address) {
+            const parsed = MarketMaker.interface.parseLog(log);
+            return parsed;
+          }
+        })
+        .find((event: any) => event?.name === "NewBatch");
+
+      expect(zeroSupplyBefore).to.eq((await ZEROToken.totalSupply()).add(amount));
+      expect(zeroBalanceBefore).to.eq((await ZEROToken.balanceOf(deployer)).add(amount));
+
+      const tx2 = await (await Controller.openSellOrder(SOVToken.address, amount)).wait();
+      const newBatch2 = tx2.logs
+        .map((log: any) => {
+          if (log.address === MarketMaker.address) {
+            const parsed = MarketMaker.interface.parseLog(log);
+            return parsed;
+          }
+        })
+        .find((event: any) => event?.name === "NewBatch");
+      expect(newBatch2).equal(undefined);
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await hre.timeAndMine.mine(batchBlock);
+
+      const collateralsToBeClaimed = await MarketMaker.collateralsToBeClaimed(SOVToken.address);
+      const saleReturn = await StaticPriceFormula.calculateSaleReturn(0, 0, 0, amount.mul(BigNumber.from(2)));
+
+      await Controller.claimSellOrder(deployer, newBatch1?.args.id, SOVToken.address);
+
+      const fee = saleReturn.mul(sellFeePCT).div(await MarketMaker.PCT_BASE());
+      expect(await SOVToken.balanceOf(deployer)).to.eq(sovBalanceBefore.add(collateralsToBeClaimed).sub(fee));
+      expect(saleReturn).to.eq(collateralsToBeClaimed) // make sure the price returned by StaticPriceFormula is the same with what we get from the marketmaker contract.
+    });
   });
+
   describe("Closing Bonding Curve", async () => {
     it("Should fail trying to open a buy order after revoke permissions", async () => {
       await openAndClosePresale(Controller, contributionAmount);
       const amount = BigNumber.from(100);
       //check permissions previously
-      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(true);
-      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(true);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          deployer,
+          Controller.address,
+          await Controller.OPEN_BUY_ORDER_ROLE(),
+        ),
+      ).eq(true);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.OPEN_BUY_ORDER_ROLE(),
+        ),
+      ).eq(true);
 
       //revoke buy order permissions
       await ACL.connect(governance).revokePermission(
@@ -524,18 +853,44 @@ describe("Bonding Curve", () => {
         await Controller.OPEN_BUY_ORDER_ROLE(),
       );
 
-      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(false);
-      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_BUY_ORDER_ROLE())).eq(false);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          deployer,
+          Controller.address,
+          await Controller.OPEN_BUY_ORDER_ROLE(),
+        ),
+      ).eq(false);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.OPEN_BUY_ORDER_ROLE(),
+        ),
+      ).eq(false);
 
-      await expect(Controller.openBuyOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");;
-      await expect(Controller.connect(account1).openBuyOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(Controller.openBuyOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(Controller.connect(account1).openBuyOrder(SOVToken.address, amount)).to.be.revertedWith(
+        "APP_AUTH_FAILED",
+      );
     });
     it("Should fail trying to open a sell order after revoke permissions", async () => {
       await openAndClosePresale(Controller, contributionAmount);
       const amount = BigNumber.from(100);
       //check permissions previously
-      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(true);
-      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(true);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          deployer,
+          Controller.address,
+          await Controller.OPEN_SELL_ORDER_ROLE(),
+        ),
+      ).eq(true);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.OPEN_SELL_ORDER_ROLE(),
+        ),
+      ).eq(true);
 
       //revoke sell order permissions
       await ACL.connect(governance).revokePermission(
@@ -544,16 +899,32 @@ describe("Bonding Curve", () => {
         await Controller.OPEN_SELL_ORDER_ROLE(),
       );
 
-      expect(await ACL["hasPermission(address,address,bytes32)"](deployer, Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(false);
-      expect(await ACL["hasPermission(address,address,bytes32)"](await account1.getAddress(), Controller.address, await Controller.OPEN_SELL_ORDER_ROLE())).eq(false);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          deployer,
+          Controller.address,
+          await Controller.OPEN_SELL_ORDER_ROLE(),
+        ),
+      ).eq(false);
+      expect(
+        await ACL["hasPermission(address,address,bytes32)"](
+          await account1.getAddress(),
+          Controller.address,
+          await Controller.OPEN_SELL_ORDER_ROLE(),
+        ),
+      ).eq(false);
 
       await expect(Controller.openSellOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
-      await expect(Controller.connect(account1).openSellOrder(SOVToken.address, amount)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(Controller.connect(account1).openSellOrder(SOVToken.address, amount)).to.be.revertedWith(
+        "APP_AUTH_FAILED",
+      );
     });
     it("Should fail trying deployer to transfer reserve fund", async () => {
       await openAndClosePresale(Controller, contributionAmount);
       const reserveBalanceBefore = await SOVToken.balanceOf(Reserve.address);
-      await expect(Reserve.transfer(SOVToken.address, await governance.getAddress(), reserveBalanceBefore)).to.be.revertedWith("APP_AUTH_FAILED");
+      await expect(
+        Reserve.transfer(SOVToken.address, await governance.getAddress(), reserveBalanceBefore),
+      ).to.be.revertedWith("APP_AUTH_FAILED");
     });
     it("Should allow to governance to transfer reserve funds", async () => {
       await openAndClosePresale(Controller, contributionAmount);
@@ -563,10 +934,10 @@ describe("Bonding Curve", () => {
         await Reserve.TRANSFER_ROLE(),
       );
       const reserveBalanceBefore = await SOVToken.balanceOf(Reserve.address);
-      const governanceBalanceBefore =  await SOVToken.balanceOf(await governance.getAddress());
+      const governanceBalanceBefore = await SOVToken.balanceOf(await governance.getAddress());
       await Reserve.connect(governance).transfer(SOVToken.address, await governance.getAddress(), reserveBalanceBefore);
       const reserveBalanceAfter = await SOVToken.balanceOf(Reserve.address);
-      const governanceBalanceAfter =  await SOVToken.balanceOf(await governance.getAddress());
+      const governanceBalanceAfter = await SOVToken.balanceOf(await governance.getAddress());
       expect(reserveBalanceAfter).equal(BigNumber.from(0));
       expect(governanceBalanceAfter).equal(governanceBalanceBefore.add(reserveBalanceBefore));
     });
