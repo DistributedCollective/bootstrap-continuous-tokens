@@ -234,14 +234,37 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   solidity: {
-    version: "0.4.24",
-    settings: {
-      // https://hardhat.org/hardhat-network/#solidity-optimizer-support
-      optimizer: {
-        enabled: true,
-        runs: 200,
+    compilers: [
+      {
+        version: "0.4.24",
+        settings: {
+          // https://hardhat.org/hardhat-network/#solidity-optimizer-support
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
       },
-    },
+      {
+        version: "0.5.17",
+        settings: {
+          // https://hardhat.org/hardhat-network/#solidity-optimizer-support
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+      {
+        version: "0.8.17",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ]
   },
   typechain: {
     outDir: "typechain",
@@ -269,6 +292,18 @@ const config: HardhatUserConfig = {
   mocha: {
     timeout: 60000,
   },
+  external: {
+    deployments: {
+      myntRSKTestnet: [
+        "external/deployments/rskTestnet",
+        "deployments/myntRSKTestnet",
+      ],
+      myntRSKMainnet: [
+        "external/deployments/rskMainnet",
+        "deployments/myntRSKMainnet",
+      ],
+    },
+  }
 };
 
 config.networks;

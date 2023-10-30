@@ -193,6 +193,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20__factory>;
     getContractFactory(
+      name: "IERC20Permit",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20Permit__factory>;
+    getContractFactory(
+      name: "IERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20__factory>;
+    getContractFactory(
       name: "ACLConfigurator",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ACLConfigurator__factory>;
@@ -212,6 +220,14 @@ declare module "hardhat/types/runtime" {
       name: "Controller",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Controller__factory>;
+    getContractFactory(
+      name: "FixedRateConverter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FixedRateConverter__factory>;
+    getContractFactory(
+      name: "IMynt",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IMynt__factory>;
     getContractFactory(
       name: "IContinuousToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
