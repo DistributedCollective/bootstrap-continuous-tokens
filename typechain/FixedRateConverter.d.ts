@@ -28,7 +28,6 @@ interface FixedRateConverterInterface extends ethers.utils.Interface {
     "convertMax()": FunctionFragment;
     "myntContractAddress()": FunctionFragment;
     "setAdmin(address)": FunctionFragment;
-    "setMyntContractAddress(address)": FunctionFragment;
     "sovContractAddress()": FunctionFragment;
     "withdrawSov()": FunctionFragment;
   };
@@ -56,10 +55,6 @@ interface FixedRateConverterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setAdmin", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setMyntContractAddress",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "sovContractAddress",
     values?: undefined
   ): string;
@@ -85,10 +80,6 @@ interface FixedRateConverterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setAdmin", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setMyntContractAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "sovContractAddress",
     data: BytesLike
   ): Result;
@@ -100,13 +91,11 @@ interface FixedRateConverterInterface extends ethers.utils.Interface {
   events: {
     "Convert(address,uint256,uint256)": EventFragment;
     "SetAdmin(address,address,address)": EventFragment;
-    "SetMyntContractAddress(address,address,address)": EventFragment;
     "SovWithdrawn(address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Convert"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetAdmin"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetMyntContractAddress"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SovWithdrawn"): EventFragment;
 }
 
@@ -177,11 +166,6 @@ export class FixedRateConverter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setMyntContractAddress(
-      _newMyntContractAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     sovContractAddress(overrides?: CallOverrides): Promise<[string]>;
 
     withdrawSov(
@@ -212,11 +196,6 @@ export class FixedRateConverter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setMyntContractAddress(
-    _newMyntContractAddress: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   sovContractAddress(overrides?: CallOverrides): Promise<string>;
 
   withdrawSov(
@@ -244,11 +223,6 @@ export class FixedRateConverter extends BaseContract {
 
     setAdmin(_newAdmin: string, overrides?: CallOverrides): Promise<void>;
 
-    setMyntContractAddress(
-      _newMyntContractAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     sovContractAddress(overrides?: CallOverrides): Promise<string>;
 
     withdrawSov(overrides?: CallOverrides): Promise<void>;
@@ -271,19 +245,6 @@ export class FixedRateConverter extends BaseContract {
     ): TypedEventFilter<
       [string, string, string],
       { sender: string; oldAdmin: string; newAdmin: string }
-    >;
-
-    SetMyntContractAddress(
-      sender?: string | null,
-      oldMyntContractAddress?: string | null,
-      newMyntContractAddreess?: string | null
-    ): TypedEventFilter<
-      [string, string, string],
-      {
-        sender: string;
-        oldMyntContractAddress: string;
-        newMyntContractAddreess: string;
-      }
     >;
 
     SovWithdrawn(
@@ -319,11 +280,6 @@ export class FixedRateConverter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setMyntContractAddress(
-      _newMyntContractAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     sovContractAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdrawSov(
@@ -356,11 +312,6 @@ export class FixedRateConverter extends BaseContract {
 
     setAdmin(
       _newAdmin: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setMyntContractAddress(
-      _newMyntContractAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

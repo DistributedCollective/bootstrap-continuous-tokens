@@ -2,7 +2,6 @@
 pragma solidity 0.8.17;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 interface IMynt {
     function burn(address _account, uint256 _amount) external;
@@ -13,19 +12,12 @@ interface IMynt {
  * @dev Standalone contract for sunsetting (by converting the MYNT to SOV at a fixed rate)
  */
 contract FixedRateConverter {
-    using SafeERC20 for IERC20;
-
     address public admin;
-    address public myntContractAddress;
-    address public sovContractAddress;
+    address public immutable myntContractAddress;
+    address public immutable sovContractAddress;
     uint256 public immutable conversionFixedRate;
 
     event SetAdmin(address indexed sender, address indexed oldAdmin, address indexed newAdmin);
-    event SetMyntContractAddress(
-        address indexed sender,
-        address indexed oldMyntContractAddress,
-        address indexed newMyntContractAddreess
-    );
     event SovWithdrawn(address indexed recipient, uint256 amountWithdrawn);
     event Convert(address indexed sender, uint256 myntSent, uint256 sovReceived);
 
@@ -41,8 +33,8 @@ contract FixedRateConverter {
         uint256 _conversionFixedRate
     ) {
         _setAdmin(msg.sender);
-        setMyntContractAddress(_myntContractAddress);
 
+        myntContractAddress = _myntContractAddress;
         sovContractAddress = _sovContractAddress;
         conversionFixedRate = _conversionFixedRate;
     }
@@ -58,19 +50,6 @@ contract FixedRateConverter {
     }
 
     /**
-     * @notice Set the MYNT contract address.
-     *
-     * only admin can perform this action.
-     *
-     * @param _newMyntContractAddress The new MYNT contract address.
-     * */
-    function setMyntContractAddress(address _newMyntContractAddress) public onlyAdmin {
-        emit SetMyntContractAddress(msg.sender, myntContractAddress, _newMyntContractAddress);
-        myntContractAddress = _newMyntContractAddress;
-        
-    }
-
-    /**
      * @dev function to convert MYNT to SOV
      *
      * @param _myntAmount MYNT amount that will be converted.
@@ -83,8 +62,11 @@ contract FixedRateConverter {
 
         uint256 totalConvertedSov = convertAmount(_myntAmount);
 
-        IERC20(myntContractAddress).safeTransferFrom(msg.sender, address(this), _myntAmount);
-        IERC20(sovContractAddress).safeTransfer(msg.sender, totalConvertedSov);
+        bool success = IERC20(myntContractAddress).transferFrom(msg.sender, address(this), _myntAmount);
+        require(success, "MYNT Token transfer was not successful");
+        
+        success = IERC20(sovContractAddress).transfer(msg.sender, totalConvertedSov);
+        require(success, "SOV Token transfer was not successful");
 
         IMynt(myntContractAddress).burn(address(this), _myntAmount);
 
@@ -120,16 +102,12 @@ contract FixedRateConverter {
     function withdrawSov() external onlyAdmin {
         uint256 sovBalance = IERC20(sovContractAddress).balanceOf(address(this));
         address recipient = msg.sender;
-        IERC20(sovContractAddress).safeTransfer(recipient, sovBalance);
+        bool success = IERC20(sovContractAddress).transfer(recipient, sovBalance);
+        require(success, "SOV Token transfer was not successful");
 
         emit SovWithdrawn(recipient, sovBalance);
     }
 
-    /** Internal function */
-    /**
-     * @dev internal function set the admin account.
-     * @param _newAdmin new admin address
-     */
     function _setAdmin(address _newAdmin) internal {
         require(_newAdmin != address(0), "Invalid address");
         address oldAdmin = admin;

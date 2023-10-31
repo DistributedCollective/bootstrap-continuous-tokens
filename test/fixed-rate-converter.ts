@@ -63,16 +63,6 @@ describe("FixedRateConverter", () => {
 
         expect(admin).to.equal(newAdmin);
       });
-
-      it("setMyntContractAddress should set the mynt contract address successfully", async () => {
-        let myntTokenAddress = await fixedRateConverter.myntContractAddress();
-        expect(myntTokenAddress).to.equal(myntToken.address);
-        const newMyntToken = await tokenFactory.deploy("New MYNT", "NMYNT", 18, 0);
-        await fixedRateConverter.setMyntContractAddress(newMyntToken.address);
-        myntTokenAddress = await fixedRateConverter.myntContractAddress();
-
-        expect(myntTokenAddress).to.equal(newMyntToken.address);
-      });
     });
 
     context("should revert", async () => {
@@ -86,11 +76,6 @@ describe("FixedRateConverter", () => {
       it("setAdmin should revert if set by non-admin address", async () => {;
         const newAdmin = await accounts[3].getAddress();
         await expect(fixedRateConverter.connect(accounts[3]).setAdmin(newAdmin)).to.be.revertedWith("unauthorized");
-      });
-
-      it("setMyntContractAddress should revert if set by non-admin address", async () => {
-        const newMyntToken = await tokenFactory.deploy("New MYNT", "NMYNT", 18, 0);
-        await expect(fixedRateConverter.connect(accounts[3]).setMyntContractAddress(newMyntToken.address)).to.be.revertedWith("unauthorized");
       });
     });
   });
