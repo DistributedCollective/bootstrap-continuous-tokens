@@ -1,11 +1,12 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  const { deployments, getNamedAccounts } = hre;
+  const { deployments, getNamedAccounts, ethers } = hre;
   const { deployer } = await getNamedAccounts();
   const { deploy, get } = deployments;
   const deployedMynt = await get("Mynt");
   const deployedSov = await get("Sov");
+  const multisig = await get("Multisig");
   const deployed = await deploy("FixedRateConverter", {
     from: deployer,
     args: [
@@ -16,6 +17,10 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   });
   if (deployed.newlyDeployed) {
     console.log(`FixedRateConverter deployed at ${deployed.address}`);
+
+    console.log(`Set the Exchequer Multisig as Admin`);
+    const fixedRateConverterContract = await ethers.getContract("FixedRateConverter");
+    await fixedRateConverterContract.setAdmin(multisig.address);
   }
 };
 
