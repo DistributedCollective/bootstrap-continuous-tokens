@@ -9,6 +9,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const multisig = await get("Multisig");
   const deployed = await deploy("FixedRateConverter", {
     from: deployer,
+    log: true,
     args: [
       deployedMynt.address,
       deployedSov.address,
@@ -19,7 +20,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     console.log(`FixedRateConverter deployed at ${deployed.address}`);
 
     console.log(`Set the Exchequer Multisig as Admin`);
-    const fixedRateConverterContract = await ethers.getContract("FixedRateConverter");
+    const fixedRateConverterContract = await ethers.getContractAt("FixedRateConverter", deployed.address);
     await fixedRateConverterContract.setAdmin(multisig.address);
   }
 };
