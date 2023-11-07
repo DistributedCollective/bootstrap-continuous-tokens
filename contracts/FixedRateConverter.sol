@@ -64,7 +64,7 @@ contract FixedRateConverter {
 
         bool success = IERC20(myntContractAddress).transferFrom(msg.sender, address(this), _myntAmount);
         require(success, "MYNT Token transfer was not successful");
-        
+
         success = IERC20(sovContractAddress).transfer(msg.sender, totalConvertedSov);
         require(success, "SOV Token transfer was not successful");
 
