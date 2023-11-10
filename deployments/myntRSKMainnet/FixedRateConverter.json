@@ -1,0 +1,318 @@
+{
+  "address": "0x7231960A6e4AA89F3e4f9098BB42619C79F5D354",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_myntContractAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_sovContractAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_conversionFixedRate",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "myntSent",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "sovReceived",
+          "type": "uint256"
+        }
+      ],
+      "name": "Convert",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "oldAdmin",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "SetAdmin",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountWithdrawn",
+          "type": "uint256"
+        }
+      ],
+      "name": "SovWithdrawn",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "admin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "conversionFixedRate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_myntAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "convert",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_myntAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "convertAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "convertMax",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "myntContractAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "setAdmin",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "sovContractAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawSov",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x21b49e09515dd93e684a2c7a66570ef556fc208c038864cc5f78b906af4563ae",
+  "receipt": {
+    "to": null,
+    "from": "0x13Be55487D37FE3C66EE7305e1e9C1ac85de75Ae",
+    "contractAddress": "0x7231960A6e4AA89F3e4f9098BB42619C79F5D354",
+    "transactionIndex": 1,
+    "gasUsed": "793057",
+    "logsBloom": "0x00000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000001802000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000020000000000000000000000000000000000800000000000000000004040000080000",
+    "blockHash": "0x0ce246efeeb64615b864db23bb309e7505318283ec168bc88b08b58c38a7207f",
+    "transactionHash": "0x21b49e09515dd93e684a2c7a66570ef556fc208c038864cc5f78b906af4563ae",
+    "logs": [
+      {
+        "transactionIndex": 1,
+        "blockNumber": 5798905,
+        "transactionHash": "0x21b49e09515dd93e684a2c7a66570ef556fc208c038864cc5f78b906af4563ae",
+        "address": "0x7231960A6e4AA89F3e4f9098BB42619C79F5D354",
+        "topics": [
+          "0xc51248b3e510a1244e01043dffdc0132d10194bd4506382cbcf83d05f6ec57ef",
+          "0x00000000000000000000000013be55487d37fe3c66ee7305e1e9c1ac85de75ae",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x00000000000000000000000013be55487d37fe3c66ee7305e1e9c1ac85de75ae"
+        ],
+        "data": "0x",
+        "logIndex": 0,
+        "blockHash": "0x0ce246efeeb64615b864db23bb309e7505318283ec168bc88b08b58c38a7207f"
+      }
+    ],
+    "blockNumber": 5798905,
+    "cumulativeGasUsed": "851898",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x2e6b1d146064613e8f521eb3c6e65070af964ebb",
+    "0xEFc78fc7d48b64958315949279Ba181c2114ABBd",
+    4723550439442834
+  ],
+  "solcInputHash": "314c223c2a6032116f1f34693fcf17fa",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_myntContractAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_sovContractAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_conversionFixedRate\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"myntSent\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"sovReceived\",\"type\":\"uint256\"}],\"name\":\"Convert\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"oldAdmin\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"SetAdmin\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amountWithdrawn\",\"type\":\"uint256\"}],\"name\":\"SovWithdrawn\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"admin\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"conversionFixedRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_myntAmount\",\"type\":\"uint256\"}],\"name\":\"convert\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_myntAmount\",\"type\":\"uint256\"}],\"name\":\"convertAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"convertMax\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"myntContractAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newAdmin\",\"type\":\"address\"}],\"name\":\"setAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sovContractAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawSov\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Standalone contract for sunsetting (by converting the MYNT to SOV at a fixed rate)\",\"kind\":\"dev\",\"methods\":{\"convert(uint256)\":{\"details\":\"function to convert MYNT to SOV\",\"params\":{\"_myntAmount\":\"MYNT amount that will be converted.\"}},\"convertAmount(uint256)\":{\"details\":\"external function to calculate how many SOV will be converted with the given MYNT amount\",\"params\":{\"_myntAmount\":\"total MYNT to be converted to SOV.\"},\"returns\":{\"_0\":\"converted SOV amount.\"}},\"convertMax()\":{\"details\":\"external function to calculate how many MYNT that can be converted based on the current contract's SOV Balance\",\"returns\":{\"_0\":\"max amount of MYNT that can be converted.\"}},\"setAdmin(address)\":{\"params\":{\"_newAdmin\":\"new admin address. only admin can perform this action.\"}},\"withdrawSov()\":{\"details\":\"withdraw the whole SOV balance of this contract The whole SOV will be withdrawn to the admin account. only admin can perform this action.\"}},\"title\":\"FixedRateConverter\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"setAdmin(address)\":{\"notice\":\"Public function to set admin account.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/FixedRateConverter.sol\":\"FixedRateConverter\"},\"evmVersion\":\"london\",\"libraries\":{\":__CACHE_BREAKER__\":\"0x00000000d41867734bbee4c6863d9255b2b06ac1\"},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/IERC20.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Interface of the ERC20 standard as defined in the EIP.\\n */\\ninterface IERC20 {\\n    /**\\n     * @dev Emitted when `value` tokens are moved from one account (`from`) to\\n     * another (`to`).\\n     *\\n     * Note that `value` may be zero.\\n     */\\n    event Transfer(address indexed from, address indexed to, uint256 value);\\n\\n    /**\\n     * @dev Emitted when the allowance of a `spender` for an `owner` is set by\\n     * a call to {approve}. `value` is the new allowance.\\n     */\\n    event Approval(address indexed owner, address indexed spender, uint256 value);\\n\\n    /**\\n     * @dev Returns the amount of tokens in existence.\\n     */\\n    function totalSupply() external view returns (uint256);\\n\\n    /**\\n     * @dev Returns the amount of tokens owned by `account`.\\n     */\\n    function balanceOf(address account) external view returns (uint256);\\n\\n    /**\\n     * @dev Moves `amount` tokens from the caller's account to `to`.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transfer(address to, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Returns the remaining number of tokens that `spender` will be\\n     * allowed to spend on behalf of `owner` through {transferFrom}. This is\\n     * zero by default.\\n     *\\n     * This value changes when {approve} or {transferFrom} are called.\\n     */\\n    function allowance(address owner, address spender) external view returns (uint256);\\n\\n    /**\\n     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * IMPORTANT: Beware that changing an allowance with this method brings the risk\\n     * that someone may use both the old and the new allowance by unfortunate\\n     * transaction ordering. One possible solution to mitigate this race\\n     * condition is to first reduce the spender's allowance to 0 and set the\\n     * desired value afterwards:\\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\\n     *\\n     * Emits an {Approval} event.\\n     */\\n    function approve(address spender, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Moves `amount` tokens from `from` to `to` using the\\n     * allowance mechanism. `amount` is then deducted from the caller's\\n     * allowance.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transferFrom(address from, address to, uint256 amount) external returns (bool);\\n}\\n\",\"keccak256\":\"0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305\",\"license\":\"MIT\"},\"contracts/FixedRateConverter.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity 0.8.17;\\n\\nimport { IERC20 } from \\\"@openzeppelin/contracts/token/ERC20/IERC20.sol\\\";\\n\\ninterface IMynt {\\n    function burn(address _account, uint256 _amount) external;\\n}\\n\\n/**\\n * @title FixedRateConverter\\n * @dev Standalone contract for sunsetting (by converting the MYNT to SOV at a fixed rate)\\n */\\ncontract FixedRateConverter {\\n    address public admin;\\n    address public immutable myntContractAddress;\\n    address public immutable sovContractAddress;\\n    uint256 public immutable conversionFixedRate;\\n\\n    event SetAdmin(address indexed sender, address indexed oldAdmin, address indexed newAdmin);\\n    event SovWithdrawn(address indexed recipient, uint256 amountWithdrawn);\\n    event Convert(address indexed sender, uint256 myntSent, uint256 sovReceived);\\n\\n    /// @dev TODO: Check for restrictions in this contract.\\n    modifier onlyAdmin() {\\n        require(msg.sender == admin, \\\"unauthorized\\\");\\n        _;\\n    }\\n\\n    constructor(\\n        address _myntContractAddress,\\n        address _sovContractAddress,\\n        uint256 _conversionFixedRate\\n    ) {\\n        _setAdmin(msg.sender);\\n\\n        myntContractAddress = _myntContractAddress;\\n        sovContractAddress = _sovContractAddress;\\n        conversionFixedRate = _conversionFixedRate;\\n    }\\n\\n    /**\\n     * @notice Public function to set admin account.\\n     *\\n     * @param _newAdmin new admin address.\\n     * only admin can perform this action.\\n     */\\n    function setAdmin(address _newAdmin) public onlyAdmin {\\n        _setAdmin(_newAdmin);\\n    }\\n\\n    /**\\n     * @dev function to convert MYNT to SOV\\n     *\\n     * @param _myntAmount MYNT amount that will be converted.\\n     */\\n    function convert(uint256 _myntAmount) external {\\n        require(_myntAmount > 0, \\\"Error: amount must be > 0\\\");\\n\\n        uint256 senderMyntBalance = IERC20(myntContractAddress).balanceOf(msg.sender);\\n        require(senderMyntBalance >= _myntAmount, \\\"Error: amount exceeds MYNT balance\\\");\\n\\n        uint256 totalConvertedSov = convertAmount(_myntAmount);\\n\\n        bool success = IERC20(myntContractAddress).transferFrom(msg.sender, address(this), _myntAmount);\\n        require(success, \\\"MYNT Token transfer was not successful\\\");\\n        \\n        success = IERC20(sovContractAddress).transfer(msg.sender, totalConvertedSov);\\n        require(success, \\\"SOV Token transfer was not successful\\\");\\n\\n        IMynt(myntContractAddress).burn(address(this), _myntAmount);\\n\\n        emit Convert(msg.sender, _myntAmount, totalConvertedSov);\\n    }\\n\\n    /**\\n     * @dev external function to calculate how many SOV will be converted with the given MYNT amount\\n     *\\n     * @param _myntAmount total MYNT to be converted to SOV.\\n     * @return converted SOV amount.\\n     */\\n    function convertAmount(uint256 _myntAmount) public view returns (uint256) {\\n        return (_myntAmount * conversionFixedRate) / 1e18;\\n    }\\n\\n    /**\\n     * @dev external function to calculate how many MYNT that can be converted based on the current contract's SOV Balance\\n     *\\n     * @return max amount of MYNT that can be converted.\\n     */\\n    function convertMax() external view returns (uint256) {\\n        uint256 sovBalance = IERC20(sovContractAddress).balanceOf(address(this));\\n        return (sovBalance * 1e18) / conversionFixedRate;\\n    }\\n\\n    /**\\n     * @dev withdraw the whole SOV balance of this contract\\n     * The whole SOV will be withdrawn to the admin account.\\n     * only admin can perform this action.\\n     *\\n     */\\n    function withdrawSov() external onlyAdmin {\\n        uint256 sovBalance = IERC20(sovContractAddress).balanceOf(address(this));\\n        address recipient = msg.sender;\\n        bool success = IERC20(sovContractAddress).transfer(recipient, sovBalance);\\n        require(success, \\\"SOV Token transfer was not successful\\\");\\n\\n        emit SovWithdrawn(recipient, sovBalance);\\n    }\\n\\n    function _setAdmin(address _newAdmin) internal {\\n        require(_newAdmin != address(0), \\\"Invalid address\\\");\\n        address oldAdmin = admin;\\n        admin = _newAdmin;\\n        emit SetAdmin(msg.sender, oldAdmin, admin);\\n    }\\n}\\n\",\"keccak256\":\"0xdd44cefe488757d3c7362598928083369b50b7e80c4c47b5e6d8334767c46dad\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60e060405234801561001057600080fd5b50604051610c1d380380610c1d83398101604081905261002f9161010c565b61003833610053565b6001600160a01b03928316608052911660a05260c052610148565b6001600160a01b03811661009f5760405162461bcd60e51b815260206004820152600f60248201526e496e76616c6964206164647265737360881b604482015260640160405180910390fd5b600080546001600160a01b038381166001600160a01b03198316811784556040519190921692839133917fc51248b3e510a1244e01043dffdc0132d10194bd4506382cbcf83d05f6ec57ef91a45050565b80516001600160a01b038116811461010757600080fd5b919050565b60008060006060848603121561012157600080fd5b61012a846100f0565b9250610138602085016100f0565b9150604084015190509250925092565b60805160a05160c051610a696101b46000396000818160c3015281816101a601526102c601526000818161012901528181610257015281816105610152818161071701526107ae01526000818160ea0152818161036f0152818161047a01526106110152610a696000f3fe608060405234801561001057600080fd5b50600436106100935760003560e01c8063704b6c0211610066578063704b6c021461014b578063831ad49c14610160578063a3908e1b14610168578063d4bc5c961461017b578063f851a4401461018357600080fd5b8063039aec2d146100985780633010e37b146100be57806335e7cda7146100e55780633abf274614610124575b600080fd5b6100ab6100a6366004610923565b610196565b6040519081526020015b60405180910390f35b6100ab7f000000000000000000000000000000000000000000000000000000000000000081565b61010c7f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b0390911681526020016100b5565b61010c7f000000000000000000000000000000000000000000000000000000000000000081565b61015e61015936600461093c565b6101db565b005b6100ab610235565b61015e610176366004610923565b610307565b61015e6106b6565b60005461010c906001600160a01b031681565b6000670de0b6b3a76400006101cb7f00000000000000000000000000000000000000000000000000000000000000008461096c565b6101d59190610991565b92915050565b6000546001600160a01b031633146102295760405162461bcd60e51b815260206004820152600c60248201526b1d5b985d5d1a1bdc9a5e995960a21b60448201526064015b60405180910390fd5b6102328161088a565b50565b6040516370a0823160e01b815230600482015260009081906001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906370a0823190602401602060405180830381865afa15801561029e573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906102c291906109b3565b90507f00000000000000000000000000000000000000000000000000000000000000006102f782670de0b6b3a764000061096c565b6103019190610991565b91505090565b600081116103575760405162461bcd60e51b815260206004820152601960248201527f4572726f723a20616d6f756e74206d757374206265203e2030000000000000006044820152606401610220565b6040516370a0823160e01b81523360048201526000907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316906370a0823190602401602060405180830381865afa1580156103be573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906103e291906109b3565b90508181101561043f5760405162461bcd60e51b815260206004820152602260248201527f4572726f723a20616d6f756e742065786365656473204d594e542062616c616e604482015261636560f01b6064820152608401610220565b600061044a83610196565b6040516323b872dd60e01b8152336004820152306024820152604481018590529091506000906001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906323b872dd906064016020604051808303816000875af11580156104c3573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104e791906109cc565b9050806105455760405162461bcd60e51b815260206004820152602660248201527f4d594e5420546f6b656e207472616e7366657220776173206e6f742073756363604482015265195cdcd99d5b60d21b6064820152608401610220565b60405163a9059cbb60e01b8152336004820152602481018390527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169063a9059cbb906044016020604051808303816000875af11580156105b2573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906105d691906109cc565b9050806105f55760405162461bcd60e51b8152600401610220906109ee565b604051632770a7eb60e21b8152306004820152602481018590527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031690639dc29fac90604401600060405180830381600087803b15801561065d57600080fd5b505af1158015610671573d6000803e3d6000fd5b505060408051878152602081018690523393507f9018eade4aec2a696b34b0f5459a1a7dc058389bab8e2380d880817a9e22b21392500160405180910390a250505050565b6000546001600160a01b031633146106ff5760405162461bcd60e51b815260206004820152600c60248201526b1d5b985d5d1a1bdc9a5e995960a21b6044820152606401610220565b6040516370a0823160e01b81523060048201526000907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316906370a0823190602401602060405180830381865afa158015610766573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061078a91906109b3565b60405163a9059cbb60e01b81523360048201819052602482018390529192506000907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169063a9059cbb906044016020604051808303816000875af11580156107ff573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061082391906109cc565b9050806108425760405162461bcd60e51b8152600401610220906109ee565b816001600160a01b03167f9fc7a4058d3f6db6f3e2b8db81e6c6eae39fa9b44859a5d16bac83db6f94c0148460405161087d91815260200190565b60405180910390a2505050565b6001600160a01b0381166108d25760405162461bcd60e51b815260206004820152600f60248201526e496e76616c6964206164647265737360881b6044820152606401610220565b600080546001600160a01b038381166001600160a01b03198316811784556040519190921692839133917fc51248b3e510a1244e01043dffdc0132d10194bd4506382cbcf83d05f6ec57ef91a45050565b60006020828403121561093557600080fd5b5035919050565b60006020828403121561094e57600080fd5b81356001600160a01b038116811461096557600080fd5b9392505050565b80820281158282048414176101d557634e487b7160e01b600052601160045260246000fd5b6000826109ae57634e487b7160e01b600052601260045260246000fd5b500490565b6000602082840312156109c557600080fd5b5051919050565b6000602082840312156109de57600080fd5b8151801515811461096557600080fd5b60208082526025908201527f534f5620546f6b656e207472616e7366657220776173206e6f742073756363656040820152641cdcd99d5b60da1b60608201526080019056fea26469706673582212204f551a7bc5fe5db0abbf6ce39cbf03258e18da8b723791fc3cb4e493f78d507264736f6c63430008110033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100935760003560e01c8063704b6c0211610066578063704b6c021461014b578063831ad49c14610160578063a3908e1b14610168578063d4bc5c961461017b578063f851a4401461018357600080fd5b8063039aec2d146100985780633010e37b146100be57806335e7cda7146100e55780633abf274614610124575b600080fd5b6100ab6100a6366004610923565b610196565b6040519081526020015b60405180910390f35b6100ab7f000000000000000000000000000000000000000000000000000000000000000081565b61010c7f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b0390911681526020016100b5565b61010c7f000000000000000000000000000000000000000000000000000000000000000081565b61015e61015936600461093c565b6101db565b005b6100ab610235565b61015e610176366004610923565b610307565b61015e6106b6565b60005461010c906001600160a01b031681565b6000670de0b6b3a76400006101cb7f00000000000000000000000000000000000000000000000000000000000000008461096c565b6101d59190610991565b92915050565b6000546001600160a01b031633146102295760405162461bcd60e51b815260206004820152600c60248201526b1d5b985d5d1a1bdc9a5e995960a21b60448201526064015b60405180910390fd5b6102328161088a565b50565b6040516370a0823160e01b815230600482015260009081906001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906370a0823190602401602060405180830381865afa15801561029e573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906102c291906109b3565b90507f00000000000000000000000000000000000000000000000000000000000000006102f782670de0b6b3a764000061096c565b6103019190610991565b91505090565b600081116103575760405162461bcd60e51b815260206004820152601960248201527f4572726f723a20616d6f756e74206d757374206265203e2030000000000000006044820152606401610220565b6040516370a0823160e01b81523360048201526000907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316906370a0823190602401602060405180830381865afa1580156103be573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906103e291906109b3565b90508181101561043f5760405162461bcd60e51b815260206004820152602260248201527f4572726f723a20616d6f756e742065786365656473204d594e542062616c616e604482015261636560f01b6064820152608401610220565b600061044a83610196565b6040516323b872dd60e01b8152336004820152306024820152604481018590529091506000906001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016906323b872dd906064016020604051808303816000875af11580156104c3573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104e791906109cc565b9050806105455760405162461bcd60e51b815260206004820152602660248201527f4d594e5420546f6b656e207472616e7366657220776173206e6f742073756363604482015265195cdcd99d5b60d21b6064820152608401610220565b60405163a9059cbb60e01b8152336004820152602481018390527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169063a9059cbb906044016020604051808303816000875af11580156105b2573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906105d691906109cc565b9050806105f55760405162461bcd60e51b8152600401610220906109ee565b604051632770a7eb60e21b8152306004820152602481018590527f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031690639dc29fac90604401600060405180830381600087803b15801561065d57600080fd5b505af1158015610671573d6000803e3d6000fd5b505060408051878152602081018690523393507f9018eade4aec2a696b34b0f5459a1a7dc058389bab8e2380d880817a9e22b21392500160405180910390a250505050565b6000546001600160a01b031633146106ff5760405162461bcd60e51b815260206004820152600c60248201526b1d5b985d5d1a1bdc9a5e995960a21b6044820152606401610220565b6040516370a0823160e01b81523060048201526000907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316906370a0823190602401602060405180830381865afa158015610766573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061078a91906109b3565b60405163a9059cbb60e01b81523360048201819052602482018390529192506000907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03169063a9059cbb906044016020604051808303816000875af11580156107ff573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061082391906109cc565b9050806108425760405162461bcd60e51b8152600401610220906109ee565b816001600160a01b03167f9fc7a4058d3f6db6f3e2b8db81e6c6eae39fa9b44859a5d16bac83db6f94c0148460405161087d91815260200190565b60405180910390a2505050565b6001600160a01b0381166108d25760405162461bcd60e51b815260206004820152600f60248201526e496e76616c6964206164647265737360881b6044820152606401610220565b600080546001600160a01b038381166001600160a01b03198316811784556040519190921692839133917fc51248b3e510a1244e01043dffdc0132d10194bd4506382cbcf83d05f6ec57ef91a45050565b60006020828403121561093557600080fd5b5035919050565b60006020828403121561094e57600080fd5b81356001600160a01b038116811461096557600080fd5b9392505050565b80820281158282048414176101d557634e487b7160e01b600052601160045260246000fd5b6000826109ae57634e487b7160e01b600052601260045260246000fd5b500490565b6000602082840312156109c557600080fd5b5051919050565b6000602082840312156109de57600080fd5b8151801515811461096557600080fd5b60208082526025908201527f534f5620546f6b656e207472616e7366657220776173206e6f742073756363656040820152641cdcd99d5b60da1b60608201526080019056fea26469706673582212204f551a7bc5fe5db0abbf6ce39cbf03258e18da8b723791fc3cb4e493f78d507264736f6c63430008110033",
+  "devdoc": {
+    "details": "Standalone contract for sunsetting (by converting the MYNT to SOV at a fixed rate)",
+    "kind": "dev",
+    "methods": {
+      "convert(uint256)": {
+        "details": "function to convert MYNT to SOV",
+        "params": {
+          "_myntAmount": "MYNT amount that will be converted."
+        }
+      },
+      "convertAmount(uint256)": {
+        "details": "external function to calculate how many SOV will be converted with the given MYNT amount",
+        "params": {
+          "_myntAmount": "total MYNT to be converted to SOV."
+        },
+        "returns": {
+          "_0": "converted SOV amount."
+        }
+      },
+      "convertMax()": {
+        "details": "external function to calculate how many MYNT that can be converted based on the current contract's SOV Balance",
+        "returns": {
+          "_0": "max amount of MYNT that can be converted."
+        }
+      },
+      "setAdmin(address)": {
+        "params": {
+          "_newAdmin": "new admin address. only admin can perform this action."
+        }
+      },
+      "withdrawSov()": {
+        "details": "withdraw the whole SOV balance of this contract The whole SOV will be withdrawn to the admin account. only admin can perform this action."
+      }
+    },
+    "title": "FixedRateConverter",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "setAdmin(address)": {
+        "notice": "Public function to set admin account."
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 92,
+        "contract": "contracts/FixedRateConverter.sol:FixedRateConverter",
+        "label": "admin",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      }
+    }
+  }
+}
